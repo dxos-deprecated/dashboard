@@ -2,8 +2,11 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import withLayout from '../components/Layout';
+import React from 'react';
+import Typography from '@material-ui/core/Typography';
 
-const Page = () => <p>About XBox</p>;
+import withLayout from '../src/components/Layout';
+
+const Page = () => <Typography>About XBox</Typography>;
 
 export default withLayout(Page);
