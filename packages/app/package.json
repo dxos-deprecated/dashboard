@@ -2,10 +2,10 @@
   "name": "@dxos/xbox-dashboard-app",
   "version": "1.0.0",
   "description": "Light-weight dashboard app.",
-  "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server --mode development",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
     "test": "jest --rootDir ./src --verbose --passWithNoTests"
   },
   "repository": {
@@ -18,23 +18,11 @@
   },
   "homepage": "https://github.com/dxos/xbox-dashboard#readme",
   "dependencies": {
+    "next": "^9.2.1",
     "react": "16.12.0",
     "react-dom": "^16.12.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.3.0",
-    "@babel/plugin-proposal-export-default-from": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.0",
-    "babel-plugin-add-module-exports": "^1.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "jest": "^25.1.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "jest": "^25.1.0"
   }
 }

@@ -77,6 +77,7 @@
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
     "react/forbid-prop-types": "off",
+    "react/react-in-jsx-scope": "off",
     "react/state-in-constructor": "off",
     "react/no-multi-comp": "off",
     "react/no-array-index-key": "off",
