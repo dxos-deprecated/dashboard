@@ -1,0 +1,46 @@
+{
+  "name": "@dxos/xbox-dashboard",
+  "version": "1.0.0",
+  "description": "Light-weight dashboard app.",
+  "private": true,
+  "scripts": {
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint -- --fix",
+    "lint:staged": "lint-staged",
+    "test": "lerna run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dxos/xbox-dashboard.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dxos/xbox-dashboard/issues"
+  },
+  "homepage": "https://github.com/dxos/xbox-dashboard#readme",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "lint-staged": {
+    "*.js": "eslint --ignore-path .eslintignore"
+  },
+  "pre-commit": [
+    "lint:staged"
+  ],
+  "dependencies": {
+    "lerna": "^3.19.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb": "^18.0.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-import": "^2.18.2",
+    "lint-staged": "^9.5.0",
+    "pre-commit": "^1.2.2"
+  }
+}
