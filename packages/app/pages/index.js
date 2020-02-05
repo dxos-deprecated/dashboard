@@ -2,7 +2,8 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import IpfsHttpClient, { urlSource } from 'ipfs-http-client';
+import superagent from 'superagent';
+import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment } from 'react';
 import Button from '@material-ui/core/Button';
@@ -17,27 +18,80 @@ import Typography from '@material-ui/core/Typography';
 import withLayout from '../src/components/Layout';
 
 const Page = () => {
-  const [value, setValue] = React.useState(null);
+  const [value, setValue] = React.useState({});
 
-  const handleTest = async () => {
-    // Set-up CORS
-    // https://github.com/ipfs/js-ipfs-http-client#in-a-web-browser
-    // https://github.com/ipfs/js-ipfs-http-client/tree/master/examples/bundle-webpack#setup
-    // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
-    // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
-    const ipfs = IpfsHttpClient('/ip4/127.0.0.1/tcp/5001');
-    const config = await ipfs.id();
-    setValue(config);
+  // TODO(burdon): JSON view. Canonical.
+  const stringify = (value) => value && JSON.stringify(value, undefined, 2);
 
-    // TODO(burdon): Link to Web UI.
-    // http://127.0.0.1:5001/webui
-    // https://github.com/ipfs/js-ipfs-http-client/blob/master/examples/bundle-webpack/src/App.js
-    const data = await urlSource('https://ipfs.io/images/ipfs-logo.svg');
-    const hash = await ipfs.add(data);
-    console.log(hash, data);
+  const fetch = (url) => superagent.get(url)
+    .then(({ body }) => ({ result: body }))
+    .catch(({ response: { statusText } }) => ({ error: statusText }));
+
+  const exec = async (key, handler) => {
+    await setValue({ ...value, [key]: 'Pending...' });
+    await setValue({ ...value, [key]: await handler() });
   };
 
-  // TODO(burdon): JSON view.
+  const tests = [
+    {
+      key: 'test',
+      title: 'Test API',
+      handler: async () => {
+        // https://www.npmjs.com/package/superagent
+        const result = await superagent.get('/api/status');
+        const { text } = result;
+        return JSON.parse(text);
+      }
+    },
+    {
+      key: 'ipfs_status',
+      title: 'IPFS Status',
+      handler: async () => {
+        // Set-up CORS
+        // https://github.com/ipfs/js-ipfs-http-client#in-a-web-browser
+        // https://github.com/ipfs/js-ipfs-http-client/tree/master/examples/bundle-webpack#setup
+        // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
+        // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
+        try {
+          const ipfs = IpfsHttpClient('/ip4/127.0.0.1/tcp/5001');
+          return await ipfs.id();
+        } catch (error) {
+          return { error: String(error) };
+        }
+
+        // TODO(burdon): Link to Web UI.
+        // http://127.0.0.1:5001/webui
+        // https://github.com/ipfs/js-ipfs-http-client/blob/master/examples/bundle-webpack/src/App.js
+        // const data = await IpfsHttpClient.urlSource('https://ipfs.io/images/ipfs-logo.svg');
+        // const hash = await ipfs.add(data);
+        // console.log(hash, data);
+      }
+    },
+    {
+      key: 'ipfs_version',
+      title: 'IPFS Version',
+      handler: async () => {
+        const { result, error } = await fetch('/api/ipfs?command=version');
+        return error || result;
+      }
+    },
+    {
+      key: 'ipfs_start',
+      title: 'IPFS Start',
+      handler: async () => {
+        const { result, error } = await fetch('/api/ipfs?command=start');
+        return error || result;
+      }
+    },
+    {
+      key: 'ipfs_shutdown',
+      title: 'IPFS Shutdown',
+      handler: async () => {
+        const { result, error } = await fetch('/api/ipfs?command=shutdown');
+        return error || result;
+      }
+    },
+  ];
 
   return (
     <Fragment>
@@ -47,19 +101,21 @@ const Page = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell />
+              <TableCell style={{ width: 200 }} />
               <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <Button variant="contained" onClick={handleTest}>Test IPFS</Button>
-              </TableCell>
-              <TableCell>
-                <pre>{value && JSON.stringify(value)}</pre>
-              </TableCell>
-            </TableRow>
+            {tests.map(({ key, title, handler }) => (
+              <TableRow key={key}>
+                <TableCell>
+                  <Button variant="contained" onClick={() => exec(key, handler)}>{title}</Button>
+                </TableCell>
+                <TableCell>
+                  <pre>{stringify(value[key])}</pre>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
