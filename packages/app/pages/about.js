@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 
 import withLayout from '../src/components/Layout';
 
-const Page = () => <Typography>About XBox</Typography>;
+const Page = () => (
+  <Typography>About XBox</Typography>
+);
 
 export default withLayout(Page);
