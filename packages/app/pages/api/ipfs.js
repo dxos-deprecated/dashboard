@@ -19,7 +19,7 @@ const exec = (command, options = {}) => {
   log('command', command, options);
 
   return new Promise((resolve, reject) => {
-    let result;
+    let output;
 
     // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
     const proc = spawn(command, args, {
@@ -29,7 +29,7 @@ const exec = (command, options = {}) => {
     });
 
     proc.on('error', error => reject(error));
-    proc.on('close', code => (code === 0 ? resolve(result) : reject(code)));
+    proc.on('close', code => (code === 0 ? resolve(output || code) : reject(code)));
 
     // https://stackoverflow.com/questions/25323703/nodejs-execute-command-in-background-and-forget
     if (detached) {
@@ -37,8 +37,8 @@ const exec = (command, options = {}) => {
       resolve(0);
     } else {
       proc.stdout.on('data', (data) => {
-        result = String(data);
-        if (wait && result.match(wait)) {
+        output = String(data);
+        if (wait && output.match(wait)) {
           proc.unref();
           resolve(0);
         }

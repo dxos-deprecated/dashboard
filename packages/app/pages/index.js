@@ -6,7 +6,8 @@ import superagent from 'superagent';
 import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment } from 'react';
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core';
+import MuiButton from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +17,15 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 
 import withLayout from '../src/components/Layout';
+
+const Button = withStyles({
+  root: {
+    width: 160
+  },
+  label: {
+    textTransform: 'capitalize',
+  },
+})(MuiButton);
 
 const Page = () => {
   const [value, setValue] = React.useState({});
@@ -109,7 +119,12 @@ const Page = () => {
             {tests.map(({ key, title, handler }) => (
               <TableRow key={key}>
                 <TableCell>
-                  <Button variant="contained" onClick={() => exec(key, handler)}>{title}</Button>
+                  <Button
+                    onClick={() => exec(key, handler)}
+                    variant="contained"
+                  >
+                    {title}
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <pre>{stringify(value[key])}</pre>
