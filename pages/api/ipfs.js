@@ -5,7 +5,7 @@
 import debug from 'debug';
 import { spawn } from 'child_process';
 
-const log = debug('xbox:ipfs');
+const log = debug('dxos:xbox:ipfs');
 
 /**
  *

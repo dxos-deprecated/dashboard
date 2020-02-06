@@ -6,7 +6,7 @@ import superagent from 'superagent';
 import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import MuiButton from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 
 import withLayout from '../src/components/Layout';
 import Timer from '../src/components/Timer';
+import Json from '../src/components/Json';
 
 const Button = withStyles({
   root: {
@@ -29,21 +30,10 @@ const Button = withStyles({
   }
 })(MuiButton);
 
-const useStyles = makeStyles(() => ({
-  json: {
-    margin: 0,
-    overflow: 'hidden',
-    whiteSpace: 'pre-line'
-  }
-}));
-
 const Page = () => {
-  const classes = useStyles();
   const [value, setValue] = React.useState({});
 
-  // TODO(burdon): JSON view. Canonical.
-  const stringify = (value) => value && JSON.stringify(value, undefined, 2);
-
+  // Call API.
   const fetch = (url) => superagent.get(url)
     .then(({ body }) => ({ result: body }))
     .catch(({ response: { statusText } }) => ({ error: statusText }));
@@ -56,7 +46,7 @@ const Page = () => {
         // https://www.npmjs.com/package/superagent
         const result = await superagent.get('/api/status');
         const { text } = result;
-        return JSON.parse(text);
+        return { result: JSON.parse(text) };
       }
     },
     {
@@ -70,7 +60,9 @@ const Page = () => {
         // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
         try {
           const ipfs = IpfsHttpClient('/ip4/127.0.0.1/tcp/5001');
-          return await ipfs.id();
+          const status = await ipfs.id();
+          status.addresses = status.addresses.map(address => String(address));
+          return { result: status };
         } catch (error) {
           return { error: String(error) };
         }
@@ -87,35 +79,29 @@ const Page = () => {
       key: 'ipfs_version',
       title: 'IPFS Version',
       handler: async () => {
-        const { result, error } = await fetch('/api/ipfs?command=version');
-        return error || result;
+        return fetch('/api/ipfs?command=version');
       }
     },
     {
       key: 'ipfs_start',
       title: 'IPFS Start',
       handler: async () => {
-        const { result, error } = await fetch('/api/ipfs?command=start');
-        return error || result;
+        return fetch('/api/ipfs?command=start');
       }
     },
     {
       key: 'ipfs_shutdown',
       title: 'IPFS Shutdown',
       handler: async () => {
-        const { result, error } = await fetch('/api/ipfs?command=shutdown');
-        return error || result;
+        return fetch('/api/ipfs?command=shutdown');
       }
     },
   ];
 
   const exec = async (key, handler) => {
-    await setValue({ ...value, [key]: { message: 'Pending...', refresh: null } });
-
-    await setValue({ ...value, [key]: { message: await handler(), refresh: Date.now() } });
+    await setValue({ ...value, [key]: { refresh: null } });
+    await setValue({ ...value, [key]: { ...await handler(), refresh: Date.now() } });
   };
-
-  // TODO(burdon): Show timer when changed.
 
   return (
     <Fragment>
@@ -132,7 +118,7 @@ const Page = () => {
           </TableHead>
           <TableBody>
             {tests.map(({ key, title, handler }) => {
-              const { message, refresh } = value[key] || {};
+              const { result, error, refresh } = value[key] || {};
 
               return (
                 <TableRow key={key}>
@@ -145,9 +131,13 @@ const Page = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <pre className={classes.json}>{stringify(message)}</pre>
+                    {error ? (
+                      <pre>{error}</pre>
+                    ) : (
+                      <Json json={result} />
+                    )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ verticalAlign: 'top' }}>
                     {refresh && <Timer start={refresh} />}
                   </TableCell>
                 </TableRow>
