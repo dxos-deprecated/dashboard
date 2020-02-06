@@ -1,13 +1,15 @@
 {
   "name": "@dxos/xbox-dashboard",
   "version": "1.0.0",
-  "description": "Light-weight dashboard app.",
-  "private": true,
+  "description": "XBox dashboard",
   "scripts": {
-    "lint": "lerna run lint",
-    "lint:fix": "lerna run lint -- --fix",
+    "dev": "DEBUG=xbox:* next",
+    "build": "next build",
+    "lint": "eslint ./src --ignore-path .eslintignore",
+    "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
-    "test": "lerna run test"
+    "start": "next start",
+    "test": "jest --rootDir ./src --verbose --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -18,11 +20,6 @@
     "url": "https://github.com/dxos/xbox-dashboard/issues"
   },
   "homepage": "https://github.com/dxos/xbox-dashboard#readme",
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "lint-staged": {
     "*.js": "eslint --ignore-path .eslintignore"
   },
@@ -30,16 +27,28 @@
     "lint:staged"
   ],
   "dependencies": {
-    "lerna": "^3.19.0"
+    "@material-ui/core": "^4.9.1",
+    "@material-ui/icons": "^4.9.1",
+    "clsx": "^1.1.0",
+    "debug": "^4.1.1",
+    "ipfs-http-client": "^42.0.0",
+    "moment": "^2.24.0",
+    "next": "^9.2.1",
+    "prop-types": "^15.7.2",
+    "react": "16.12.0",
+    "react-dom": "^16.12.0",
+    "superagent": "^5.2.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-config-airbnb": "^18.0.0",
     "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-import": "^2.18.2",
+    "jest": "^25.1.0",
+    "lint": "^0.7.0",
     "lint-staged": "^9.5.0",
     "pre-commit": "^1.2.2"
   }
