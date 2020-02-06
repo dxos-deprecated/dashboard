@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Wireline, Inc.
+// Copyright 2020 DxOS
 //
 
 import React from 'react';
@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
     left: 0,
     right: 0,
     top: 0,
@@ -23,7 +24,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
+    overflow: 'hidden'
+  },
+
+  inner: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
     padding: theme.spacing(2),
+    overflowY: 'scroll'
   }
 }));
 
@@ -33,9 +42,11 @@ const withLayout = Page => () => {
   return (
     <div className={classes.root}>
       <Header />
-      <Paper square className={classes.container}>
-        <Page />
-      </Paper>
+      <div className={classes.container}>
+        <Paper square className={classes.inner}>
+          <Page />
+        </Paper>
+      </div>
     </div>
   );
 };

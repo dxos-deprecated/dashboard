@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Wireline, Inc.
+// Copyright 2020 DxOS
 //
 
 import superagent from 'superagent';
@@ -11,7 +11,6 @@ import MuiButton from '@material-ui/core/Button';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
@@ -107,33 +106,31 @@ const Page = () => {
     <Fragment>
       <Typography variant="h5">Diagnostics</Typography>
 
-      <TableContainer>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ width: 200 }} />
-              <TableCell />
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ width: 200 }} />
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tests.map(({ key, title, handler }) => (
+            <TableRow key={key}>
+              <TableCell>
+                <Button
+                  onClick={() => exec(key, handler)}
+                  variant="contained"
+                >
+                  {title}
+                </Button>
+              </TableCell>
+              <TableCell>
+                <pre>{stringify(value[key])}</pre>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {tests.map(({ key, title, handler }) => (
-              <TableRow key={key}>
-                <TableCell>
-                  <Button
-                    onClick={() => exec(key, handler)}
-                    variant="contained"
-                  >
-                    {title}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <pre>{stringify(value[key])}</pre>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
     </Fragment>
   );
 };

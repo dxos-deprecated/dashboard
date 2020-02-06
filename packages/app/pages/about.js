@@ -1,14 +1,16 @@
 //
-// Copyright 2020 Wireline, Inc.
+// Copyright 2020 DxOS
 //
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 
 import withLayout from '../src/components/Layout';
 
 const Page = () => (
-  <Typography>About XBox</Typography>
+  <Fragment>
+    <Typography>About XBox</Typography>
+  </Fragment>
 );
 
 export default withLayout(Page);

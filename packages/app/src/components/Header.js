@@ -1,9 +1,9 @@
 //
-// Copyright 2020 Wireline, Inc.
+// Copyright 2020 DxOS
 //
 
 import React, { Fragment } from 'react';
-import { withStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,37 +14,41 @@ import Link from 'next/link';
 
 import config from '../config';
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     display: 'flex',
     flex: 1
   },
 
   offset: theme.mixins.toolbar,
-});
+}));
 
-const Header = ({ classes }) => (
-  <Fragment>
-    <AppBar position="fixed">
-      <Toolbar>
-        <Link href="/">
-          <IconButton edge="start" color="inherit" aria-label="home">
-            <MenuIcon />
-          </IconButton>
-        </Link>
-        <div className={classes.title}>
-          <Typography variant="h6">{config.title}</Typography>
-        </div>
-        <Link href="/about">
-          <IconButton edge="start" color="inherit" aria-label="about">
-            <HelpIcon />
-          </IconButton>
-        </Link>
-      </Toolbar>
-    </AppBar>
+const Header = () => {
+  const classes = useStyles();
 
-    <div className={classes.offset} />
-  </Fragment>
-);
+  return (
+    <Fragment>
+      <AppBar position="fixed">
+        <Toolbar>
+          <Link href="/">
+            <IconButton edge="start" color="inherit" aria-label="home">
+              <MenuIcon />
+            </IconButton>
+          </Link>
+          <div className={classes.title}>
+            <Typography variant="h6">{config.title}</Typography>
+          </div>
+          <Link href="/about">
+            <IconButton edge="start" color="inherit" aria-label="about">
+              <HelpIcon />
+            </IconButton>
+          </Link>
+        </Toolbar>
+      </AppBar>
 
-export default withStyles(styles)(Header);
+      <div className={classes.offset} />
+    </Fragment>
+  );
+};
+
+export default Header;
