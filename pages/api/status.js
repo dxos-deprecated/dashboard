@@ -36,7 +36,7 @@ export default async (req, res) => {
 
   const status = {
     version: config.version,
-    cpu: pick(cpu, 'brand', 'cores', 'cache'),
+    cpu: pick(cpu, 'brand', 'cores'),
     mem: {
       total: size(mem.total, 'M'),
       free: size(mem.free, 'M'),

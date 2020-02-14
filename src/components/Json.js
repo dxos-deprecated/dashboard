@@ -3,7 +3,8 @@
 //
 
 import React from 'react';
-import JSONTree from 'react-json-tree';
+
+import JSONTree from '@dxos/react-json-tree';
 
 const Json = ({ json }) => {
   return (

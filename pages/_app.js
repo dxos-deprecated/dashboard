@@ -8,10 +8,13 @@ import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import AppContext from '../src/components/AppContext';
+
 import config from '../src/config';
 import theme from '../src/theme';
 
 export default class DashboardApp extends App {
+
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -31,7 +34,9 @@ export default class DashboardApp extends App {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Component {...pageProps} />
+          <AppContext.Provider value={{ config }}>
+            <Component {...pageProps} />
+          </AppContext.Provider>
         </ThemeProvider>
       </React.Fragment>
     );

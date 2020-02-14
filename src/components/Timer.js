@@ -7,14 +7,16 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: theme.spacing(2)
+  }
 }));
 
 /**
  * Refreshing time display.
  */
-const Timer = ({ start  = Date.now() }) => {
+const Timer = ({ prefix = 'Updated ', start = Date.now() }) => {
   const classes = useStyles();
   const [time, setTime] = useState(start);
 
@@ -30,7 +32,7 @@ const Timer = ({ start  = Date.now() }) => {
   }, []);
 
   return (
-    <Typography className={classes.root}>{moment(time).fromNow()}</Typography>
+    <Typography variant="caption" className={classes.root}>{prefix + moment(time).fromNow()}</Typography>
   );
 };
 
