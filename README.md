@@ -1,6 +1,6 @@
-# XBox Dashboard
+# Dashboard
 
-Simple XBox dashboard server.
+Dashboard server for XBox and other compute environments.
 
 ## References
 
