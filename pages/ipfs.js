@@ -40,6 +40,7 @@ const Page = () => {
       const status = await ipfs.id();
       status.addresses = status.addresses.map(address => String(address));
       setStatus({ result: { version, status }, ts: Date.now() });
+      setError(null);
     } catch (error) {
       console.error(error);
       setError(String(error));
@@ -52,16 +53,13 @@ const Page = () => {
   };
 
   const handleStart = async () => {
-    setError(null);
     const { error } = await request('/api/ipfs?command=start');
     if (error) {
       setError(error);
-    }
-
-    await handleRefresh();
-    setTimeout(() => {
+    } else {
       setError(null);
-    }, 3000);
+      await handleRefresh();
+    }
   };
 
   const handleStop = async () => {
