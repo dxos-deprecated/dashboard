@@ -26,23 +26,23 @@ const size = (n, unit) => {
 };
 
 export default async (req, res) => {
-  console.log(JSON.stringify(config));
+  log(JSON.stringify(config));
 
   // https://www.npmjs.com/package/systeminformation
   const cpu = await si.cpu();
   const mem = await si.mem();
-
-  log(JSON.stringify({ cpu, mem }, undefined, 2));
+  const sys = await si.system();
 
   const status = {
-    version: config.version,
-    cpu: pick(cpu, 'brand', 'cores'),
+    cpu: pick(cpu, 'manufacturer', 'brand', 'cores'),
     mem: {
       total: size(mem.total, 'M'),
       free: size(mem.free, 'M'),
       used: size(mem.used, 'M'),
       swaptotal: size(mem.swaptotal, 'M')
-    }
+    },
+    sys,
+    version: config.version
   };
 
   res.statusCode = 200;
