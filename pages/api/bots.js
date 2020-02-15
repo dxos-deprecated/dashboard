@@ -6,7 +6,7 @@ import debug from 'debug';
 
 import { exec } from './exec';
 
-const log = debug('dxos:xbox:bots');
+const log = debug('dxos:dashboard:bots');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -33,8 +33,6 @@ export default async (req, res) => {
     error = err;
     statusCode = 500;
   }
-
-  console.log('::::::::::', statusCode, result, error);
 
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'application/json');

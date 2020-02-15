@@ -8,7 +8,7 @@ import si from 'systeminformation';
 
 import config from '../../src/config';
 
-const log = debug('dxos:xbox');
+const log = debug('dxos:dashboard');
 
 const num = new Intl.NumberFormat('en', { maximumSignificantDigits: 3 });
 

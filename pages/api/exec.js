@@ -5,7 +5,7 @@
 import debug from 'debug';
 import { spawn } from 'child_process';
 
-const log = debug('dxos:xbox:exec');
+const log = debug('dxos:dashboard:exec');
 
 /**
  * Exec terminal command.
