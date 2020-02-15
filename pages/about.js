@@ -7,7 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Layout from '../src/components/Layout';
 
-import logo from '../assets/logo.png';
+// TODO(burdon): Convert to SVG.
+import logo from '../static/logo.png';
 
 const useStyles = makeStyles(() => ({
   root: {
