@@ -3,6 +3,7 @@
 //
 
 import { createMuiTheme } from '@material-ui/core/styles';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 
 const theme = createMuiTheme({
   props: {
@@ -11,11 +12,16 @@ const theme = createMuiTheme({
     },
   },
 
+  palette: {
+    primary: blueGrey,
+  },
+
   overrides: {
     MuiCssBaseline: {
       '@global': {
         body: {
-          margin: 0
+          margin: 0,
+          overflow: 'hidden'
         }
       }
     }
@@ -23,3 +29,5 @@ const theme = createMuiTheme({
 });
 
 export default theme;
+
+// 475080

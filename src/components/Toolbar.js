@@ -9,6 +9,8 @@ import grey from '@material-ui/core/colors/grey';
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
     backgroundColor: grey[200],
 
     '& > button': {
@@ -21,7 +23,7 @@ const Toolbar = ({ children }) => {
   const classes = useStyles();
 
   return (
-    <MuiToolbar variant="dense" disableGutters className={classes.toolbar}>
+    <MuiToolbar variant="dense" className={classes.toolbar}>
       {children}
     </MuiToolbar>
   );

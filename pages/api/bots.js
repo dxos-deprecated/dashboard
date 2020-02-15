@@ -6,7 +6,7 @@ import debug from 'debug';
 
 import { exec } from './exec';
 
-const log = debug('dxos:xbox:ipfs');
+const log = debug('dxos:xbox:bots');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -20,18 +20,7 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'version': {
-        const text = await exec('ipfs', { args: ['version'] });
-        [, result] = text.match(/ipfs version ([0-9\\.]+)/i);
-        break;
-      }
-
-      case 'start': {
-        result = await exec('ipfs', { args: ['daemon'], wait: /Daemon is ready/ });
-        break;
-      }
-
-      case 'shutdown': {
-        result = await exec('ipfs', { args: ['shutdown'] });
+        result = await exec('wire', { args: ['--version'] });
         break;
       }
 
@@ -41,15 +30,11 @@ export default async (req, res) => {
     }
   } catch (err) {
     log('Error', err);
-
-    if (err.match(/ipfs daemon is running/)) {
-      error = 'IPFS deamon already running';
-    } else {
-      error = err;
-    }
-
+    error = err;
     statusCode = 500;
   }
+
+  console.log('::::::::::', statusCode, result, error);
 
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'application/json');

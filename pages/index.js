@@ -7,12 +7,12 @@ import superagent from 'superagent';
 import React, { Fragment, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 
-import withLayout from '../src/components/Layout';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
 import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
+import { withLayout } from '../src/components/Layout';
 
 const Page = () => {
   const [status, setStatus] = useState({});
@@ -36,7 +36,9 @@ const Page = () => {
   return (
     <Fragment>
       <Toolbar>
-        <Button color="primary" onClick={handleRefresh}>Refresh</Button>
+        <div>
+          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
+        </div>
       </Toolbar>
 
       <Content>

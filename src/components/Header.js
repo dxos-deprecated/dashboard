@@ -8,7 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import HelpIcon from '@material-ui/icons/Help';
+import AboutIcon from '@material-ui/icons/PowerSettingsNew';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1
   },
 
-  offset: theme.mixins.toolbar,
+  offset: theme.mixins.toolbar
 }));
 
 const Header = () => {
@@ -40,7 +40,7 @@ const Header = () => {
           </div>
           <Link href="/about">
             <IconButton edge="start" color="inherit" aria-label="about">
-              <HelpIcon />
+              <AboutIcon />
             </IconButton>
           </Link>
         </Toolbar>

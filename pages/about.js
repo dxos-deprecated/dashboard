@@ -5,7 +5,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Layout } from '../src/components/Layout';
+import Layout from '../src/components/Layout';
 
 import logo from '../assets/logo.png';
 

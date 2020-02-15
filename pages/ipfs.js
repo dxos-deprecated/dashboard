@@ -2,19 +2,21 @@
 // Copyright 2020 DxOS
 //
 
-import superagent from 'superagent';
 import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment, useEffect, useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
-import withLayout from '../src/components/Layout';
+import { request } from '../src/http';
 import AppContext from '../src/components/AppContext';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
 import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
+import { withLayout } from '../src/components/Layout';
 
 // NOTE: Must set-up CORS first.
 // https://github.com/ipfs/js-ipfs-http-client#in-a-web-browser
@@ -23,32 +25,27 @@ import Toolbar from '../src/components/Toolbar';
 // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
 // ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
 
+// TODO(burdon): List files referenced from the registry.
+
 const Page = () => {
   const { config } = useContext(AppContext);
   const [status, setStatus] = useState({});
   const [error, setError] = useState();
 
-  const fetch = url => superagent.get(url)
-    .catch(({ response: { body, statusText } }) => {
-      const { error } = body;
-      console.error(error || statusText);
-      setError(error || statusText);
-    });
-
   const handleRefresh = async () => {
     try {
+      // https://github.com/ipfs/js-ipfs-http-client#api
       const ipfs = IpfsHttpClient(config.ipfs.server);
       const version = await ipfs.version();
       const status = await ipfs.id();
       status.addresses = status.addresses.map(address => String(address));
-      setStatus({ result: { version, status, }, ts: Date.now() });
+      setStatus({ result: { version, status }, ts: Date.now() });
     } catch (error) {
       console.error(error);
       setError(String(error));
     }
 
-    // TODO(burdon): Link to Web UI.
-    // http://127.0.0.1:5001/webui
+    // TODO(burdon): Test load/save file.
     // const data = await IpfsHttpClient.urlSource('https://ipfs.io/images/ipfs-logo.svg');
     // const hash = await ipfs.add(data);
     // console.log(hash, data);
@@ -56,7 +53,11 @@ const Page = () => {
 
   const handleStart = async () => {
     setError(null);
-    await fetch('/api/ipfs?command=start');
+    const { error } = await request('/api/ipfs?command=start');
+    if (error) {
+      setError(error);
+    }
+
     await handleRefresh();
     setTimeout(() => {
       setError(null);
@@ -65,7 +66,14 @@ const Page = () => {
 
   const handleStop = async () => {
     setError(null);
-    await fetch('/api/ipfs?command=shutdown');
+    const { error } = await request('/api/ipfs?command=shutdown');
+    if (error) {
+      setError(error);
+    }
+  };
+
+  const handleOpen = () => {
+    window.open(config.ipfs.console, '_blank');
   };
 
   useEffect(() => { handleRefresh(); }, []);
@@ -74,9 +82,16 @@ const Page = () => {
   return (
     <Fragment>
       <Toolbar>
-        <Button color="primary" onClick={handleRefresh}>Refresh</Button>
-        <Button onClick={handleStart}>Start</Button>
-        <Button onClick={handleStop}>Stop</Button>
+        <div>
+          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
+          <Button onClick={handleStart}>Start</Button>
+          <Button onClick={handleStop}>Stop</Button>
+        </div>
+        <div>
+          <IconButton edge="start" color="inherit" aria-label="home" onClick={handleOpen}>
+            <OpenIcon />
+          </IconButton>
+        </div>
       </Toolbar>
 
       <Content>

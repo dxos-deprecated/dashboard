@@ -32,7 +32,8 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     flexShrink: 0,
-    width: 250
+    width: 240,
+    borderRight: '1px solid lightgray'
   },
 
   content: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export const Layout = ({ children, sidebar = true }) => {
+const Layout = ({ children, sidebar = true }) => {
   const classes = useStyles();
 
   return (
@@ -67,7 +68,7 @@ export const Layout = ({ children, sidebar = true }) => {
   );
 };
 
-const withLayout = Page => () => {
+export const withLayout = Page => () => {
   return (
     <Layout>
       <Page />
@@ -75,4 +76,4 @@ const withLayout = Page => () => {
   );
 };
 
-export default withLayout;
+export default Layout;

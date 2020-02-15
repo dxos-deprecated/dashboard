@@ -42,7 +42,7 @@ export const exec = (command, options = {}) => {
       resolve(output);
     } else {
       proc.stdout.on('data', (data) => {
-        output = String(data);
+        output = String(data).trim();
         if (wait && output.match(wait)) {
           proc.unref();
           resolve(output);
