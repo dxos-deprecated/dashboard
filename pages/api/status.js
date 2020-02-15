@@ -34,14 +34,14 @@ export default async (req, res) => {
   const sys = await si.system();
 
   const status = {
-    cpu: pick(cpu, 'manufacturer', 'brand', 'cores'),
+    cpu: pick(cpu, 'brand', 'cores', 'manufacturer', 'vendor'),
     mem: {
       total: size(mem.total, 'M'),
       free: size(mem.free, 'M'),
       used: size(mem.used, 'M'),
       swaptotal: size(mem.swaptotal, 'M')
     },
-    sys,
+    sys: pick(sys, 'model', 'serial', 'version'),
     version: config.version
   };
 
