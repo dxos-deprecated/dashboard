@@ -24,8 +24,8 @@ const useStyles = makeStyles(() => ({
   },
 
   logo: {
-    width: 600,
-    opacity: 0.2
+    width: 800,
+    opacity: 0.05
   }
 }));
 

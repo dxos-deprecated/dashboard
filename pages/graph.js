@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+// TODO(burdon): Factor out.
 function genRandomTree(N = 300, reverse = false) {
   return {
     nodes: [...Array(N).keys()].map(i => ({ id: i })),

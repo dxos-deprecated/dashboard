@@ -4,7 +4,7 @@
 
 import moment from 'moment';
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import MuiTableCell from '@material-ui/core/TableCell';
@@ -70,6 +70,8 @@ const Page = () => {
 
   const handleStart = () => {};
   const handleStop = () => {};
+
+  useEffect(() => { handleRefresh(); }, []);
 
   return (
     <Fragment>

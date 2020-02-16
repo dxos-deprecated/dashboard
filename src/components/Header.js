@@ -8,7 +8,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import AboutIcon from '@material-ui/icons/PowerSettingsNew';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import Link from 'next/link';
 
@@ -44,11 +43,6 @@ const Header = () => {
           <div className={classes.title}>
             <Typography variant="h6">{config.title}</Typography>
           </div>
-          <Link href="/about">
-            <IconButton edge="start" color="inherit" aria-label="about">
-              <AboutIcon />
-            </IconButton>
-          </Link>
         </Toolbar>
       </AppBar>
 
