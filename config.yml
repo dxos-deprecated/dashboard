@@ -11,4 +11,5 @@ ipfs:
   server: '/ip4/127.0.0.1/tcp/5001'
 
 wns:
-  console: 'http://localhost:9473/graphql'
+  endpoint: http://localhost:9473/graphql
+  console: 'http://localhost:9473/console'
