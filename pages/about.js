@@ -4,14 +4,14 @@
 
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 
 import Layout from '../src/components/Layout';
-
-// TODO(burdon): Convert to SVG.
-import logo from '../static/logo.png';
+import DXOSIcon from '../src/icons/DXOS';
+import Logo from '../src/icons/Logo';
 
 const useStyles = makeStyles(() => ({
-  root: {
+  outer: {
     display: 'flex',
     flex: 1,
     justifyContent: 'center'
@@ -24,8 +24,16 @@ const useStyles = makeStyles(() => ({
   },
 
   logo: {
-    width: 800,
-    opacity: 0.05
+    width: 256,
+    height: 256,
+    opacity: 0.7,
+    marginRight: 64
+  },
+
+  logoMark: {
+    width: 512,
+    height: 256,
+    color: blueGrey[200]
   }
 }));
 
@@ -34,10 +42,11 @@ const Page = () => {
 
   return (
     <Layout sidebar={false}>
-      <div className={classes.root}>
+      <div className={classes.outer}>
         <div className={classes.inner}>
           <div>
-            <img alt="DxOS" src={logo} className={classes.logo} />
+            <Logo className={classes.logo} />
+            <DXOSIcon className={classes.logoMark} />
           </div>
         </div>
       </div>

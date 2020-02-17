@@ -14,7 +14,7 @@ import PublicIcon from '@material-ui/icons/Public';
 
 import Link from 'next/link';
 
-import LogoIcon from './Logo';
+import LogoIcon from '../icons/Logo';
 
 import config from '../config';
 
