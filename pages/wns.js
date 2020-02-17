@@ -16,8 +16,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
-import { createId } from '@wirelineio/crypto';
-
 import { request } from '../src/http';
 import AppContext from '../src/components/AppContext';
 import Toolbar from '../src/components/Toolbar';
@@ -72,11 +70,15 @@ const Page = () => {
       }
     }
 
-    setRecords([
-      // TODO(burdon): Test data.
-      { id: createId(), type: 'ChessBot', created: moment().subtract(1, 'hour').utc() },
-      { id: createId(), type: 'FileBot', created: moment().utc() }
-    ]);
+    const recordsResponse = await superagent.post(config.wns.endpoint, { query: `{ queryRecords(attributes:[]) {
+      id
+      type
+      name
+      version
+    }}` });
+    const { body: { data: { queryRecords: records } } } = recordsResponse;
+
+    setRecords(records);
   };
 
   const handleOpen = () => {
@@ -124,22 +126,24 @@ const Page = () => {
       </Toolbar>
 
       <Content>
-        <Json json={result} />
-
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
               <TableRow>
                 <TableCell className={classes.colShort}>ID</TableCell>
                 <TableCell className={classes.colShort}>Type</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell className={classes.colShort}>Version</TableCell>
                 <TableCell>Created</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.map(({ id, type, created }) => (
+              {records.map(({ id, type, name, version, created }) => (
                 <TableRow key={id} size="small">
                   <TableCell>{id}</TableCell>
                   <TableCell>{type}</TableCell>
+                  <TableCell>{name}</TableCell>
+                  <TableCell>{version}</TableCell>
                   <TableCell>{moment(created).fromNow()}</TableCell>
                 </TableRow>
               ))}
@@ -147,6 +151,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
+        <Json json={result} />
         {ts && <Timer start={ts} />}
 
         <Error message={error} onClose={() => setError(null)} />
