@@ -27,7 +27,7 @@
     "lint:staged"
   ],
   "dependencies": {
-    "@dxos/react-json-tree": "^0.11.3",
+    "@dxos/react-json-tree": "^0.12.0",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.42",
@@ -35,6 +35,7 @@
     "clsx": "^1.1.0",
     "debug": "^4.1.1",
     "ipfs-http-client": "^42.0.0",
+    "js-yaml-loader": "^1.2.2",
     "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "next": "^9.2.1",

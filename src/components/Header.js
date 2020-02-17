@@ -5,10 +5,13 @@
 import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import MuiLink from '@material-ui/core/Link';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import blueGrey from '@material-ui/core/colors/blueGrey';
+import PublicIcon from '@material-ui/icons/Public';
+
 import Link from 'next/link';
 
 import LogoIcon from './Logo';
@@ -22,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   logo: {
+    color: blueGrey[900]
+  },
+
+  link: {
     color: blueGrey[900]
   },
 
@@ -42,6 +49,11 @@ const Header = () => {
           </Link>
           <div className={classes.title}>
             <Typography variant="h6">{config.title}</Typography>
+          </div>
+          <div>
+            <MuiLink href={config.website} className={classes.link} rel="noreferrer" target="_blank">
+              <PublicIcon />
+            </MuiLink>
           </div>
         </Toolbar>
       </AppBar>

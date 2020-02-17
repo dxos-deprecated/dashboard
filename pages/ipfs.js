@@ -6,7 +6,7 @@ import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment, useEffect, useState, useContext } from 'react';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import MuiLink from '@material-ui/core/Link';
 import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
 import { request } from '../src/http';
@@ -70,10 +70,6 @@ const Page = () => {
     }
   };
 
-  const handleOpen = () => {
-    window.open(config.ipfs.console, '_blank');
-  };
-
   useEffect(() => { handleRefresh(); }, []);
 
   const { result, ts } = status;
@@ -86,9 +82,9 @@ const Page = () => {
           <Button onClick={handleStop}>Stop</Button>
         </div>
         <div>
-          <IconButton edge="start" color="inherit" aria-label="home" onClick={handleOpen}>
+          <MuiLink href={config.ipfs.console} rel="noreferrer" target="_blank">
             <OpenIcon />
-          </IconButton>
+          </MuiLink>
         </div>
       </Toolbar>
 

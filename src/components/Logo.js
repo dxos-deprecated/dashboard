@@ -1,5 +1,5 @@
 //
-// Copyright 2020 Wireline, Inc.
+// Copyright 2020 DxOS
 //
 
 import SvgIcon from '@material-ui/core/SvgIcon';

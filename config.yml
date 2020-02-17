@@ -1,0 +1,14 @@
+#
+# Config
+#
+
+title: 'DxOS Dashboard'
+
+website: 'https://dxos.org'
+
+ipfs:
+  console: 'http://127.0.0.1:5001/webui'
+  server: '/ip4/127.0.0.1/tcp/5001'
+
+wns:
+  console: 'http://localhost:9473/graphql'
