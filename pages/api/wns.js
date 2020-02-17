@@ -6,7 +6,7 @@ import debug from 'debug';
 
 import { exec } from './exec';
 
-const log = debug('dxos:dashboard:ipfs');
+const log = debug('dxos:dashboard:wns');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -19,19 +19,13 @@ export default async (req, res) => {
   let error;
   try {
     switch (command) {
-      case 'version': {
-        const text = await exec('ipfs', { args: ['version'] });
-        [, result] = text.match(/ipfs version ([0-9\\.]+)/i);
-        break;
-      }
-
       case 'start': {
-        result = await exec('ipfs', { args: ['daemon'], wait: /Daemon is ready/ });
+        result = await exec('wnsd', { args: ['start', '--gql-server', '--gql-playground'], wait: /Executed block/ });
         break;
       }
 
       case 'shutdown': {
-        result = await exec('ipfs', { args: ['shutdown'] });
+        result = await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
         break;
       }
 
@@ -42,8 +36,8 @@ export default async (req, res) => {
   } catch (err) {
     log('Error', err);
 
-    if (err.match(/ipfs daemon is running/)) {
-      error = 'IPFS daemon already running';
+    if (err.match(/resource temporarily unavailable/)) {
+      error = 'WNS daemon already running';
     } else {
       error = err;
     }
