@@ -4,6 +4,8 @@
 
 import { createContext } from 'react';
 
-const AppContext = createContext(null);
+import config from '../config';
+
+const AppContext = createContext({ config });
 
 export default AppContext;

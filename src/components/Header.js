@@ -2,7 +2,7 @@
 // Copyright 2020 DxOS
 //
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,8 +15,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import Link from 'next/link';
 
 import LogoIcon from '../icons/Logo';
-
-import config from '../config';
+import AppContext from './AppContext';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -36,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
+  const { config } = useContext(AppContext);
   const classes = useStyles();
 
   return (

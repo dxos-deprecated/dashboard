@@ -6,25 +6,27 @@ import moment from 'moment';
 import superagent from 'superagent';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MuiTableCell from '@material-ui/core/TableCell';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import MuiLink from '@material-ui/core/Link';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
+import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
 import { request } from '../src/http';
+import { withLayout } from '../src/components/Layout';
 import AppContext from '../src/components/AppContext';
 import Toolbar from '../src/components/Toolbar';
 import Json from '../src/components/Json';
-import { withLayout } from '../src/components/Layout';
 import Content from '../src/components/Content';
 
-import Timer from '../src/components/Timer';
 import Error from '../src/components/Error';
+import Timer from '../src/components/Timer';
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -38,51 +40,68 @@ const TableCell = ({ children, ...rest }) => (
   </MuiTableCell>
 );
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   table: {
     tableLayout: 'fixed'
   },
 
   colShort: {
     width: 160
+  },
+
+  types: {
+    display: 'flex',
+    flex: 1,
+    marginLeft: theme.spacing(3)
+  },
+
+  selected: {
+    backgroundColor: grey[300]
   }
 }));
 
+const types = [
+  'ALL',
+  'bot',
+  'pad',
+  'type'
+];
+
 const Page = () => {
-  const classes = useStyles();
+  const { config } = useContext(AppContext);
+  const [type, setType] = useState(types[0]);
   const [status, setStatus] = useState({});
   const [records, setRecords] = useState([]);
   const [error, setError] = useState();
-  const { config } = useContext(AppContext);
+  const classes = useStyles();
 
   const handleRefresh = async () => {
     try {
       const response = await superagent.post(config.wns.endpoint, { query: '{ getStatus { version } }' });
       const { body: { data: { getStatus } } } = response;
-
       setStatus({ result: { ...getStatus, started: 'true' }, ts: Date.now() });
     } catch (error) {
       console.error(error);
       setStatus({ result: { started: 'false' }, ts: Date.now() });
-
       if (!String(error).match(/network is offline/)) {
         setError(String(error));
       }
     }
 
-    const recordsResponse = await superagent.post(config.wns.endpoint, { query: `{ queryRecords(attributes:[]) {
-      id
-      type
-      name
-      version
-    }}` });
-    const { body: { data: { queryRecords: records } } } = recordsResponse;
+    // TODO(burdon): Query by type.
+    // TODO(burdon): Error handling.
+    const response = await superagent.post(config.wns.endpoint, {
+      query: `{ queryRecords(attributes:[]) {
+        id
+        type
+        name
+        version
+      }}`
+    });
+
+    const { body: { data: { queryRecords: records } } } = response;
 
     setRecords(records);
-  };
-
-  const handleOpen = () => {
-    window.open(config.wns.console, '_blank');
   };
 
   const handleStart = async () => {
@@ -118,10 +137,24 @@ const Page = () => {
           <Button onClick={handleStart}>Start</Button>
           <Button onClick={handleStop}>Stop</Button>
         </div>
+        <div className={classes.types}>
+          <ButtonGroup
+            disableRipple
+            disableFocusRipple
+            variant="outlined"
+            color="primary"
+            size="small"
+            aria-label="text primary button group"
+          >
+            {types.map(t => (
+              <Button key={t} className={t === type && classes.selected} onClick={() => setType(t)}>{t}</Button>
+            ))}
+          </ButtonGroup>
+        </div>
         <div>
-          <IconButton edge="start" color="inherit" aria-label="home" onClick={handleOpen}>
+          <MuiLink href={config.wns.console} rel="noreferrer" target="_blank">
             <OpenIcon />
-          </IconButton>
+          </MuiLink>
         </div>
       </Toolbar>
 

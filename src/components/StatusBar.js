@@ -23,8 +23,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 const StatusBar = () => {
-  const classes = useStyles();
   const { config: { title, version } } = useContext(AppContext);
+  const classes = useStyles();
 
   return (
     <Toolbar variant="dense" className={classes.toolbar}>
