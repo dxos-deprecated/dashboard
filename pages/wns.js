@@ -18,6 +18,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
+import { Registry } from '@wirelineio/registry-client';
+
 import { request } from '../src/http';
 import { withLayout } from '../src/components/Layout';
 import AppContext from '../src/components/AppContext';
@@ -61,19 +63,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const types = [
-  'ALL',
-  'bot',
-  'pad',
-  'type'
+  { key: null, label: 'ALL' },
+  { key: 'wrn:bot', label: 'Bot' },
+  { key: 'wrn:pad', label: 'Pad' },
+  { key: 'wrn:type', label: 'Type' }
 ];
 
 const Page = () => {
   const { config } = useContext(AppContext);
-  const [type, setType] = useState(types[0]);
+  const [type, setType] = useState(types[0].key);
   const [status, setStatus] = useState({});
   const [records, setRecords] = useState([]);
   const [error, setError] = useState();
   const classes = useStyles();
+  const registry = new Registry(config.wns.endpoint);
 
   const handleRefresh = async () => {
     try {
@@ -88,20 +91,9 @@ const Page = () => {
       }
     }
 
-    // TODO(burdon): Query by type.
-    // TODO(burdon): Error handling.
-    const response = await superagent.post(config.wns.endpoint, {
-      query: `{ queryRecords(attributes:[]) {
-        id
-        type
-        name
-        version
-      }}`
-    });
-
-    const { body: { data: { queryRecords: records } } } = response;
-
-    setRecords(records);
+    registry.queryRecords({ type })
+      .then(records => setRecords(records))
+      .catch(error => setError(String(error)));
   };
 
   const handleStart = async () => {
@@ -126,6 +118,11 @@ const Page = () => {
   };
 
   useEffect(() => { handleRefresh(); }, []);
+  useEffect(() => {
+    registry.queryRecords({ type })
+      .then(records => setRecords(records))
+      .catch(error => setError(String(error)));
+  }, [type]);
 
   const { result, ts } = status;
 
@@ -147,7 +144,13 @@ const Page = () => {
             aria-label="text primary button group"
           >
             {types.map(t => (
-              <Button key={t} className={t === type && classes.selected} onClick={() => setType(t)}>{t}</Button>
+              <Button
+                key={t.key}
+                className={t.key === type && classes.selected}
+                onClick={() => setType(t.key)}
+              >
+                {t.label}
+              </Button>
             ))}
           </ButtonGroup>
         </div>
