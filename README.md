@@ -1,3 +1,3 @@
 # Dashboard
 
-Dashboard server for XBox and other compute environments.
+Dashboard server for xBox and other compute environments.
