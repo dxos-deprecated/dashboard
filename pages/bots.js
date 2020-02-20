@@ -14,7 +14,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { createId } from '@wirelineio/crypto';
+import { createId } from '@dxos/crypto';
 
 import { request } from '../src/http';
 import Toolbar from '../src/components/Toolbar';
