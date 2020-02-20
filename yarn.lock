@@ -966,6 +966,15 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
+"@dxos/crypto@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@dxos/crypto/-/crypto-0.0.1.tgz#96ecb7efad8b99a8bc29b7a4522e3890df827296"
+  integrity sha512-ELTJSXE2Inq7THr+Fd6NMoF6xnIPHtCtBJln83PtS+NvR/mjlSagEP/bDpGi7CLv++O/mjjB9ALHm33YjDpndA==
+  dependencies:
+    crypto-js "^3.1.9-1"
+    humanhash "^1.0.4"
+    hypercore-crypto "^1.0.0"
+
 "@dxos/react-json-tree@^0.12.0":
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@dxos/react-json-tree/-/react-json-tree-0.12.0.tgz#34d1366e562ff1b0e9877c5d9eb9e9dfe5fa84f8"
@@ -1547,15 +1556,6 @@
     "@webassemblyjs/ast" "1.8.5"
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
-
-"@wirelineio/crypto@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@wirelineio/crypto/-/crypto-0.0.1.tgz#9f059988d196036c973bb32cf8c8b5ec6548f746"
-  integrity sha512-hyYhm5bT4fJF4/BCHjOWfmxHwCCGIyi71U2cfe+s5q6e7KjPaki7/njiBst+v28+yFNjpER0VK6gqYpr3ZBb4Q==
-  dependencies:
-    crypto-js "^3.1.9-1"
-    humanhash "^1.0.4"
-    hypercore-crypto "^1.0.0"
 
 "@wirelineio/registry-client@^0.4.0":
   version "0.4.0"
