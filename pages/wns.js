@@ -30,6 +30,8 @@ import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Timer from '../src/components/Timer';
 
+const LOG_POLL_INTERVAL = 5 * 1000;
+
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
     {...rest}
@@ -75,6 +77,8 @@ const Page = () => {
   const [status, setStatus] = useState({});
   const [records, setRecords] = useState([]);
   const [error, setError] = useState();
+  const [log, setLog] = useState({});
+  const [pollLogTimer, setPollLogTimer] = useState(0);
   const classes = useStyles();
   const registry = new Registry(config.wns.endpoint);
 
@@ -123,6 +127,20 @@ const Page = () => {
       .then(records => setRecords(records))
       .catch(error => setError(String(error)));
   }, [type]);
+
+  useEffect(() => {
+    request('/api/wns?command=log')
+      .then(({ result }) => { setLog(result); })
+      .catch(({ error }) => setError(String(error)));
+  }, [pollLogTimer]);
+
+  useEffect(() => {
+    const timerId = setInterval(() => setPollLogTimer(Date.now()), LOG_POLL_INTERVAL);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
 
   const { result, ts } = status;
 
@@ -189,6 +207,10 @@ const Page = () => {
 
         <Json json={result} />
         {ts && <Timer start={ts} />}
+
+        <pre>
+          {log.result}
+        </pre>
 
         <Error message={error} onClose={() => setError(null)} />
       </Content>
