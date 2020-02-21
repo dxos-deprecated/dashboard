@@ -19,6 +19,7 @@ import { withLayout } from '../src/components/Layout';
 import Toolbar from '../src/components/Toolbar';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
+import Json from '../src/components/Json';
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -49,13 +50,23 @@ const Page = () => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await apiRequest('/api/bots?command=version');
-    setStatus(status);
+    const { result, error } = await request('/api/bots?command=status');
+    setStatus({ ...result, error, ts: Date.now() });
   };
 
-  // TODO(burdon): Not implemented.
-  const handleStart = () => {};
-  const handleStop = () => {};
+  const handleStart = async () => {
+    const { ts, error } = await request('/api/bots?command=start');
+    if (error) {
+      setStatus({ ts, error });
+    } else {
+      await handleRefresh();
+    }
+  };
+
+  const handleStop = async () => {
+    const status = await apiRequest('/api/bots?command=shutdown');
+    setStatus(status);
+  };
 
   useEffect(noPromise(handleRefresh), []);
 
@@ -74,22 +85,27 @@ const Page = () => {
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell className={classes.colShort}>ID</TableCell>
-                <TableCell className={classes.colShort}>Type</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Party</TableCell>
+                <TableCell>Spec</TableCell>
                 <TableCell>Started</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {bots.map(({ id, type, started }) => (
-                <TableRow key={id} size="small">
-                  <TableCell>{id}</TableCell>
+              {bots.map(({ type, spec, party, started }) => (
+                <TableRow key={createId()} size="small">
                   <TableCell>{type}</TableCell>
+                  <TableCell>{party}</TableCell>
+                  <TableCell>{spec}</TableCell>
                   <TableCell>{moment(started).fromNow()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Json json={result} />
+
       </Content>
 
       <Error message={error} onClose={resetError} />
