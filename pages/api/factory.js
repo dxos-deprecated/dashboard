@@ -10,7 +10,7 @@ import { existsSync } from 'fs';
 import { ensureFileSync } from 'fs-extra';
 import { homedir } from 'os';
 
-import { createKeyPair, keyToString } from '@wirelineio/crypto';
+import { createKeyPair, keyToString } from '@dxos/crypto';
 
 const FACTORY_FILE_PATH = '~/.wireline/botfactory';
 
