@@ -71,6 +71,14 @@ const types = [
   { key: 'wrn:type', label: 'Type' }
 ];
 
+const getErrorStr = (error) => {
+  if (error instanceof XMLHttpRequest) {
+    return error.statusText;
+  }
+
+  return String(error);
+};
+
 const Page = () => {
   const { config } = useContext(AppContext);
   const [type, setType] = useState(types[0].key);
@@ -91,13 +99,13 @@ const Page = () => {
       console.error(error);
       setStatus({ result: { started: 'false' }, ts: Date.now() });
       if (!String(error).match(/network is offline/)) {
-        setError(String(error));
+        setError(getErrorStr(error));
       }
     }
 
     registry.queryRecords({ type })
       .then(records => setRecords(records))
-      .catch(error => setError(String(error)));
+      .catch(error => setError(getErrorStr(error)));
   };
 
   const handleStart = async () => {

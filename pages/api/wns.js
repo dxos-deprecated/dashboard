@@ -25,7 +25,7 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'start': {
-        const args = ['start', '--gql-server', '--gql-playground', '>', WNS_LOG_FILE_PATH, '2>&1'];
+        const args = ['start', '--gql-server', '--gql-playground', '2>&1', '|', 'tee', WNS_LOG_FILE_PATH];
         result = await exec('wnsd', { args, wait: /Executed block/ });
         break;
       }
@@ -47,12 +47,7 @@ export default async (req, res) => {
   } catch (err) {
     log('Error', err);
 
-    if (err.match(/resource temporarily unavailable/)) {
-      error = 'WNS daemon already running';
-    } else {
-      error = err;
-    }
-
+    error = err;
     statusCode = 500;
   }
 
