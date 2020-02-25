@@ -66,6 +66,7 @@ const useStyles = makeStyles(theme => ({
 
 const types = [
   { key: null, label: 'ALL' },
+  { key: 'wrn:bot-factory', label: 'Bot Factory' },
   { key: 'wrn:bot', label: 'Bot' },
   { key: 'wrn:pad', label: 'Pad' },
   { key: 'wrn:type', label: 'Type' }
@@ -216,9 +217,11 @@ const Page = () => {
         <Json json={result} />
         {ts && <Timer start={ts} />}
 
-        <pre>
-          {log.result}
-        </pre>
+        <Content>
+          <pre>
+            { log.result }
+          </pre>
+        </Content>
 
         <Error message={error} onClose={() => setError(null)} />
       </Content>
