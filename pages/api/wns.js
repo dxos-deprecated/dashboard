@@ -8,6 +8,11 @@ import { exec } from './exec';
 
 const log = debug('dxos:dashboard:wns');
 
+const WNS_LOG_FILE_PATH = '/tmp/wns.log';
+
+// Number of lines to tail from the log file when polling.
+const WNS_LOG_NUM_LINES = 50;
+
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const { searchParams } = url;
@@ -20,12 +25,18 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'start': {
-        result = await exec('wnsd', { args: ['start', '--gql-server', '--gql-playground'], wait: /Executed block/ });
+        const args = ['start', '--gql-server', '--gql-playground', '2>&1', '|', 'tee', WNS_LOG_FILE_PATH];
+        result = await exec('wnsd', { args, wait: /Executed block/ });
         break;
       }
 
       case 'shutdown': {
         result = await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
+        break;
+      }
+
+      case 'log': {
+        result = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
         break;
       }
 
@@ -36,12 +47,7 @@ export default async (req, res) => {
   } catch (err) {
     log('Error', err);
 
-    if (err.match(/resource temporarily unavailable/)) {
-      error = 'WNS daemon already running';
-    } else {
-      error = err;
-    }
-
+    error = err;
     statusCode = 500;
   }
 
