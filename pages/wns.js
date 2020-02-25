@@ -200,13 +200,13 @@ const Page = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.map(({ id, type, name, version, created }) => (
+              {records.map(({ id, type, name, version, createTime }) => (
                 <TableRow key={id} size="small">
                   <TableCell>{id}</TableCell>
                   <TableCell>{type}</TableCell>
                   <TableCell>{name}</TableCell>
                   <TableCell>{version}</TableCell>
-                  <TableCell>{moment(created).fromNow()}</TableCell>
+                  <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
