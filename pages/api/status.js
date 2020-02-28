@@ -33,7 +33,7 @@ export default async (req, res) => {
   const mem = await si.mem();
   const sys = await si.system();
 
-  const status = {
+  const result = {
     cpu: pick(cpu, 'brand', 'cores', 'manufacturer', 'vendor'),
     mem: {
       total: size(mem.total, 'M'),
@@ -45,7 +45,6 @@ export default async (req, res) => {
     version: config.version
   };
 
-  res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(status));
+  res.end(JSON.stringify({ result }));
 };

@@ -30,8 +30,9 @@ export default async (req, res) => {
     }
   } catch (err) {
     log('Error', err);
-    error = err;
+
     statusCode = 500;
+    error = err;
   }
 
   res.statusCode = statusCode;

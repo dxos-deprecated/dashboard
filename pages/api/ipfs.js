@@ -42,13 +42,12 @@ export default async (req, res) => {
   } catch (err) {
     log('Error', err);
 
+    statusCode = 500;
     if (err.match(/ipfs daemon is running/)) {
       error = 'IPFS daemon already running';
     } else {
       error = err;
     }
-
-    statusCode = 500;
   }
 
   res.statusCode = statusCode;
