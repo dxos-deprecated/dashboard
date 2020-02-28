@@ -10,13 +10,12 @@ import { withLayout } from '../src/components/Layout';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
-import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
 
 const Page = () => {
   const [{ ts, result, error }, setStatus] = useState({});
 
-  const resetError = error => setStatus({ ts, result, error });
+  const resetError = () => setStatus({ ts, result, error: undefined });
 
   const handleRefresh = async () => {
     const status = await apiRequest('/api/status');
@@ -33,9 +32,8 @@ const Page = () => {
         </div>
       </Toolbar>
 
-      <Content>
+      <Content updated={ts}>
         <Json json={result} />
-        {ts && <Timer start={ts} />}
       </Content>
 
       <Error message={error} onClose={resetError} />

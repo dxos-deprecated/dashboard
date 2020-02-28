@@ -27,7 +27,6 @@ import Toolbar from '../src/components/Toolbar';
 import Json from '../src/components/Json';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
-import Timer from '../src/components/Timer';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -76,7 +75,7 @@ const types = [
 ];
 
 const joinErrors = errors => {
-  return errors.map(({ message }) => message).join('; ');
+  return errors ? errors.map(({ message }) => message).join('; ') : '';
 };
 
 const Page = () => {
@@ -177,7 +176,7 @@ const Page = () => {
         </div>
       </Toolbar>
 
-      <Content>
+      <Content updated={ts}>
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
@@ -204,14 +203,13 @@ const Page = () => {
         </TableContainer>
 
         <Json json={result} />
-        {ts && <Timer start={ts} />}
 
-        <Content>
+        <div>
           { log && log.reverse().map((line, i) => <div key={i} className={classes.log}>{line}</div>) }
-        </Content>
-
-        <Error message={error} onClose={resetError} />
+        </div>
       </Content>
+
+      <Error message={error} onClose={resetError} />
     </Fragment>
   );
 };

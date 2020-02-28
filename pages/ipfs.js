@@ -15,7 +15,6 @@ import AppContext from '../src/components/AppContext';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
-import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
 import { withLayout } from '../src/components/Layout';
 
@@ -33,7 +32,7 @@ const Page = () => {
   const { config } = useContext(AppContext);
   const [{ ts, result, error }, setStatus] = useState({});
 
-  const resetError = error => setStatus({ ts, result, error });
+  const resetError = () => setStatus({ ts, result, error: undefined });
 
   // TODO(burdon): List files referenced from the registry.
 
@@ -86,12 +85,11 @@ const Page = () => {
         </div>
       </Toolbar>
 
-      <Content>
+      <Content updated={ts}>
         <Json json={result} />
-        {ts && <Timer start={ts} />}
-
-        <Error message={error} onClose={resetError} />
       </Content>
+
+      <Error message={error} onClose={resetError} />
     </Fragment>
   );
 };

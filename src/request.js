@@ -32,6 +32,13 @@ export const httpRequest = async url => superagent.get(url)
   .then(({ body: result }) => {
     return ({ ts: Date.now(), result });
   })
-  .catch(({ response: { statusText } }) => {
-    return ({ ts: Date.now(), error: statusText });
+  .catch(response => {
+    let error;
+    if (response instanceof Error) {
+      error = String(response);
+    } else {
+      error = response.statusText;
+    }
+
+    return ({ ts: Date.now(), error });
   });

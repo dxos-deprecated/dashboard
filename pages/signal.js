@@ -19,7 +19,6 @@ import Toolbar from '../src/components/Toolbar';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
-import Timer from '../src/components/Timer';
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -49,7 +48,7 @@ const Page = () => {
   const { config } = useContext(AppContext);
   const [{ ts, result: { version, channels = [] } = {}, error }, setStatus] = useState({});
 
-  const resetError = error => setStatus({ ts, error });
+  const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
     const status = await httpRequest(config.services.signal.server);
@@ -66,7 +65,7 @@ const Page = () => {
         </div>
       </Toolbar>
 
-      <Content>
+      <Content updated={ts}>
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
@@ -89,10 +88,9 @@ const Page = () => {
         </TableContainer>
 
         <Json json={{ version }} />
-        {ts && <Timer start={ts} />}
-
-        <Error message={error} onClose={resetError} />
       </Content>
+
+      <Error message={error} onClose={resetError} />
     </Fragment>
   );
 };

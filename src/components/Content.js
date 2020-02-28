@@ -2,7 +2,10 @@
 // Copyright 2020 DxOS
 //
 
+import React from 'react';
 import { makeStyles } from '@material-ui/core';
+
+import Timer from './Timer';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,10 +22,16 @@ const useStyles = makeStyles(theme => ({
     flex: 1,
     padding: theme.spacing(1),
     overflowY: 'scroll'
-  }
+  },
+
+  timer: {
+    display: 'flex',
+    flexShrink: 0,
+    padding: theme.spacing(1),
+  },
 }));
 
-const Content = ({ children }) => {
+const Content = ({ children, updated }) => {
   const classes = useStyles();
 
   return (
@@ -30,6 +39,12 @@ const Content = ({ children }) => {
       <div className={classes.inner}>
         {children}
       </div>
+
+      {updated && (
+        <div className={classes.timer}>
+          <Timer start={updated} />
+        </div>
+      )}
     </div>
   );
 };

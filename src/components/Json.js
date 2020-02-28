@@ -15,10 +15,10 @@ const Json = ({ json }) => {
       sortObjectKeys={true}
       shouldExpandNode={() => true}
       getItemString={() => <span />}
-      valueRenderer={raw => {
+      valueRenderer={(raw, value) => {
         // Strip quotes (makes triple-click copy-and-paste easier).
-        if (typeof raw === 'string' && raw.length) {
-          raw = raw.substring(1, raw.length - 1);
+        if (typeof value === 'string' && value.length) {
+          raw = value;
         }
 
         return raw;

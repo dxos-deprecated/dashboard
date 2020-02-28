@@ -18,7 +18,6 @@ import { noPromise, apiRequest } from '../src/request';
 import { withLayout } from '../src/components/Layout';
 import Toolbar from '../src/components/Toolbar';
 import Content from '../src/components/Content';
-import Timer from '../src/components/Timer';
 import Error from '../src/components/Error';
 
 const TableCell = ({ children, ...rest }) => (
@@ -47,7 +46,7 @@ const Page = () => {
   const classes = useStyles();
   const [{ ts, result: { bots = [] } = {}, error }, setStatus] = useState({});
 
-  const resetError = error => setStatus({ ts, error });
+  const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
     const status = await apiRequest('/api/bots?command=version');
@@ -70,7 +69,7 @@ const Page = () => {
         </div>
       </Toolbar>
 
-      <Content>
+      <Content updated={ts}>
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
@@ -91,11 +90,9 @@ const Page = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {ts && <Timer start={ts} />}
-
-        <Error message={error} onClose={resetError} />
       </Content>
+
+      <Error message={error} onClose={resetError} />
     </Fragment>
   );
 };
