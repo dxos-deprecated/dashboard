@@ -5,6 +5,10 @@
 import debug from 'debug';
 
 import { exec } from './exec';
+import { TOPIC, SECRET_KEY } from './factory';
+
+// TODO(egorgripasov): Publish CLI.
+const WIRE = process.env.WIRE_CLI_EXEC || 'wire-local';
 
 const log = debug('dxos:dashboard:bots');
 
@@ -19,8 +23,19 @@ export default async (req, res) => {
   let error;
   try {
     switch (command) {
-      case 'version': {
-        result = await exec('wire', { args: ['--version'] });
+      case 'start': {
+        result = await exec(WIRE, { args: ['bot', 'factory', 'start', '--topic', TOPIC, '--secret-key', SECRET_KEY, '--single-instance'], wait: /bot-factory/ });
+        break;
+      }
+
+      case 'shutdown': {
+        result = await exec(WIRE, { args: ['bot', 'factory', 'stop'] });
+        break;
+      }
+
+      case 'status': {
+        const status = await exec(WIRE, { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
+        result = status ? JSON.parse(status) : { started: 'false' };
         break;
       }
 
