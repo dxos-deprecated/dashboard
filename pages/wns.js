@@ -20,17 +20,16 @@ import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
 import { Registry } from '@wirelineio/registry-client';
 
-import { request } from '../src/http';
+import { apiRequest } from '../src/request';
 import { withLayout } from '../src/components/Layout';
 import AppContext from '../src/components/AppContext';
 import Toolbar from '../src/components/Toolbar';
 import Json from '../src/components/Json';
 import Content from '../src/components/Content';
-
 import Error from '../src/components/Error';
 import Timer from '../src/components/Timer';
 
-const LOG_POLL_INTERVAL = 5 * 1000;
+const LOG_POLL_INTERVAL = 3 * 1000;
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -61,6 +60,10 @@ const useStyles = makeStyles(theme => ({
 
   selected: {
     backgroundColor: grey[300]
+  },
+
+  log: {
+    fontFamily: 'monospace'
   }
 }));
 
@@ -72,86 +75,72 @@ const types = [
   { key: 'wrn:type', label: 'Type' }
 ];
 
-const getErrorStr = (error) => {
-  if (error instanceof XMLHttpRequest) {
-    return error.statusText;
-  }
-
-  return String(error);
+const joinErrors = errors => {
+  return errors.map(({ message }) => message).join('; ');
 };
 
 const Page = () => {
   const { config } = useContext(AppContext);
-  const [type, setType] = useState(types[0].key);
-  const [status, setStatus] = useState({});
-  const [records, setRecords] = useState([]);
-  const [error, setError] = useState();
-  const [log, setLog] = useState({});
-  const [pollLogTimer, setPollLogTimer] = useState(0);
   const classes = useStyles();
-  const registry = new Registry(config.wns.endpoint);
+  const [{ ts, result, error } = {}, setStatus] = useState({});
+  const [type, setType] = useState(types[0].key);
+  const [records, setRecords] = useState([]);
+  const [log, setLog] = useState('');
 
-  const handleRefresh = async () => {
-    try {
-      const response = await superagent.post(config.wns.endpoint, { query: '{ getStatus { version } }' });
-      const { body: { data: { getStatus } } } = response;
-      setStatus({ result: { ...getStatus, started: 'true' }, ts: Date.now() });
-    } catch (error) {
-      console.error(error);
-      setStatus({ result: { started: 'false' }, ts: Date.now() });
-      if (!String(error).match(/network is offline/)) {
-        setError(getErrorStr(error));
-      }
-    }
+  const resetError = () => setStatus({ ts, result, error: undefined });
 
-    registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(error => setError(getErrorStr(error)));
+  const registry = new Registry(config.services.wns.endpoint);
+
+  const handleRefresh = () => {
+    superagent
+      .post(config.services.wns.endpoint, { query: '{ getStatus { version } }' })
+      .then(({ body: { data: { getStatus: result } } }) => {
+        setStatus({ ts: Date.now(), result });
+
+        registry.queryRecords({ type })
+          .then(records => setRecords(records))
+          .catch(({ errors }) => setStatus({ ts: Date.now(), result, error: joinErrors(errors) }));
+      })
+      .catch(error => {
+        setStatus({ ts: Date.now(), error: String(error) });
+      });
   };
 
   const handleStart = async () => {
-    const { error } = await request('/api/wns?command=start');
+    const { ts, error } = await apiRequest('/api/wns?command=start');
     if (error) {
-      setError(error);
+      setStatus({ ts, error });
     } else {
-      setError(null);
+      await handleRefresh();
     }
-
-    await handleRefresh();
   };
 
   const handleStop = async () => {
-    setError(null);
-    const { error } = await request('/api/wns?command=shutdown');
-    if (error) {
-      setError(error);
-    }
-
-    await handleRefresh();
+    const status = await apiRequest('/api/wns?command=shutdown');
+    setStatus(status);
   };
 
-  useEffect(() => { handleRefresh(); }, []);
   useEffect(() => {
-    registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(error => setError(String(error)));
-  }, [type]);
+    handleRefresh();
 
-  useEffect(() => {
-    request('/api/wns?command=log')
-      .then(({ result }) => { setLog(result); })
-      .catch(({ error }) => setError(String(error)));
-  }, [pollLogTimer]);
-
-  useEffect(() => {
-    const timerId = setInterval(() => setPollLogTimer(Date.now()), LOG_POLL_INTERVAL);
+    // Polling for logs.
+    const logInterval = setInterval(async () => {
+      const { result } = await apiRequest('/api/wns?command=log');
+      setLog(result);
+    }, LOG_POLL_INTERVAL);
 
     return () => {
-      clearInterval(timerId);
+      clearInterval(logInterval);
     };
   }, []);
 
-  const { result, ts } = status;
+  useEffect(() => {
+    registry.queryRecords({ type })
+      .then(records => setRecords(records))
+      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
+  }, [type]);
+
+  // TODO(burdon): Log layout.
 
   return (
     <Fragment>
@@ -182,7 +171,7 @@ const Page = () => {
           </ButtonGroup>
         </div>
         <div>
-          <MuiLink href={config.wns.console} rel="noreferrer" target="_blank">
+          <MuiLink href={config.services.wns.console} rel="noreferrer" target="_blank">
             <OpenIcon />
           </MuiLink>
         </div>
@@ -218,12 +207,10 @@ const Page = () => {
         {ts && <Timer start={ts} />}
 
         <Content>
-          <pre>
-            { log.result }
-          </pre>
+          { log && log.reverse().map((line, i) => <div key={i} className={classes.log}>{line}</div>) }
         </Content>
 
-        <Error message={error} onClose={() => setError(null)} />
+        <Error message={error} onClose={resetError} />
       </Content>
     </Fragment>
   );

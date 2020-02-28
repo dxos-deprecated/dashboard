@@ -2,37 +2,29 @@
 // Copyright 2020 DxOS
 //
 
-import superagent from 'superagent';
-
 import React, { Fragment, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 
+import { noPromise, apiRequest } from '../src/request';
+import { withLayout } from '../src/components/Layout';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
 import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
-import { withLayout } from '../src/components/Layout';
 
 const Page = () => {
-  const [status, setStatus] = useState({});
-  const [error, setError] = useState();
+  const [{ ts, result, error }, setStatus] = useState({});
 
-  const handleRefresh = () => {
-    superagent.get('/api/status')
-      .then(({ body }) => {
-        setStatus({ result: body, ts: Date.now() });
-        setError(null);
-      })
-      .catch(({ response: { statusText } }) => {
-        console.error(statusText);
-        setError(statusText);
-      });
+  const resetError = error => setStatus({ ts, result, error });
+
+  const handleRefresh = async () => {
+    const status = await apiRequest('/api/status');
+    await setStatus(status);
   };
 
-  useEffect(handleRefresh, []);
+  useEffect(noPromise(handleRefresh), []);
 
-  const { result, ts } = status;
   return (
     <Fragment>
       <Toolbar>
@@ -46,7 +38,7 @@ const Page = () => {
         {ts && <Timer start={ts} />}
       </Content>
 
-      <Error message={error} onClose={handleRefresh} />
+      <Error message={error} onClose={resetError} />
     </Fragment>
   );
 };

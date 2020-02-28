@@ -9,7 +9,8 @@ import Button from '@material-ui/core/Button';
 import MuiLink from '@material-ui/core/Link';
 import OpenIcon from '@material-ui/icons/OpenInBrowser';
 
-import { request } from '../src/http';
+import { noPromise, apiRequest } from '../src/request';
+
 import AppContext from '../src/components/AppContext';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
@@ -18,32 +19,34 @@ import Timer from '../src/components/Timer';
 import Toolbar from '../src/components/Toolbar';
 import { withLayout } from '../src/components/Layout';
 
-// NOTE: Must set-up CORS first.
-// https://github.com/ipfs/js-ipfs-http-client#in-a-web-browser
-// https://github.com/ipfs/js-ipfs-http-client/tree/master/examples/bundle-webpack#setup
-// https://github.com/ipfs/js-ipfs-http-client/blob/master/examples/bundle-webpack/src/App.js
-// ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
-// ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
-
-// TODO(burdon): List files referenced from the registry.
-
+/**
+ * NOTE: Must set-up CORS first.
+ * https://github.com/ipfs/js-ipfs-http-client#in-a-web-browser
+ * https://github.com/ipfs/js-ipfs-http-client/tree/master/examples/bundle-webpack#setup
+ * https://github.com/ipfs/js-ipfs-http-client/blob/master/examples/bundle-webpack/src/App.js
+ * ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"*\"]"
+ * ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
+ *
+ * @constructor
+ */
 const Page = () => {
   const { config } = useContext(AppContext);
-  const [status, setStatus] = useState({});
-  const [error, setError] = useState();
+  const [{ ts, result, error }, setStatus] = useState({});
+
+  const resetError = error => setStatus({ ts, result, error });
+
+  // TODO(burdon): List files referenced from the registry.
 
   const handleRefresh = async () => {
     try {
       // https://github.com/ipfs/js-ipfs-http-client#api
-      const ipfs = IpfsHttpClient(config.ipfs.server);
+      const ipfs = IpfsHttpClient(config.services.ipfs.server);
       const version = await ipfs.version();
       const status = await ipfs.id();
       status.addresses = status.addresses.map(address => String(address));
-      setStatus({ result: { version, status }, ts: Date.now() });
-      setError(null);
+      setStatus({ ts: Date.now(), result: { version, status } });
     } catch (error) {
-      console.error(error);
-      setError(String(error));
+      setStatus({ ts: Date.now(), error: String(error) });
     }
 
     // TODO(burdon): Test load/save file.
@@ -53,26 +56,21 @@ const Page = () => {
   };
 
   const handleStart = async () => {
-    const { error } = await request('/api/ipfs?command=start');
+    const { ts, error } = await apiRequest('/api/ipfs?command=start');
     if (error) {
-      setError(error);
+      setStatus({ ts, error });
     } else {
-      setError(null);
       await handleRefresh();
     }
   };
 
   const handleStop = async () => {
-    setError(null);
-    const { error } = await request('/api/ipfs?command=shutdown');
-    if (error) {
-      setError(error);
-    }
+    const status = await apiRequest('/api/ipfs?command=shutdown');
+    setStatus(status);
   };
 
-  useEffect(() => { handleRefresh(); }, []);
+  useEffect(noPromise(handleRefresh), []);
 
-  const { result, ts } = status;
   return (
     <Fragment>
       <Toolbar>
@@ -82,7 +80,7 @@ const Page = () => {
           <Button onClick={handleStop}>Stop</Button>
         </div>
         <div>
-          <MuiLink href={config.ipfs.console} rel="noreferrer" target="_blank">
+          <MuiLink href={config.services.ipfs.console} rel="noreferrer" target="_blank">
             <OpenIcon />
           </MuiLink>
         </div>
@@ -92,7 +90,7 @@ const Page = () => {
         <Json json={result} />
         {ts && <Timer start={ts} />}
 
-        <Error message={error} onClose={() => setError(null)} />
+        <Error message={error} onClose={resetError} />
       </Content>
     </Fragment>
   );

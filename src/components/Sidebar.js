@@ -8,13 +8,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import BotsIcon from '@material-ui/icons/Android';
-import StatsIcon from '@material-ui/icons/Equalizer';
-import RegistryIcon from '@material-ui/icons/Storage';
-import IPFSIcon from '@material-ui/icons/GraphicEq';
-import ConfigIcon from '@material-ui/icons/Settings';
-
 import { useRouter } from 'next/router';
+
+import components from '../components';
 
 const useStyles = makeStyles(() => ({
   list: {
@@ -26,37 +22,9 @@ const Sidebar = () => {
   const classes = useStyles();
   const router = useRouter();
 
-  const items = [
-    {
-      path: '/',
-      title: 'Status',
-      icon: StatsIcon
-    },
-    {
-      path: '/wns',
-      title: 'Naming Service',
-      icon: RegistryIcon
-    },
-    {
-      path: '/bots',
-      title: 'Bots',
-      icon: BotsIcon
-    },
-    {
-      path: '/ipfs',
-      title: 'IPFS',
-      icon: IPFSIcon
-    },
-    {
-      path: '/config',
-      title: 'Config',
-      icon: ConfigIcon
-    }
-  ];
-
   return (
     <List aria-label="items" className={classes.list}>
-      {items.map(({ path, title, icon: Icon = BotsIcon }) => (
+      {components.map(({ path, title, icon: Icon }) => (
         <ListItem button selected={path === router.pathname} key={path} onClick={() => router.push(path)}>
           <ListItemIcon classes={{ root: classes.icon }}>
             <Icon />

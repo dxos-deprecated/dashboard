@@ -36,7 +36,8 @@ export default async (req, res) => {
       }
 
       case 'log': {
-        result = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
+        const log = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
+        result = log.split('\n');
         break;
       }
 
@@ -47,8 +48,8 @@ export default async (req, res) => {
   } catch (err) {
     log('Error', err);
 
-    error = err;
     statusCode = 500;
+    error = err;
   }
 
   res.statusCode = statusCode;
