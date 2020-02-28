@@ -14,6 +14,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import { createId } from '@dxos/crypto';
+
 import { noPromise, apiRequest } from '../src/request';
 import { withLayout } from '../src/components/Layout';
 import Toolbar from '../src/components/Toolbar';
@@ -45,17 +47,18 @@ const useStyles = makeStyles(() => ({
 
 const Page = () => {
   const classes = useStyles();
-  const [{ ts, result: { bots = [] } = {}, error }, setStatus] = useState({});
+  const [{ ts, result = {}, error }, setStatus] = useState({});
+  const { bots = [], ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const { result, error } = await request('/api/bots?command=status');
-    setStatus({ ...result, error, ts: Date.now() });
+    const status = await apiRequest('/api/bots?command=status');
+    setStatus({ ...status, ts: Date.now() });
   };
 
   const handleStart = async () => {
-    const { ts, error } = await request('/api/bots?command=start');
+    const { ts, error } = await apiRequest('/api/bots?command=start');
     if (error) {
       setStatus({ ts, error });
     } else {
@@ -104,7 +107,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <Json json={result} />
+        <Json json={stats} />
 
       </Content>
 
