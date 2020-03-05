@@ -16,12 +16,14 @@ import TableRow from '@material-ui/core/TableRow';
 
 import { createId } from '@dxos/crypto';
 
-import { noPromise, apiRequest } from '../src/request';
+import { apiRequest } from '../src/request';
 import { withLayout } from '../src/components/Layout';
 import Toolbar from '../src/components/Toolbar';
 import Content from '../src/components/Content';
 import Error from '../src/components/Error';
 import Json from '../src/components/Json';
+
+const LOG_POLL_INTERVAL = 3 * 1000;
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -49,6 +51,7 @@ const Page = () => {
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const { bots = [], ...stats } = result;
+  const [log, setLog] = useState([]);
 
   const resetError = () => setStatus({ ts, error: undefined });
 
@@ -71,7 +74,19 @@ const Page = () => {
     setStatus(status);
   };
 
-  useEffect(noPromise(handleRefresh), []);
+  useEffect(() => {
+    handleRefresh();
+
+    // Polling for logs.
+    const logInterval = setInterval(async () => {
+      const { result } = await apiRequest('/api/bots?command=log');
+      setLog(result);
+    }, LOG_POLL_INTERVAL);
+
+    return () => {
+      clearInterval(logInterval);
+    };
+  }, []);
 
   return (
     <Fragment>
@@ -109,6 +124,9 @@ const Page = () => {
 
         <Json json={stats} />
 
+        <div>
+          { log && log.map((line, i) => <div key={i} className={classes.log}>{line}</div>) }
+        </div>
       </Content>
 
       <Error message={error} onClose={resetError} />
