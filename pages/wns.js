@@ -3,7 +3,6 @@
 //
 
 import moment from 'moment';
-import superagent from 'superagent';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
@@ -91,9 +90,8 @@ const Page = () => {
   const registry = new Registry(config.services.wns.endpoint);
 
   const handleRefresh = () => {
-    superagent
-      .post(config.services.wns.endpoint, { query: '{ getStatus { version } }' })
-      .then(({ body: { data: { getStatus: result } } }) => {
+    registry.getStatus()
+      .then(result => {
         setStatus({ ts: Date.now(), result });
 
         registry.queryRecords({ type })
@@ -101,7 +99,7 @@ const Page = () => {
           .catch(({ errors }) => setStatus({ ts: Date.now(), result, error: joinErrors(errors) }));
       })
       .catch(error => {
-        setStatus({ ts: Date.now(), error: String(error) });
+        setStatus({ ts: Date.now(), error: error.statusText || 'Connection error.' });
       });
   };
 
