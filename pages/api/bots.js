@@ -12,9 +12,6 @@ const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
 // Number of lines to tail from the log file when polling.
 const BOT_FACTORY_LOG_NUM_LINES = 50;
 
-// TODO(egorgripasov): Publish CLI.
-const WIRE = process.env.WIRE_CLI_EXEC || 'wire-local';
-
 const log = debug('dxos:dashboard:bots');
 
 export default async (req, res) => {
@@ -30,17 +27,17 @@ export default async (req, res) => {
     switch (command) {
       case 'start': {
         const args = ['bot', 'factory', 'start', '--topic', TOPIC, '--secret-key', SECRET_KEY, '--single-instance', '2>&1', '|', 'tee', BOT_FACTORY_LOG_FILE_PATH];
-        result = await exec(WIRE, { args, wait: /bot-factory/ });
+        result = await exec('wire', { args, wait: /bot-factory/ });
         break;
       }
 
       case 'shutdown': {
-        result = await exec(WIRE, { args: ['bot', 'factory', 'stop'] });
+        result = await exec('wire', { args: ['bot', 'factory', 'stop'] });
         break;
       }
 
       case 'status': {
-        const status = await exec(WIRE, { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
+        const status = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
         result = status ? JSON.parse(status) : { started: 'false' };
         break;
       }
