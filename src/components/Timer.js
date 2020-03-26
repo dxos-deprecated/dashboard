@@ -9,14 +9,14 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(2)
+    padding: theme.spacing(1)
   }
 }));
 
 /**
  * Refreshing time display.
  */
-const Timer = ({ prefix = 'Updated ', start = Date.now() }) => {
+const Timer = ({ prefix = 'Updated ', start }) => {
   const classes = useStyles();
   const [time, setTime] = useState(start);
 
@@ -31,8 +31,10 @@ const Timer = ({ prefix = 'Updated ', start = Date.now() }) => {
     };
   }, []);
 
+  const text = start ? prefix + moment(time).fromNow() : String.fromCharCode(160);
+
   return (
-    <Typography variant="caption" className={classes.root}>{prefix + moment(time).fromNow()}</Typography>
+    <Typography variant="caption" className={classes.root}>{text}</Typography>
   );
 };
 

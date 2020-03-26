@@ -42,8 +42,37 @@ const TableCell = ({ children, ...rest }) => (
 );
 
 const useStyles = makeStyles(theme => ({
+
+  tableContainer: {
+    flex: 1,
+    overflowY: 'scroll'
+  },
+
   table: {
-    tableLayout: 'fixed'
+    tableLayout: 'fixed',
+  },
+
+  logContainer: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    overflow: 'hidden'
+  },
+
+  logScroller: {
+    display: 'flex',
+    flex: 1,
+    overflow: 'scroll',
+    backgroundColor: grey[100],
+  },
+
+  log: {
+    padding: theme.spacing(1),
+    fontFamily: 'monospace'
+  },
+
+  result: {
+    flexShrink: 0
   },
 
   colShort: {
@@ -59,10 +88,6 @@ const useStyles = makeStyles(theme => ({
   selected: {
     backgroundColor: grey[300]
   },
-
-  log: {
-    fontFamily: 'monospace'
-  }
 }));
 
 const types = [
@@ -83,7 +108,7 @@ const Page = () => {
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
-  const [log, setLog] = useState('');
+  const [log, setLog] = useState([]);
 
   const resetError = () => setStatus({ ts, result, error: undefined });
 
@@ -117,12 +142,17 @@ const Page = () => {
     setStatus(status);
   };
 
+  // TODO(burdon): Need to set polling timestamp to now.
+  const handleLogClear = () => {
+    setLog([]);
+  };
+
   useEffect(() => {
     handleRefresh();
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { result } = await apiRequest('/api/wns?command=log');
+      const { result = [] } = await apiRequest('/api/wns?command=log');
       setLog(result);
     }, LOG_POLL_INTERVAL);
 
@@ -136,8 +166,6 @@ const Page = () => {
       .then(records => setRecords(records))
       .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
   }, [type]);
-
-  // TODO(burdon): Log layout.
 
   return (
     <Fragment>
@@ -175,35 +203,48 @@ const Page = () => {
       </Toolbar>
 
       <Content updated={ts}>
-        <TableContainer>
-          <Table stickyHeader size="small" className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.colShort}>ID</TableCell>
-                <TableCell className={classes.colShort}>Type</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell className={classes.colShort}>Version</TableCell>
-                <TableCell>Created</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {records.map(({ id, type, name, version, createTime }) => (
-                <TableRow key={id} size="small">
-                  <TableCell>{id}</TableCell>
-                  <TableCell>{type}</TableCell>
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{version}</TableCell>
-                  <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
+        <div className={classes.tableContainer}>
+          <TableContainer>
+            <Table stickyHeader size="small" className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.colShort}>ID</TableCell>
+                  <TableCell className={classes.colShort}>Type</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell className={classes.colShort}>Version</TableCell>
+                  <TableCell>Created</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {records.map(({ id, type, name, version, createTime }) => (
+                  <TableRow key={id} size="small">
+                    <TableCell>{id}</TableCell>
+                    <TableCell>{type}</TableCell>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>{version}</TableCell>
+                    <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
 
-        <Json json={result} />
+        <div className={classes.result}>
+          <Json json={result} />
+        </div>
 
-        <div>
-          { log && log.reverse().map((line, i) => <div key={i} className={classes.log}>{line}</div>) }
+        <div className={classes.logContainer}>
+          <Toolbar variant="dense">
+            <div>
+              <Button size="small" onClick={handleLogClear}>Clear Log</Button>
+            </div>
+          </Toolbar>
+          <div className={classes.logScroller}>
+            <div className={classes.log}>
+              { log.reverse().map((line, i) => <div key={i}>{line}</div>) }
+            </div>
+          </div>
         </div>
       </Content>
 
