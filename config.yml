@@ -13,8 +13,8 @@ services:
     server: '/ip4/127.0.0.1/tcp/5001'
 
   signal:
-    server: 'http://localhost:4000'
+    server: 'http://127.0.0.1:4000'
 
   wns:
-    endpoint: 'http://localhost:9473/graphql'
-    console: 'http://localhost:9473/console'
+    endpoint: 'http://127.0.0.1:9473/graphql'
+    console: 'http://127.0.0.1:9473/console'
