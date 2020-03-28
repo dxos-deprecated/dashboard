@@ -26,7 +26,13 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'start': {
-        const args = ['bot', 'factory', 'start', '--topic', TOPIC, '--secret-key', SECRET_KEY, '--single-instance', '2>&1', '|', 'tee', BOT_FACTORY_LOG_FILE_PATH];
+        const args = [
+          'bot', 'factory', 'start',
+          '--topic', TOPIC,
+          '--secret-key', SECRET_KEY,
+          '--single-instance',
+          '2>&1', '|', 'tee', BOT_FACTORY_LOG_FILE_PATH
+        ];
         result = await exec('wire', { args, wait: /bot-factory/ });
         break;
       }

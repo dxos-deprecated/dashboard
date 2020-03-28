@@ -87,6 +87,7 @@ export default async (req, res) => {
   //
   const dxos = {
     dashboard: config.build,
+    // TODO(burdon): Expect JSON response.
     cli: await exec('wire', { args: ['--version'] })
   };
 

@@ -13,7 +13,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { noPromise, httpRequest } from '../lib/request';
+import { httpRequest } from '../lib/request';
+import { noPromise } from '../lib/util';
 import { withLayout } from '../hooks';
 
 import AppContext from '../components/AppContext';

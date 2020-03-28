@@ -6,22 +6,38 @@ import debug from 'debug';
 
 import { exec } from './exec';
 
-const log = debug('dxos:dashboard:cli');
+const log = debug('dxos:dashboard:apps');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const { searchParams } = url;
 
   const command = searchParams.get('command');
+  const name = searchParams.get('name');
 
   let statusCode = 200;
   let result = {};
   let error;
   try {
     switch (command) {
-      case 'version': {
-        // TODO(burdon): Expect JSON.
-        result = await exec('wire', { args: ['--version'] });
+      case 'start': {
+        // TODO(burdon): Requires nginx config?
+        const path = searchParams.get('path') || name.substring(name.indexOf('/'));
+        const port = searchParams.get('port') || 8000;
+
+        const args = [
+          'app', 'serve',
+          '--app', `wrn:app:${name}`,
+          '--path', path,
+          '--port', port
+        ];
+
+        result = await exec('wire', { args });
+        break;
+      }
+
+      case 'stop': {
+        // TODO(burdon): Stop process?
         break;
       }
 
