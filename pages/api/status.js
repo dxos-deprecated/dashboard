@@ -3,10 +3,13 @@
 //
 
 import debug from 'debug';
+import moment from 'moment';
 import pick from 'lodash.pick';
+import os from 'os';
 import si from 'systeminformation';
 
 import config from '../../lib/config';
+import { exec } from './exec';
 
 const log = debug('dxos:dashboard');
 
@@ -28,21 +31,62 @@ const size = (n, unit) => {
 export default async (req, res) => {
   log(JSON.stringify(config));
 
+  //
+  // System
   // https://www.npmjs.com/package/systeminformation
-  const cpu = await si.cpu();
-  const mem = await si.mem();
-  const sys = await si.system();
+  //
+  let system;
+  {
+    // https://nodejs.org/api/os.html
+    const opsys = {
+      arch: os.arch(),
+      type: os.type(),
+      version: os.version(),
+      platform: os.platform(),
+      uptime: moment().subtract(os.uptime(), 'seconds').fromNow()
+    };
+
+    const ifaces = os.networkInterfaces();
+    const addresses = Object.entries(ifaces).reduce((result, [, values]) => {
+      values.forEach(({ family, address }) => {
+        if (family === 'IPv4' && address !== '127.0.0.1') {
+          result.push(address);
+        }
+      });
+      return result;
+    }, []);
+
+    const cpu = await si.cpu();
+    const memory = await si.mem();
+    const device = await si.system();
+
+    system = {
+      cpu: pick(cpu, 'brand', 'cores', 'manufacturer', 'vendor'),
+      mem: {
+        total: size(memory.total, 'M'),
+        free: size(memory.free, 'M'),
+        used: size(memory.used, 'M'),
+        swaptotal: size(memory.swaptotal, 'M')
+      },
+      device: pick(device, 'model', 'serial', 'version'),
+      network: {
+        address: addresses.length === 1 ? addresses[0] : addresses
+      },
+      os: opsys
+    };
+  }
+
+  //
+  // Framework
+  //
+  const dxos = {
+    dashboard: config.build,
+    cli: await exec('wire', { args: ['--version'] })
+  };
 
   const result = {
-    cpu: pick(cpu, 'brand', 'cores', 'manufacturer', 'vendor'),
-    mem: {
-      total: size(mem.total, 'M'),
-      free: size(mem.free, 'M'),
-      used: size(mem.used, 'M'),
-      swaptotal: size(mem.swaptotal, 'M')
-    },
-    sys: pick(sys, 'model', 'serial', 'version'),
-    version: config.version
+    system,
+    dxos
   };
 
   res.setHeader('Content-Type', 'application/json');

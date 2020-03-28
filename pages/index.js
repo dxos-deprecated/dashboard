@@ -22,7 +22,7 @@ const Page = () => {
 
   const handleRefresh = async () => {
     const status = await apiRequest('/api/status');
-    await setStatus(status);
+    setStatus(status);
   };
 
   useEffect(noPromise(handleRefresh), []);

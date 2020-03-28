@@ -9,7 +9,6 @@ import blueGrey from '@material-ui/core/colors/blueGrey';
 import { withLayout } from '../hooks';
 
 import DxOSIcon from '../components/icons/DXOS';
-import Logo from '../components/icons/Logo';
 
 const useStyles = makeStyles(() => ({
   outer: {
@@ -24,17 +23,11 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center'
   },
 
-  logo: {
-    width: 256,
-    height: 256,
-    opacity: 0.7,
-    marginRight: 64
-  },
-
   logoMark: {
-    width: 512,
-    height: 256,
-    color: blueGrey[200]
+    width: 1024,
+    height: 512,
+    color: blueGrey[200],
+    opacity: 0.5
   }
 }));
 
@@ -45,7 +38,6 @@ const Page = () => {
     <div className={classes.outer}>
       <div className={classes.inner}>
         <div>
-          <Logo className={classes.logo} />
           <DxOSIcon className={classes.logoMark} />
         </div>
       </div>

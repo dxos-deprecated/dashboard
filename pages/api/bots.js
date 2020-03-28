@@ -5,7 +5,7 @@
 import debug from 'debug';
 
 import { exec } from './exec';
-import { TOPIC, SECRET_KEY } from './factory';
+import { TOPIC, SECRET_KEY } from '../../lib/bot_factory';
 
 const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
 
