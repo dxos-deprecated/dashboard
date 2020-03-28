@@ -41,8 +41,8 @@ export default async (req, res) => {
     const opsys = {
       arch: os.arch(),
       type: os.type(),
-      version: os.version(),
       platform: os.platform(),
+      version: os.version ? os.version() : undefined, // Node > 13
       uptime: moment().subtract(os.uptime(), 'seconds').fromNow()
     };
 
