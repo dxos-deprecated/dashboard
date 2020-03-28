@@ -60,7 +60,7 @@ export default async (req, res) => {
     const memory = await si.mem();
     const device = await si.system();
 
-    const node = {
+    const nodejs = {
       version: process.version,
       environment: process.env.NODE_ENV
     };
@@ -78,7 +78,7 @@ export default async (req, res) => {
         address: addresses.length === 1 ? addresses[0] : addresses
       },
       os: opsys,
-      node
+      nodejs
     };
   }
 
