@@ -4,6 +4,7 @@
 
 import moment from 'moment';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 import Button from '@material-ui/core/Button';
@@ -94,7 +95,7 @@ const types = [
   { key: null, label: 'ALL' },
   { key: 'wrn:bot-factory', label: 'Bot Factory' },
   { key: 'wrn:bot', label: 'Bot' },
-  { key: 'wrn:pad', label: 'Pad' },
+  { key: 'wrn:app', label: 'App' },
   { key: 'wrn:type', label: 'Type' }
 ];
 
@@ -105,6 +106,7 @@ const joinErrors = errors => {
 const Page = () => {
   const { config } = useContext(AppContext);
   const classes = useStyles();
+  const [{ registry, endpoint }, setRegistry] = useState({});
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
@@ -112,7 +114,17 @@ const Page = () => {
 
   const resetError = () => setStatus({ ts, result, error: undefined });
 
-  const registry = new Registry(config.services.wns.endpoint);
+  useEffect(() => {
+    // eslint-disable-next-line prefer-destructuring
+    let endpoint = config.services.wns.endpoint;
+    if (typeof window !== 'undefined') {
+      const { protocol, hostname } = window.location;
+      const { port, graphql } = config.routes.wns;
+      endpoint = `${protocol}//${hostname}:${port || 80}${graphql}`;
+    }
+
+    setRegistry({ registry: new Registry(endpoint), endpoint });
+  }, []);
 
   const handleRefresh = () => {
     registry.getStatus()
@@ -148,8 +160,6 @@ const Page = () => {
   };
 
   useEffect(() => {
-    handleRefresh();
-
     // Polling for logs.
     const logInterval = setInterval(async () => {
       const { result = [] } = await apiRequest('/api/wns?command=log');
@@ -162,10 +172,12 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
-  }, [type]);
+    if (registry) {
+      registry.queryRecords({ type })
+        .then(records => setRecords(records))
+        .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
+    }
+  }, [registry, type]);
 
   return (
     <Fragment>
@@ -196,7 +208,7 @@ const Page = () => {
           </ButtonGroup>
         </div>
         <div>
-          <MuiLink href={config.services.wns.console} rel="noreferrer" target="_blank">
+          <MuiLink href={endpoint} rel="noreferrer" target="_blank">
             <OpenIcon />
           </MuiLink>
         </div>
