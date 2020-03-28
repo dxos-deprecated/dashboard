@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "DEBUG=dxos:* next",
     "build": "next build",
-    "lint": "eslint ./src --ignore-path .eslintignore",
+    "lint": "eslint lib --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next start",
-    "test": "jest --rootDir ./src --verbose --passWithNoTests"
+    "test": "jest --rootDir lib --verbose --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "fs-extra": "^8.1.0",
     "ipfs-http-client": "^42.0.0",
     "js-yaml-loader": "^1.2.2",
+    "lodash.get": "^4.4.2",
     "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "next": "^9.2.1",

@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Layout = ({ children, sidebar = true }) => {
+const Layout = ({ children, modules, sidebar = true }) => {
   const classes = useStyles();
 
   return (
@@ -54,7 +54,7 @@ const Layout = ({ children, sidebar = true }) => {
       <div className={classes.container}>
         {sidebar && (
           <div className={classes.sidebar}>
-            <Sidebar />
+            <Sidebar modules={modules} />
           </div>
         )}
 
@@ -65,14 +65,6 @@ const Layout = ({ children, sidebar = true }) => {
 
       <StatusBar />
     </div>
-  );
-};
-
-export const withLayout = Page => () => {
-  return (
-    <Layout>
-      <Page />
-    </Layout>
   );
 };
 

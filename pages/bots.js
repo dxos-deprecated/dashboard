@@ -3,25 +3,29 @@
 //
 
 import moment from 'moment';
-
 import React, { Fragment, useEffect, useState } from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MuiTableCell from '@material-ui/core/TableCell';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { createId } from '@dxos/crypto';
 
-import { apiRequest } from '../src/request';
-import { withLayout } from '../src/components/Layout';
-import Toolbar from '../src/components/Toolbar';
-import Content from '../src/components/Content';
-import Error from '../src/components/Error';
-import Json from '../src/components/Json';
+import { apiRequest } from '../lib/request';
+import { withLayout } from '../hooks';
+
+import ControlButtons from '../components/ControlButtons';
+import Toolbar from '../components/Toolbar';
+import Content from '../components/Content';
+import Error from '../components/Error';
+import Json from '../components/Json';
+import Log from '../components/Log';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -38,12 +42,26 @@ const TableCell = ({ children, ...rest }) => (
 );
 
 const useStyles = makeStyles(() => ({
+  tableContainer: {
+    flex: 1,
+    overflowY: 'scroll'
+  },
+
   table: {
-    tableLayout: 'fixed'
+    tableLayout: 'fixed',
+
+    '& th': {
+      fontVariant: 'all-small-caps',
+      fontSize: 18
+    }
   },
 
   colShort: {
     width: 160
+  },
+
+  result: {
+    flexShrink: 0
   }
 }));
 
@@ -74,6 +92,8 @@ const Page = () => {
     setStatus(status);
   };
 
+  const handleLogClear = () => setLog([]);
+
   useEffect(() => {
     handleRefresh();
 
@@ -92,14 +112,16 @@ const Page = () => {
     <Fragment>
       <Toolbar>
         <div>
-          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
-          <Button onClick={handleStart}>Start</Button>
-          <Button onClick={handleStop}>Stop</Button>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
         </div>
+
+        <ControlButtons onStart={handleStart} onStop={handleStop} />
       </Toolbar>
 
       <Content updated={ts}>
-        <TableContainer>
+        <TableContainer className={classes.tableContainer}>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
               <TableRow>
@@ -122,11 +144,11 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <Json json={stats} />
-
-        <div>
-          { log && log.map((line, i) => <div key={i} className={classes.log}>{line}</div>) }
+        <div className={classes.result}>
+          <Json json={stats} />
         </div>
+
+        <Log log={log} onClear={handleLogClear} />
       </Content>
 
       <Error message={error} onClose={resetError} />

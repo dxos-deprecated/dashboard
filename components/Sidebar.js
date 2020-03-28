@@ -10,21 +10,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { useRouter } from 'next/router';
 
-import components from '../components';
-
 const useStyles = makeStyles(() => ({
   list: {
     padding: 0
   }
 }));
 
-const Sidebar = () => {
+const Sidebar = ({ modules }) => {
   const classes = useStyles();
   const router = useRouter();
 
   return (
     <List aria-label="items" className={classes.list}>
-      {components.map(({ path, title, icon: Icon }) => (
+      {modules.map(({ path, title, icon: Icon }) => (
         <ListItem button selected={path === router.pathname} key={path} onClick={() => router.push(path)}>
           <ListItemIcon classes={{ root: classes.icon }}>
             <Icon />
