@@ -6,7 +6,7 @@ import debug from 'debug';
 import pick from 'lodash.pick';
 import si from 'systeminformation';
 
-import config from '../../src/config';
+import config from '../../lib/config';
 
 const log = debug('dxos:dashboard');
 

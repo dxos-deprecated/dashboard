@@ -3,9 +3,9 @@
 //
 
 import React, { Fragment, useContext } from 'react';
+
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
 import MuiLink from '@material-ui/core/Link';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -14,17 +14,23 @@ import PublicIcon from '@material-ui/icons/Public';
 
 import Link from 'next/link';
 
-import LogoIcon from '../icons/Logo';
+import DxOSIcon from './icons/DXOS';
 import AppContext from './AppContext';
 
 const useStyles = makeStyles((theme) => ({
+  logo: {
+    marginTop: 4,
+    marginRight: theme.spacing(2),
+
+    '& svg': {
+      width: 64,
+      height: 32
+    }
+  },
+
   title: {
     display: 'flex',
     flex: 1
-  },
-
-  logo: {
-    color: blueGrey[900]
   },
 
   link: {
@@ -43,9 +49,9 @@ const Header = () => {
       <AppBar position="fixed">
         <Toolbar>
           <Link href="/">
-            <IconButton edge="start" color="inherit" aria-label="home" className={classes.logo}>
-              <LogoIcon />
-            </IconButton>
+            <div className={classes.logo}>
+              <DxOSIcon />
+            </div>
           </Link>
           <div className={classes.title}>
             <Typography variant="h6">{config.title}</Typography>

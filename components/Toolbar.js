@@ -23,7 +23,7 @@ const Toolbar = ({ children }) => {
   const classes = useStyles();
 
   return (
-    <MuiToolbar variant="dense" className={classes.toolbar}>
+    <MuiToolbar variant="dense" disableGutters className={classes.toolbar}>
       {children}
     </MuiToolbar>
   );

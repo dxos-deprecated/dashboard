@@ -6,9 +6,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 
-import Layout from '../src/components/Layout';
-import DXOSIcon from '../src/icons/DXOS';
-import Logo from '../src/icons/Logo';
+import { withLayout } from '../hooks';
+
+import DxOSIcon from '../components/icons/DXOS';
+import Logo from '../components/icons/Logo';
 
 const useStyles = makeStyles(() => ({
   outer: {
@@ -41,17 +42,15 @@ const Page = () => {
   const classes = useStyles();
 
   return (
-    <Layout sidebar={false}>
-      <div className={classes.outer}>
-        <div className={classes.inner}>
-          <div>
-            <Logo className={classes.logo} />
-            <DXOSIcon className={classes.logoMark} />
-          </div>
+    <div className={classes.outer}>
+      <div className={classes.inner}>
+        <div>
+          <Logo className={classes.logo} />
+          <DxOSIcon className={classes.logoMark} />
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
-export default Page;
+export default withLayout(Page, { sidebar: false });

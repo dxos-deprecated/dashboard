@@ -5,18 +5,18 @@
 import IpfsHttpClient from 'ipfs-http-client';
 
 import React, { Fragment, useEffect, useState, useContext } from 'react';
-import Button from '@material-ui/core/Button';
-import MuiLink from '@material-ui/core/Link';
-import OpenIcon from '@material-ui/icons/OpenInBrowser';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { noPromise, apiRequest } from '../src/request';
+import { noPromise, apiRequest } from '../lib/request';
+import { withLayout } from '../hooks';
 
-import AppContext from '../src/components/AppContext';
-import Content from '../src/components/Content';
-import Error from '../src/components/Error';
-import Json from '../src/components/Json';
-import Toolbar from '../src/components/Toolbar';
-import { withLayout } from '../src/components/Layout';
+import AppContext from '../components/AppContext';
+import ControlButtons from '../components/ControlButtons';
+import Content from '../components/Content';
+import Error from '../components/Error';
+import Json from '../components/Json';
+import Toolbar from '../components/Toolbar';
 
 /**
  * NOTE: Must set-up CORS first.
@@ -68,21 +68,23 @@ const Page = () => {
     setStatus(status);
   };
 
+  const handleOpen = () => {
+    // TODO(burdon): Convert link.
+    window.open(config.services.ipfs.console, '_ipfs_');
+  };
+
   useEffect(noPromise(handleRefresh), []);
 
   return (
     <Fragment>
       <Toolbar>
         <div>
-          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
-          <Button onClick={handleStart}>Start</Button>
-          <Button onClick={handleStop}>Stop</Button>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
         </div>
-        <div>
-          <MuiLink href={config.services.ipfs.console} rel="noreferrer" target="_blank">
-            <OpenIcon />
-          </MuiLink>
-        </div>
+
+        <ControlButtons onStart={handleStart} onStop={handleStop} onOpen={handleOpen} />
       </Toolbar>
 
       <Content updated={ts}>

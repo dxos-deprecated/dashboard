@@ -4,21 +4,23 @@
 
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MuiTableCell from '@material-ui/core/TableCell';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { noPromise, httpRequest } from '../src/request';
-import { withLayout } from '../src/components/Layout';
-import AppContext from '../src/components/AppContext';
-import Toolbar from '../src/components/Toolbar';
-import Content from '../src/components/Content';
-import Error from '../src/components/Error';
-import Json from '../src/components/Json';
+import { noPromise, httpRequest } from '../lib/request';
+import { withLayout } from '../hooks';
+
+import AppContext from '../components/AppContext';
+import Toolbar from '../components/Toolbar';
+import Content from '../components/Content';
+import Error from '../components/Error';
+import Json from '../components/Json';
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -61,7 +63,9 @@ const Page = () => {
     <Fragment>
       <Toolbar>
         <div>
-          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
         </div>
       </Toolbar>
 

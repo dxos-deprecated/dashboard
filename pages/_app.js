@@ -8,10 +8,10 @@ import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import AppContext from '../src/components/AppContext';
+import AppContext from '../components/AppContext';
 
-import config from '../src/config';
-import theme from '../src/theme';
+import config from '../lib/config';
+import theme from '../lib/theme';
 
 export default class DashboardApp extends App {
 

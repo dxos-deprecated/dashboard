@@ -4,10 +4,11 @@
 
 import React, { Fragment, useContext } from 'react';
 
-import AppContext from '../src/components/AppContext';
-import Content from '../src/components/Content';
-import Json from '../src/components/Json';
-import { withLayout } from '../src/components/Layout';
+import { withLayout } from '../hooks';
+
+import AppContext from '../components/AppContext';
+import Content from '../components/Content';
+import Json from '../components/Json';
 
 const Page = () => {
   const { config } = useContext(AppContext);

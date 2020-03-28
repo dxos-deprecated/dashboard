@@ -3,14 +3,17 @@
 //
 
 import React, { Fragment, useEffect, useState } from 'react';
-import Button from '@material-ui/core/Button';
 
-import { noPromise, apiRequest } from '../src/request';
-import { withLayout } from '../src/components/Layout';
-import Content from '../src/components/Content';
-import Error from '../src/components/Error';
-import Json from '../src/components/Json';
-import Toolbar from '../src/components/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
+
+import { noPromise, apiRequest } from '../lib/request';
+import { withLayout } from '../hooks';
+
+import Content from '../components/Content';
+import Error from '../components/Error';
+import Json from '../components/Json';
+import Toolbar from '../components/Toolbar';
 
 const Page = () => {
   const [{ ts, result, error }, setStatus] = useState({});
@@ -28,7 +31,9 @@ const Page = () => {
     <Fragment>
       <Toolbar>
         <div>
-          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
         </div>
       </Toolbar>
 

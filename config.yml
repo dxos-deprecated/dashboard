@@ -2,11 +2,11 @@
 # Config
 #
 
-title: 'DxOS Dashboard'
+title: 'Dashboard'
 
 website: 'https://dxos.org'
 
-# TODO(burdon): Client routes.
+# Client routes (for NGINX proxy).
 routes:
   wns:
     port: 9473
@@ -23,3 +23,4 @@ services:
 
   wns:
     endpoint: 'http://127.0.0.1:9473/graphql'
+#    endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'

@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import get from 'lodash.get';
 import moment from 'moment';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 
@@ -9,24 +10,25 @@ import { makeStyles } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import MuiLink from '@material-ui/core/Link';
+import IconButton from '@material-ui/core/IconButton';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
-import OpenIcon from '@material-ui/icons/OpenInBrowser';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { Registry } from '@wirelineio/registry-client';
+import { apiRequest } from '../lib/request';
+import { withLayout, useRegistry } from '../hooks';
 
-import { apiRequest } from '../src/request';
-import { withLayout } from '../src/components/Layout';
-import AppContext from '../src/components/AppContext';
-import Toolbar from '../src/components/Toolbar';
-import Json from '../src/components/Json';
-import Content from '../src/components/Content';
-import Error from '../src/components/Error';
+import AppContext from '../components/AppContext';
+import ControlButtons from '../components/ControlButtons';
+import Content from '../components/Content';
+import Error from '../components/Error';
+import Json from '../components/Json';
+import Log from '../components/Log';
+import Toolbar from '../components/Toolbar';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -43,6 +45,9 @@ const TableCell = ({ children, ...rest }) => (
 );
 
 const useStyles = makeStyles(theme => ({
+  buttons: {
+    marginLeft: theme.spacing(2)
+  },
 
   tableContainer: {
     flex: 1,
@@ -51,25 +56,12 @@ const useStyles = makeStyles(theme => ({
 
   table: {
     tableLayout: 'fixed',
-  },
 
-  logContainer: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    overflow: 'hidden'
-  },
-
-  logScroller: {
-    display: 'flex',
-    flex: 1,
-    overflow: 'scroll',
-    backgroundColor: grey[100],
-  },
-
-  log: {
-    padding: theme.spacing(1),
-    fontFamily: 'monospace'
+    '& th': {
+      fontVariant: 'all-small-caps',
+      fontSize: 18,
+      cursor: 'ns-resize'
+    }
   },
 
   result: {
@@ -78,12 +70,6 @@ const useStyles = makeStyles(theme => ({
 
   colShort: {
     width: 160
-  },
-
-  types: {
-    display: 'flex',
-    flex: 1,
-    marginLeft: theme.spacing(3)
   },
 
   selected: {
@@ -106,25 +92,12 @@ const joinErrors = errors => {
 const Page = () => {
   const { config } = useContext(AppContext);
   const classes = useStyles();
-  const [{ registry, endpoint }, setRegistry] = useState({});
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
   const [log, setLog] = useState([]);
-
-  const resetError = () => setStatus({ ts, result, error: undefined });
-
-  useEffect(() => {
-    // eslint-disable-next-line prefer-destructuring
-    let endpoint = config.services.wns.endpoint;
-    if (typeof window !== 'undefined') {
-      const { protocol, hostname } = window.location;
-      const { port, graphql } = config.routes.wns;
-      endpoint = `${protocol}//${hostname}:${port || 80}${graphql}`;
-    }
-
-    setRegistry({ registry: new Registry(endpoint), endpoint });
-  }, []);
+  const [{ sort, ascend }, setSort] = useState({ sort: 'type', ascend: true });
+  const { registry, endpoint } = useRegistry(config);
 
   const handleRefresh = () => {
     registry.getStatus()
@@ -154,12 +127,24 @@ const Page = () => {
     setStatus(status);
   };
 
-  // TODO(burdon): Need to set polling timestamp to now.
-  const handleLogClear = () => {
-    setLog([]);
+  const handleOpen = () => {
+    window.open(endpoint, '_wns_');
   };
 
+  // TODO(burdon): Set polling timestamp to now.
+  const handleLogClear = () => setLog([]);
+
+  const handleResetErrors = () => setStatus({ ts, result, error: undefined });
+
   useEffect(() => {
+    registry.queryRecords({ type })
+      .then(records => setRecords(records))
+      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
+  }, [type]);
+
+  useEffect(() => {
+    handleRefresh();
+
     // Polling for logs.
     const logInterval = setInterval(async () => {
       const { result = [] } = await apiRequest('/api/wns?command=log');
@@ -171,24 +156,20 @@ const Page = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (registry) {
-      registry.queryRecords({ type })
-        .then(records => setRecords(records))
-        .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
-    }
-  }, [registry, type]);
+  const sortBy = field => () => setSort({ sort: field, ascend: (field === sort ? !ascend : true) });
+  const sorter = (item1, item2) => {
+    const a = get(item1, sort);
+    const b = get(item2, sort);
+    const dir = ascend ? 1 : -1;
+    return (a < b) ? -1 * dir : (a === b) ? 0 : dir;
+  };
 
   return (
     <Fragment>
       <Toolbar>
         <div>
-          <Button color="primary" onClick={handleRefresh}>Refresh</Button>
-          <Button onClick={handleStart}>Start</Button>
-          <Button onClick={handleStop}>Stop</Button>
-        </div>
-        <div className={classes.types}>
           <ButtonGroup
+            className={classes.buttons}
             disableRipple
             disableFocusRipple
             variant="outlined"
@@ -206,61 +187,49 @@ const Page = () => {
               </Button>
             ))}
           </ButtonGroup>
+
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
         </div>
-        <div>
-          <MuiLink href={endpoint} rel="noreferrer" target="_blank">
-            <OpenIcon />
-          </MuiLink>
-        </div>
+
+        <ControlButtons onStart={handleStart} onStop={handleStop} onOpen={handleOpen} />
       </Toolbar>
 
       <Content updated={ts}>
-        <div className={classes.tableContainer}>
-          <TableContainer>
-            <Table stickyHeader size="small" className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.colShort}>ID</TableCell>
-                  <TableCell className={classes.colShort}>Type</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell className={classes.colShort}>Version</TableCell>
-                  <TableCell>Created</TableCell>
+        <TableContainer className={classes.tableContainer}>
+          <Table stickyHeader size="small" className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell onClick={sortBy('type')} className={classes.colShort}>Type</TableCell>
+                <TableCell onClick={sortBy('name')}>Name</TableCell>
+                <TableCell onClick={sortBy('version')} className={classes.colShort}>Version</TableCell>
+                <TableCell onClick={sortBy('attributes.displayName')}>Description</TableCell>
+                <TableCell onClick={sortBy('createTime')} className={classes.colShort}>Created</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {records.sort(sorter).map(({ id, type, name, version, createTime, attributes: { displayName } }) => (
+                <TableRow key={id} size="small">
+                  <TableCell>{type}</TableCell>
+                  <TableCell>{name}</TableCell>
+                  <TableCell>{version}</TableCell>
+                  <TableCell>{displayName}</TableCell>
+                  <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {records.map(({ id, type, name, version, createTime }) => (
-                  <TableRow key={id} size="small">
-                    <TableCell>{id}</TableCell>
-                    <TableCell>{type}</TableCell>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{version}</TableCell>
-                    <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <div className={classes.result}>
           <Json json={result} />
         </div>
 
-        <div className={classes.logContainer}>
-          <Toolbar variant="dense">
-            <div>
-              <Button size="small" onClick={handleLogClear}>Clear Log</Button>
-            </div>
-          </Toolbar>
-          <div className={classes.logScroller}>
-            <div className={classes.log}>
-              { log.reverse().map((line, i) => <div key={i}>{line}</div>) }
-            </div>
-          </div>
-        </div>
+        <Log log={log} onClear={handleLogClear} />
       </Content>
 
-      <Error message={error} onClose={resetError} />
+      <Error message={error} onClose={handleResetErrors} />
     </Fragment>
   );
 };

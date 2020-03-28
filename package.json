@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "XBox dashboard",
   "scripts": {
+    "build": "next build",
     "dev": "DEBUG=dxos:* next",
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
@@ -37,6 +38,7 @@
     "fs-extra": "^8.1.0",
     "ipfs-http-client": "^42.0.0",
     "js-yaml-loader": "^1.2.2",
+    "lodash.get": "^4.4.2",
     "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "next": "^9.2.1",
