@@ -32,7 +32,7 @@ export default async (req, res) => {
           '--port', port
         ];
 
-        result = await exec('wire', { args });
+        result = await exec('wire', { args, detached: true });
         break;
       }
 
