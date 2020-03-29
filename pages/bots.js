@@ -7,7 +7,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import MuiTableCell from '@material-ui/core/TableCell';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -19,25 +18,14 @@ import { apiRequest } from '../lib/request';
 import { withLayout } from '../hooks';
 
 import ControlButtons from '../components/ControlButtons';
-import Toolbar from '../components/Toolbar';
 import Content from '../components/Content';
 import Error from '../components/Error';
 import Json from '../components/Json';
 import Log from '../components/Log';
+import TableCell from '../components/TableCell';
+import Toolbar from '../components/Toolbar';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
-
-const TableCell = ({ children, ...rest }) => (
-  <MuiTableCell
-    {...rest}
-    style={{
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    }}
-  >
-    {children}
-  </MuiTableCell>
-);
 
 const useStyles = makeStyles(() => ({
   tableContainer: {

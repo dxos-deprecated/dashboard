@@ -13,7 +13,6 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
-import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
@@ -21,7 +20,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { apiRequest } from '../lib/request';
 import { withLayout, useRegistry } from '../hooks';
-import { joinErrors } from '../lib/util';
 
 import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
@@ -29,21 +27,10 @@ import Content from '../components/Content';
 import Error from '../components/Error';
 import Json from '../components/Json';
 import Log from '../components/Log';
+import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
-
-const TableCell = ({ children, ...rest }) => (
-  <MuiTableCell
-    {...rest}
-    style={{
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    }}
-  >
-    {children}
-  </MuiTableCell>
-);
 
 const useStyles = makeStyles(theme => ({
   buttons: {
@@ -97,17 +84,18 @@ const Page = () => {
   const { registry, endpoint } = useRegistry(config);
 
   const handleRefresh = () => {
-    registry.getStatus()
-      .then(result => {
-        setStatus({ ts: Date.now(), result });
+    // TODO(burdon): Failing.
+    // registry.getStatus()
+    //   .then(result => {
+    //     setStatus({ ts: Date.now(), result });
+    //   })
+    //   .catch(({ errors }) => {
+    //     setStatus({ ts: Date.now(), error: errors.map(({ message }) => message) });
+    //   });
 
-        registry.queryRecords({ type })
-          .then(records => setRecords(records))
-          .catch(({ errors }) => setStatus({ ts: Date.now(), result, error: joinErrors(errors) }));
-      })
-      .catch(error => {
-        setStatus({ ts: Date.now(), error: error.statusText || 'Connection error.' });
-      });
+    registry.queryRecords({ type })
+      .then(records => setRecords(records))
+      .catch(({ errors }) => setStatus({ error: errors.map(({ message }) => message) }));
   };
 
   const handleStart = async () => {
@@ -133,16 +121,10 @@ const Page = () => {
 
   const handleResetErrors = () => setStatus({ ts, result, error: undefined });
 
-  useEffect(() => {
-    registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
-  }, [type]);
+  useEffect(handleRefresh, [type]);
 
+  // Polling for logs.
   useEffect(() => {
-    handleRefresh();
-
-    // Polling for logs.
     const logInterval = setInterval(async () => {
       const { result = [] } = await apiRequest('/api/wns', { command: 'log' });
       setLog(result);

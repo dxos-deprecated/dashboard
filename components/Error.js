@@ -4,8 +4,9 @@
 
 import React from 'react';
 
-import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles(() => ({
@@ -16,6 +17,11 @@ const useStyles = makeStyles(() => ({
 
 const Error = ({ message, ...rest }) => {
   const classes = useStyles();
+  if (!message) {
+    return null;
+  }
+
+  const messages = Array.isArray(message) ? message : [message];
 
   return (
     <Snackbar
@@ -24,7 +30,12 @@ const Error = ({ message, ...rest }) => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       TransitionProps={{ exit: false }}
     >
-      <Alert severity="error" {...rest}>{message}</Alert>
+      <Alert severity="error" {...rest}>
+        <AlertTitle>Error</AlertTitle>
+        {messages.map((message, i) => (
+          <div key={i}>{message}</div>
+        ))}
+      </Alert>
     </Snackbar>
   );
 };
