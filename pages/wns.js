@@ -159,7 +159,7 @@ const Page = () => {
     const a = get(item1, sort);
     const b = get(item2, sort);
     const dir = ascend ? 1 : -1;
-    return (a < b) ? -1 * dir : (a === b) ? 0 : dir;
+    return (a < b) ? -1 * dir : (a > b) ? dir : 0;
   };
 
   return (

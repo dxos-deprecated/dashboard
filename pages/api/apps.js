@@ -54,8 +54,6 @@ export default async (req, res) => {
           '--port', port
         ];
 
-        console.log('::::::::::', JSON.stringify(args));
-
         // TODO(burdon): Parse PID (e.g., "[1] 94685").
         result = await exec('wire', { args, detached: false });
         break;

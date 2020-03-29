@@ -94,7 +94,7 @@ const Page = () => {
 
   useEffect(noPromise(handleRefresh), []);
 
-  const sorter = () => 1;
+  const sorter = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 
   return (
     <Fragment>
