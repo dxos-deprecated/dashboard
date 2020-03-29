@@ -8,7 +8,7 @@ title: 'Dashboard'
 
 website: 'https://dxos.org'
 
-# Client routes (for NGINX proxy).
+# Client routes (for Apache/NGINX proxy).
 routes:
   wns:
     port: 9473
