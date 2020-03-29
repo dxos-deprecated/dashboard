@@ -2,26 +2,25 @@
 # Config
 #
 
-debug: "dxos:dashboard:*"
-
-title: 'Dashboard'
-
-website: 'https://dxos.org'
+app:
+  title: 'Dashboard'
+  website: 'https://dxos.org'
+  debug: "dxos:dashboard:*"
 
 # Client routes (for Apache/NGINX proxy).
 routes:
   wns:
-    port: 9473
     graphql: '/graphql'
 
+# DxOS services.
 services:
-  ipfs:
-    console: 'http://127.0.0.1:5001/webui'
-    server: '/ip4/127.0.0.1/tcp/5001'
+  wns:
+#   endpoint: 'http://127.0.0.1:9473/graphql'
+    endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'
 
   signal:
     server: 'http://127.0.0.1:4000'
 
-  wns:
-#   endpoint: 'http://127.0.0.1:9473/graphql'
-    endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'
+  ipfs:
+    console: 'http://127.0.0.1:5001/webui'
+    server: '/ip4/127.0.0.1/tcp/5001'

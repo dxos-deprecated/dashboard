@@ -29,7 +29,7 @@ export default class DashboardApp extends App {
     return (
       <React.Fragment>
         <Head>
-          <title>{config.title}</title>
+          <title>{config.app.title}</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
         <ThemeProvider theme={theme}>

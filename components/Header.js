@@ -54,10 +54,10 @@ const Header = () => {
             </div>
           </Link>
           <div className={classes.title}>
-            <Typography variant="h6">{config.title}</Typography>
+            <Typography variant="h6">{config.app.title}</Typography>
           </div>
           <div>
-            <MuiLink href={config.website} className={classes.link} rel="noreferrer" target="_blank">
+            <MuiLink href={config.app.website} className={classes.link} rel="noreferrer" target="_blank">
               <PublicIcon />
             </MuiLink>
           </div>

@@ -16,7 +16,7 @@ export const useRegistry = (config) => {
   }
 
   return {
-    endpoint,
+    endpoint: endpoint.substring(0, endpoint.lastIndexOf('/')),
     // TODO(burdon): Get endpoint from Registry and do basic checks.
     registry: new Registry(endpoint),
   };
