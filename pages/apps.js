@@ -2,8 +2,7 @@
 // Copyright 2020 DxOS
 //
 
-import moment from 'moment';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,18 +13,18 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import StartIcon from '@material-ui/icons/PlayCircleOutline';
+import StopIcon from '@material-ui/icons/HighlightOff';
 
 import { apiRequest } from '../lib/request';
-import { withLayout } from '../hooks';
+import { useRegistry, withLayout } from '../hooks';
+import { joinErrors, noPromise } from '../lib/util';
 
-import ControlButtons from '../components/ControlButtons';
 import Toolbar from '../components/Toolbar';
 import Content from '../components/Content';
 import Error from '../components/Error';
 import Json from '../components/Json';
-import Log from '../components/Log';
-
-const LOG_POLL_INTERVAL = 3 * 1000;
+import AppContext from '../components/AppContext';
 
 const TableCell = ({ children, ...rest }) => (
   <MuiTableCell
@@ -58,53 +57,44 @@ const useStyles = makeStyles(() => ({
     width: 160
   },
 
+  action: {
+    textAlign: 'right'
+  },
+
   result: {
     flexShrink: 0
   }
 }));
 
 const Page = () => {
+  const { config } = useContext(AppContext);
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
-  const { bots = [], ...stats } = result;
-  const [log, setLog] = useState([]);
+  const [records, setRecords] = useState([]);
+  const { registry } = useRegistry(config);
+  const { ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await apiRequest('/api/bots', { command: 'status' });
+    registry.queryRecords({ type: 'wrn:app' })
+      .then(records => setRecords(records))
+      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
+  };
+
+  const handleStart = async (name, version) => {
+    const status = await apiRequest('/api/apps', { command: 'start', name, version });
     setStatus({ ...status, ts: Date.now() });
   };
 
-  const handleStart = async () => {
-    const { ts, error } = await apiRequest('/api/bots', { command: 'start' });
-    if (error) {
-      setStatus({ ts, error });
-    } else {
-      await handleRefresh();
-    }
+  const handlStop = async (name, version) => {
+    const status = await apiRequest('/api/apps', { command: 'stop', name, version });
+    setStatus({ ...status, ts: Date.now() });
   };
 
-  const handleStop = async () => {
-    const status = await apiRequest('/api/bots', { command: 'shutdown' });
-    setStatus(status);
-  };
+  useEffect(noPromise(handleRefresh), []);
 
-  const handleLogClear = () => setLog([]);
-
-  useEffect(() => {
-    handleRefresh();
-
-    // Polling for logs.
-    const logInterval = setInterval(async () => {
-      const { result } = await apiRequest('/api/bots', { command: 'log' });
-      setLog(result);
-    }, LOG_POLL_INTERVAL);
-
-    return () => {
-      clearInterval(logInterval);
-    };
-  }, []);
+  const sorter = () => 1;
 
   return (
     <Fragment>
@@ -114,8 +104,6 @@ const Page = () => {
             <RefreshIcon />
           </IconButton>
         </div>
-
-        <ControlButtons onStart={handleStart} onStop={handleStop} />
       </Toolbar>
 
       <Content updated={ts}>
@@ -123,20 +111,26 @@ const Page = () => {
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell>Type</TableCell>
-                <TableCell>Party</TableCell>
-                <TableCell>Spec</TableCell>
-                <TableCell>Started</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell className={classes.colShort}>Version</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell className={classes.colShort} />
               </TableRow>
             </TableHead>
             <TableBody>
-              {bots.map(({ type, spec, party, started }, i) => (
-                // TODO(burdon): Use id for key.
-                <TableRow key={i} size="small">
-                  <TableCell>{type}</TableCell>
-                  <TableCell>{party}</TableCell>
-                  <TableCell>{spec}</TableCell>
-                  <TableCell>{moment(started).fromNow()}</TableCell>
+              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => (
+                <TableRow key={id} size="small">
+                  <TableCell>{name}</TableCell>
+                  <TableCell>{version}</TableCell>
+                  <TableCell>{displayName}</TableCell>
+                  <TableCell className={classes.action}>
+                    <IconButton onClick={() => handleStart(name, version)} title="Start">
+                      <StartIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handlStop(name, version)} title="Stop">
+                      <StopIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -146,8 +140,6 @@ const Page = () => {
         <div className={classes.result}>
           <Json json={stats} />
         </div>
-
-        <Log log={log} onClear={handleLogClear} />
       </Content>
 
       <Error message={error} onClose={resetError} />

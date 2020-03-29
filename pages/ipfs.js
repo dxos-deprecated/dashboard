@@ -8,7 +8,8 @@ import React, { Fragment, useEffect, useState, useContext } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { noPromise, apiRequest } from '../lib/request';
+import { apiRequest } from '../lib/request';
+import { noPromise } from '../lib/util';
 import { withLayout } from '../hooks';
 
 import AppContext from '../components/AppContext';
@@ -55,7 +56,7 @@ const Page = () => {
   };
 
   const handleStart = async () => {
-    const { ts, error } = await apiRequest('/api/ipfs?command=start');
+    const { ts, error } = await apiRequest('/api/ipfs', { command: 'start' });
     if (error) {
       setStatus({ ts, error });
     } else {
@@ -64,7 +65,7 @@ const Page = () => {
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/ipfs?command=shutdown');
+    const status = await apiRequest('/api/ipfs', { command: 'shutdown' });
     setStatus(status);
   };
 

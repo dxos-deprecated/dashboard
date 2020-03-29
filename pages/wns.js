@@ -21,6 +21,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { apiRequest } from '../lib/request';
 import { withLayout, useRegistry } from '../hooks';
+import { joinErrors } from '../lib/util';
 
 import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
@@ -85,10 +86,6 @@ const types = [
   { key: 'wrn:type', label: 'Type' }
 ];
 
-const joinErrors = errors => {
-  return errors ? errors.map(({ message }) => message).join('; ') : '';
-};
-
 const Page = () => {
   const { config } = useContext(AppContext);
   const classes = useStyles();
@@ -114,7 +111,7 @@ const Page = () => {
   };
 
   const handleStart = async () => {
-    const { ts, error } = await apiRequest('/api/wns?command=start');
+    const { ts, error } = await apiRequest('/api/wns', { command: 'start' });
     if (error) {
       setStatus({ ts, error });
     } else {
@@ -123,7 +120,7 @@ const Page = () => {
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/wns?command=shutdown');
+    const status = await apiRequest('/api/wns', { command: 'shutdown' });
     setStatus(status);
   };
 
@@ -147,7 +144,7 @@ const Page = () => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { result = [] } = await apiRequest('/api/wns?command=log');
+      const { result = [] } = await apiRequest('/api/wns', { command: 'log' });
       setLog(result);
     }, LOG_POLL_INTERVAL);
 
@@ -156,6 +153,7 @@ const Page = () => {
     };
   }, []);
 
+  // TODO(burdon): Factor out.
   const sortBy = field => () => setSort({ sort: field, ascend: (field === sort ? !ascend : true) });
   const sorter = (item1, item2) => {
     const a = get(item1, sort);

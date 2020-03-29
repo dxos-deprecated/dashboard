@@ -6,7 +6,7 @@ import debug from 'debug';
 
 import { exec } from './exec';
 
-const log = debug('dxos:dashboard:bots');
+const log = debug('dxos:dashboard:cli');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);

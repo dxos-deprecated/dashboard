@@ -7,7 +7,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { noPromise, apiRequest } from '../lib/request';
+import { apiRequest } from '../lib/request';
+import { noPromise } from '../lib/util';
 import { withLayout } from '../hooks';
 
 import Content from '../components/Content';
