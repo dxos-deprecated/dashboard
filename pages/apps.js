@@ -55,8 +55,8 @@ const Page = () => {
   const { config } = useContext(AppContext);
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
+  const [apps, setApps] = useState([]);
   const [records, setRecords] = useState([]);
-  const [links, setLinks] = useState({});
   const { registry } = useRegistry(config);
   const { ...stats } = result;
 
@@ -66,6 +66,17 @@ const Page = () => {
     registry.queryRecords({ type: 'wrn:app' })
       .then(records => setRecords(records))
       .catch(({ errors }) => setStatus({ error: errors }));
+
+    const status = await apiRequest('/api/apps', { command: 'list' });
+    const { result: { apps }, ...rest } = status;
+
+    const appMap = apps.reduce((map, { wrn, port, path }) => {
+      map[wrn] = { port, path };
+      return map;
+    }, {});
+
+    setApps(appMap);
+    setStatus(rest);
   };
 
   const handleStart = async (name, version) => {
@@ -74,21 +85,29 @@ const Page = () => {
     const { result: { path, port }, ...rest } = status;
     const { protocol, hostname } = window.location;
     const url = `${protocol}//${hostname}:${port || 80}${path}`;
-    // TODO(burdon): This will be lost when navigating away.
-    setLinks({ ...links, [name]: url });
     setStatus({ result: { url }, ...rest, ts: Date.now() });
+    await handleRefresh();
   };
 
   const handlStop = async (name, version) => {
     const status = await apiRequest('/api/apps', { command: 'stop', name, version });
     setStatus({ ...status, ts: Date.now() });
+    await handleRefresh();
   };
 
   useEffect(ignorePromise(handleRefresh), []);
 
   const sorter = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 
-  const getLink = name => links[name];
+  const getLink = name => {
+    const appRecord = apps[`wrn:app:${name}`];
+    if (appRecord) {
+      const { port, path } = appRecord;
+      // TODO(burdon): Factor out link creation.
+      const { protocol, hostname } = window.location;
+      return `${protocol}//${hostname}:${port || 80}${path}`;
+    }
+  };
 
   return (
     <Fragment>
@@ -113,26 +132,30 @@ const Page = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => (
-                <TableRow key={id} size="small">
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{version}</TableCell>
-                  <TableCell>{displayName}</TableCell>
-                  <TableCell>
-                    <Link href={getLink(name)} target={name}>
-                      {getLink(name)}
-                    </Link>
-                  </TableCell>
-                  <TableCell className={classes.action}>
-                    <IconButton onClick={() => handleStart(name, version)} title="Start">
-                      <StartIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handlStop(name, version)} title="Stop">
-                      <StopIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => {
+                const link = getLink(name);
+
+                return (
+                  <TableRow key={id} size="small">
+                    <TableCell>{name}</TableCell>
+                    <TableCell>{version}</TableCell>
+                    <TableCell>{displayName}</TableCell>
+                    <TableCell>
+                      {link && (
+                        <Link href={link} target={name}>{link}</Link>
+                      )}
+                    </TableCell>
+                    <TableCell className={classes.action}>
+                      <IconButton onClick={() => handleStart(name, version)} title="Start">
+                        <StartIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handlStop(name, version)} title="Stop">
+                        <StopIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

@@ -182,19 +182,22 @@ const Page = () => {
                 <TableCell onClick={sortBy('name')}>Name</TableCell>
                 <TableCell onClick={sortBy('version')} className={classes.colShort}>Version</TableCell>
                 <TableCell onClick={sortBy('attributes.displayName')}>Description</TableCell>
+                <TableCell onClick={sortBy('attributes.package')}>Package Hash</TableCell>
                 <TableCell onClick={sortBy('createTime')} className={classes.colShort}>Created</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, type, name, version, createTime, attributes: { displayName } }) => (
-                <TableRow key={id} size="small">
-                  <TableCell>{type}</TableCell>
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{version}</TableCell>
-                  <TableCell>{displayName}</TableCell>
-                  <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
-                </TableRow>
-              ))}
+              {records.sort(sorter)
+                .map(({ id, type, name, version, createTime, attributes: { displayName, package: pkg } }) => (
+                  <TableRow key={id} size="small">
+                    <TableCell>{type}</TableCell>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>{version}</TableCell>
+                    <TableCell>{displayName}</TableCell>
+                    <TableCell>{pkg}</TableCell>
+                    <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -5,7 +5,7 @@
 import debug from 'debug';
 import find from 'find-process';
 
-import { exec } from './exec';
+import { exec } from './util/exec';
 
 const log = debug('dxos:dashboard:apps');
 
@@ -46,6 +46,57 @@ export default async (req, res) => {
   let error;
   try {
     switch (command) {
+      case 'list': {
+        const list = await find('name', 'wrn:app');
+        // https://github.com/yibn2008/find-process#readme
+        const apps = list.map(({ pid, cmd }) => {
+          const [, ...args] = cmd.split(' ');
+
+          let app;
+          let port;
+          let path;
+          let argList = [];
+          args.reverse().forEach(arg => {
+            switch (arg) {
+              case '--app': {
+                // eslint-disable-next-line prefer-destructuring
+                app = argList[0];
+                argList = [];
+                break;
+              }
+
+              case '--port': {
+                // eslint-disable-next-line prefer-destructuring
+                port = argList[0];
+                argList = [];
+                break;
+              }
+
+              case '--path': {
+                // eslint-disable-next-line prefer-destructuring
+                path = argList[0];
+                argList = [];
+                break;
+              }
+
+              default: {
+                argList.unshift(arg);
+              }
+            }
+          });
+
+          return {
+            pid,
+            wrn: app,
+            port,
+            path
+          };
+        });
+
+        result = { apps };
+        break;
+      }
+
       case 'start': {
         const route = ROUTES[name];
         const path = route ? route.path : searchParams.get('path') || '/test';
@@ -68,7 +119,7 @@ export default async (req, res) => {
       case 'stop': {
         // TODO(burdon): Specify version.
         // Kill process.
-        // ps -ax | grep '[w]rn:app:wireline.io/editor' | awk {'print $1'}
+        // ps -ef | grep '[w]rn:app:wireline.io/editor' | awk {'print $1'}
         // https://github.com/yibn2008/find-process#readme
         result = { pids: [] };
         const list = await find('name', wrn);

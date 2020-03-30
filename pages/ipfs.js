@@ -62,7 +62,7 @@ const Page = () => {
     }
 
     // TODO(burdon): List files referenced from the registry.
-    // TODO(burdon): Test load/save file.
+    // TODO(burdon): Button to retrive and pin file on local node.
     // const data = await IpfsHttpClient.urlSource('https://ipfs.io/images/ipfs-logo.svg');
     // const hash = await ipfs.add(data);
     // console.log(hash, data);
@@ -88,7 +88,7 @@ const Page = () => {
     window.open(config.services.ipfs.console, '_ipfs_');
   };
 
-  useEffect(ignorePromise(handleRefresh));
+  useEffect(ignorePromise(handleRefresh), []);
 
   return (
     <Fragment>

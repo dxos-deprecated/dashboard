@@ -9,7 +9,7 @@ import os from 'os';
 import si from 'systeminformation';
 
 import config from '../../lib/config';
-import { exec } from './exec';
+import { exec } from './util/exec';
 
 const log = debug('dxos:dashboard');
 
@@ -67,7 +67,7 @@ export default async (req, res) => {
 
     system = {
       cpu: pick(cpu, 'brand', 'cores', 'manufacturer', 'vendor'),
-      mem: {
+      memory: {
         total: size(memory.total, 'M'),
         free: size(memory.free, 'M'),
         used: size(memory.used, 'M'),
