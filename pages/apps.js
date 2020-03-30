@@ -6,6 +6,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -17,7 +18,7 @@ import StopIcon from '@material-ui/icons/HighlightOff';
 
 import { apiRequest } from '../lib/request';
 import { useRegistry, withLayout } from '../hooks';
-import { joinErrors, noPromise } from '../lib/util';
+import { ignorePromise } from '../lib/util';
 
 import AppContext from '../components/AppContext';
 import Content from '../components/Content';
@@ -47,10 +48,6 @@ const useStyles = makeStyles(() => ({
 
   action: {
     textAlign: 'right'
-  },
-
-  result: {
-    flexShrink: 0
   }
 }));
 
@@ -59,6 +56,7 @@ const Page = () => {
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const [records, setRecords] = useState([]);
+  const [links, setLinks] = useState({});
   const { registry } = useRegistry(config);
   const { ...stats } = result;
 
@@ -67,12 +65,18 @@ const Page = () => {
   const handleRefresh = async () => {
     registry.queryRecords({ type: 'wrn:app' })
       .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
+      .catch(({ errors }) => setStatus({ error: errors }));
   };
 
   const handleStart = async (name, version) => {
+    // TODO(burdon): Frequently hangs (does wire serve detach?)
     const status = await apiRequest('/api/apps', { command: 'start', name, version });
-    setStatus({ ...status, ts: Date.now() });
+    const { result: { path, port }, ...rest } = status;
+    const { protocol, hostname } = window.location;
+    const url = `${protocol}//${hostname}:${port || 80}${path}`;
+    // TODO(burdon): This will be lost when navigating away.
+    setLinks({ ...links, [name]: url });
+    setStatus({ result: { url }, ...rest, ts: Date.now() });
   };
 
   const handlStop = async (name, version) => {
@@ -80,9 +84,11 @@ const Page = () => {
     setStatus({ ...status, ts: Date.now() });
   };
 
-  useEffect(noPromise(handleRefresh), []);
+  useEffect(ignorePromise(handleRefresh), []);
 
   const sorter = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+
+  const getLink = name => links[name];
 
   return (
     <Fragment>
@@ -102,6 +108,7 @@ const Page = () => {
                 <TableCell>Name</TableCell>
                 <TableCell className={classes.colShort}>Version</TableCell>
                 <TableCell>Description</TableCell>
+                <TableCell>Link</TableCell>
                 <TableCell className={classes.colShort} />
               </TableRow>
             </TableHead>
@@ -111,6 +118,11 @@ const Page = () => {
                   <TableCell>{name}</TableCell>
                   <TableCell>{version}</TableCell>
                   <TableCell>{displayName}</TableCell>
+                  <TableCell>
+                    <Link href={getLink(name)} target={name}>
+                      {getLink(name)}
+                    </Link>
+                  </TableCell>
                   <TableCell className={classes.action}>
                     <IconButton onClick={() => handleStart(name, version)} title="Start">
                       <StartIcon />
@@ -125,9 +137,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <div className={classes.result}>
-          <Json json={stats} />
-        </div>
+        <Json json={stats} />
       </Content>
 
       <Error message={error} onClose={resetError} />

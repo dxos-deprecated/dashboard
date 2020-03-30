@@ -3,4 +3,5 @@
 //
 
 export * from './layout';
+export * from './mounted';
 export * from './registry';

@@ -7,50 +7,84 @@ import { spawn } from 'child_process';
 
 const log = debug('dxos:dashboard:exec');
 
+const createError = (obj, code) => new Error(obj ? String(obj).replace('\n', '') : `Code: ${code}`);
+
 /**
  * Exec terminal command.
- * @param command
- * @param options
- * @returns {Promise<Object>}
+ * @param {string} command
+ * @param {Object} options
+ * @returns {Promise<{error, pid}>}
  */
+// TODO(burdon): Factor out (common with CLI?)
 export const exec = (command, options = {}) => {
-  const { args = [], wait, detached } = options;
-  log('spawn:', command, args.join(' '));
+  const { args = [], detached, match, timeout, kill } = options;
 
   return new Promise((resolve, reject) => {
     let output;
     let error;
 
     // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
-    const proc = spawn(command, args, {
+    const childProcess = spawn(command, args, {
       shell: true,
+      detached,
+
+      // Child process will terminate with the parent process unless stdio is untangled from parent.
+      // https://nodejs.org/api/child_process.html#child_process_options_detached
       stdio: detached && 'ignore',
-      detached
     });
 
-    proc.on('close', code => {
+    // https://nodejs.org/api/child_process.html#child_process_class_childprocess
+    const { pid } = childProcess;
+    log(`Spawned[${pid}]: ${[command, ...args].join(' ')}`);
+
+    if (match && timeout) {
+      setTimeout(() => {
+        if (kill) {
+          childProcess.kill('SIGINT');
+        }
+
+        reject(new Error(`Timed out after ${timeout}ms`));
+      }, timeout);
+    }
+
+    // Closed.
+    childProcess.on('close', code => {
+      log(`Closed[${pid}]: ${code}`);
       if (code === 0) {
-        resolve(output);
+        resolve({ pid, output });
       } else {
-        reject(error);
+        reject(createError(error, code));
       }
     });
 
     // https://stackoverflow.com/questions/25323703/nodejs-execute-command-in-background-and-forget
     if (detached) {
-      proc.unref();
-      resolve(output);
+      log(`Detached[${pid}]`);
+      childProcess.unref();
+
+      // TODO(burdon): Sometimes doesn't close so forcing here.
+      resolve({ pid, output });
     } else {
-      proc.stdout.on('data', (data) => {
+      // Output.
+      childProcess.stdout.on('data', (data) => {
         output = String(data).trim();
-        if (wait && output.match(wait)) {
-          proc.unref();
-          resolve(output);
+
+        // TODO(burdon): Timeout option.
+        // Return after expected match.
+        if (match && output.match(match)) {
+          childProcess.unref();
+          if (kill) {
+            childProcess.kill('SIGINT');
+          }
+
+          resolve({ pid, output });
         }
       });
 
-      proc.stderr.on('data', (data) => {
-        error = String(data);
+      // Errors.
+      childProcess.stderr.on('data', (data) => {
+        error = String(data).trim();
+        log(`Error: "${error}"`);
       });
     }
   });

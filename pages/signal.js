@@ -13,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { httpRequest } from '../lib/request';
-import { noPromise } from '../lib/util';
+import { ignorePromise } from '../lib/util';
 import { withLayout } from '../hooks';
 
 import AppContext from '../components/AppContext';
@@ -45,7 +45,7 @@ const Page = () => {
     setStatus(status);
   };
 
-  useEffect(noPromise(handleRefresh), []);
+  useEffect(ignorePromise(handleRefresh), []);
 
   return (
     <Fragment>

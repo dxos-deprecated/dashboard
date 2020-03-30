@@ -11,7 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles(() => ({
   root: {
-    marginBottom: 50
+    marginBottom: 60
   }
 }));
 

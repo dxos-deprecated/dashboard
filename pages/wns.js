@@ -19,7 +19,7 @@ import TableBody from '@material-ui/core/TableBody';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { apiRequest } from '../lib/request';
-import { withLayout, useRegistry } from '../hooks';
+import { withLayout, useRegistry, useIsMounted } from '../hooks';
 
 import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
@@ -52,10 +52,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  result: {
-    flexShrink: 0
-  },
-
   colShort: {
     width: 160
   },
@@ -74,8 +70,9 @@ const types = [
 ];
 
 const Page = () => {
-  const { config } = useContext(AppContext);
   const classes = useStyles();
+  const isMounted = useIsMounted();
+  const { config } = useContext(AppContext);
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
@@ -94,8 +91,8 @@ const Page = () => {
     //   });
 
     registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: errors.map(({ message }) => message) }));
+      .then(records => isMounted.current && setRecords(records))
+      .catch(({ errors }) => isMounted.current && setStatus({ error: errors.map(({ message }) => message) }));
   };
 
   const handleStart = async () => {
@@ -202,9 +199,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <div className={classes.result}>
-          <Json json={result} />
-        </div>
+        <Json json={result} />
 
         <Log log={log} onClear={handleLogClear} />
       </Content>

@@ -21,7 +21,8 @@ export default async (req, res) => {
     switch (command) {
       case 'version': {
         // TODO(burdon): Expect JSON.
-        result = await exec('wire', { args: ['--version'] });
+        const { output: version } = await exec('wire', { args: ['version'] });
+        result = version;
         break;
       }
 
@@ -30,7 +31,7 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
-    log('Error', err);
+    log(err);
 
     statusCode = 500;
     error = err;

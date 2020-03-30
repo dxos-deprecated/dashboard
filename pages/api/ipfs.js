@@ -20,18 +20,20 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'version': {
-        const text = await exec('ipfs', { args: ['version'] });
-        [, result] = text.match(/ipfs version ([0-9\\.]+)/i);
+        const { output } = await exec('ipfs', { args: ['version'] });
+        [, result] = output.match(/ipfs version ([0-9\\.]+)/i);
         break;
       }
 
       case 'start': {
-        result = await exec('ipfs', { args: ['daemon'], wait: /Daemon is ready/ });
+        const { output } = await exec('ipfs', { args: ['daemon'], match: /Daemon is ready/ });
+        result = output;
         break;
       }
 
       case 'shutdown': {
-        result = await exec('ipfs', { args: ['shutdown'] });
+        const { output } = await exec('ipfs', { args: ['shutdown'] });
+        result = output;
         break;
       }
 
@@ -40,7 +42,7 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
-    log('Error', err);
+    log(err);
 
     statusCode = 500;
     if (err.match(/ipfs daemon is running/)) {

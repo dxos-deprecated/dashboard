@@ -26,17 +26,19 @@ export default async (req, res) => {
     switch (command) {
       case 'start': {
         const args = ['start', '--gql-server', '--gql-playground', '2>&1', '|', 'tee', WNS_LOG_FILE_PATH];
-        result = await exec('wnsd', { args, wait: /Executed block/ });
+        const { output } = await exec('wnsd', { args, match: /Executed block/ });
+        result = output;
         break;
       }
 
       case 'shutdown': {
-        result = await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
+        const { output } = await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
+        result = output;
         break;
       }
 
       case 'log': {
-        const log = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
+        const { output: log } = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
         result = log.split('\n');
         break;
       }
@@ -46,7 +48,7 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
-    log('Error', err);
+    log(err);
 
     statusCode = 500;
     error = err;

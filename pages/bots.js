@@ -44,10 +44,6 @@ const useStyles = makeStyles(() => ({
 
   colShort: {
     width: 160
-  },
-
-  result: {
-    flexShrink: 0
   }
 }));
 
@@ -131,9 +127,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <div className={classes.result}>
-          <Json json={stats} />
-        </div>
+        <Json json={stats} />
 
         <Log log={log} onClear={handleLogClear} />
       </Content>
