@@ -4,7 +4,7 @@
 
 import debug from 'debug';
 
-import { exec } from './exec';
+import { exec } from './util/exec';
 import { TOPIC, SECRET_KEY } from '../../lib/bot_factory';
 
 const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
@@ -33,23 +33,28 @@ export default async (req, res) => {
           '--single-instance',
           '2>&1', '|', 'tee', BOT_FACTORY_LOG_FILE_PATH
         ];
-        result = await exec('wire', { args, wait: /bot-factory/ });
+        const { output } = await exec('wire', { args, match: /bot-factory/ });
+        result = output;
         break;
       }
 
       case 'shutdown': {
-        result = await exec('wire', { args: ['bot', 'factory', 'stop'] });
+        const { output } = await exec('wire', { args: ['bot', 'factory', 'stop'] });
+        result = output;
         break;
       }
 
       case 'status': {
-        const status = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
-        result = status ? JSON.parse(status) : { started: 'false' };
+        const { output } = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
+        result = output ? JSON.parse(output) : { started: 'false' };
         break;
       }
 
       case 'log': {
-        const log = await exec('tail', { args: [`-${BOT_FACTORY_LOG_NUM_LINES}`, BOT_FACTORY_LOG_FILE_PATH] });
+        const { output: log } = await exec('tail', {
+          args: [`-${BOT_FACTORY_LOG_NUM_LINES}`, BOT_FACTORY_LOG_FILE_PATH]
+        });
+
         result = log ? log.split('\n') : [];
         break;
       }
@@ -59,10 +64,12 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
-    log('Error', err);
+    // TODO(burdon): Sporadic Error (polling logs).
+    // at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
+    log(err);
 
     statusCode = 500;
-    error = err;
+    error = String(err);
   }
 
   res.statusCode = statusCode;

@@ -10,19 +10,21 @@ app:
 # Client routes (for Apache/NGINX proxy).
 routes:
   wns:
+    port: 9473
     graphql: '/graphql'
   ipfs:
+    port: 5001
     graphql: '/webui'
 
 # DxOS services.
 services:
   wns:
-    endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'
+    endpoint: 'http://127.0.0.1:9473/graphql'
 
   signal:
     server: 'http://127.0.0.1:4000'
 
   ipfs:
     server: '/ip4/127.0.0.1/tcp/5001'
-    gateway: 'http://127.0.0.1:8888/ipfs/'
+    gateway: '/ip4//127.0.0.1:8888/ipfs/'
     webui: 'http://127.0.0.1:5001/webui'

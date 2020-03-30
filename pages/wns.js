@@ -11,17 +11,16 @@ import grey from '@material-ui/core/colors/grey';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
-import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { apiRequest } from '../lib/request';
-import { withLayout, useRegistry } from '../hooks';
-import { joinErrors } from '../lib/util';
+import { withLayout, useRegistry, useIsMounted } from '../hooks';
 
 import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
@@ -29,21 +28,11 @@ import Content from '../components/Content';
 import Error from '../components/Error';
 import Json from '../components/Json';
 import Log from '../components/Log';
+import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
+import { ignorePromise } from '../lib/util';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
-
-const TableCell = ({ children, ...rest }) => (
-  <MuiTableCell
-    {...rest}
-    style={{
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    }}
-  >
-    {children}
-  </MuiTableCell>
-);
 
 const useStyles = makeStyles(theme => ({
   buttons: {
@@ -66,7 +55,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   result: {
-    flexShrink: 0
+    flex: 1,
+    overflow: 'scroll',
+    borderTop: `1px solid ${grey[300]}`
   },
 
   colShort: {
@@ -87,30 +78,53 @@ const types = [
 ];
 
 const Page = () => {
-  const { config } = useContext(AppContext);
   const classes = useStyles();
+  const isMounted = useIsMounted();
+  const { config } = useContext(AppContext);
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
   const [log, setLog] = useState([]);
   const [{ sort, ascend }, setSort] = useState({ sort: 'type', ascend: true });
-  const { registry, endpoint } = useRegistry(config);
+  const [ipfsConsoleUrl, setIpfsConsoleUrl] = useState();
+  const { registry, endpoint, local } = useRegistry(config);
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
+    // TODO(burdon): Format records.
     registry.getStatus()
       .then(result => {
-        setStatus({ ts: Date.now(), result });
-
-        registry.queryRecords({ type })
-          .then(records => setRecords(records))
-          .catch(({ errors }) => setStatus({ ts: Date.now(), result, error: joinErrors(errors) }));
+        if (isMounted.current) {
+          setStatus({ ts: Date.now(), result });
+        }
       })
-      .catch(error => {
-        setStatus({ ts: Date.now(), error: error.statusText || 'Connection error.' });
+      .catch(() => {
+        // TODO(burdon): Should return an Error.
+        // const errors = [new Error('HTTP Error')];
+        const errors = [{ message: 'HTTP Error' }];
+        if (isMounted.current) {
+          setStatus({ ts: Date.now(), error: errors.map(({ message }) => message) });
+        }
       });
+
+    registry.queryRecords({ type })
+      .then(records => {
+        if (isMounted.current) {
+          setRecords(records);
+        }
+      })
+      .catch(() => {
+        // TODO(burdon): Should return an Error.
+        const errors = [{ message: 'HTTP Error' }];
+        if (isMounted.current) {
+          setStatus({ error: errors.map(({ message }) => message) });
+        }
+      });
+
+    const { result } = await apiRequest('/api/ipfs', { command: 'webui' });
+    setIpfsConsoleUrl(result);
   };
 
-  const handleStart = async () => {
+  const handleStart = !local ? undefined : async () => {
     const { ts, error } = await apiRequest('/api/wns', { command: 'start' });
     if (error) {
       setStatus({ ts, error });
@@ -119,7 +133,7 @@ const Page = () => {
     }
   };
 
-  const handleStop = async () => {
+  const handleStop = !local ? undefined : async () => {
     const status = await apiRequest('/api/wns', { command: 'shutdown' });
     setStatus(status);
   };
@@ -133,25 +147,21 @@ const Page = () => {
 
   const handleResetErrors = () => setStatus({ ts, result, error: undefined });
 
-  useEffect(() => {
-    registry.queryRecords({ type })
-      .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: joinErrors(errors) }));
-  }, [type]);
+  useEffect(ignorePromise(handleRefresh), [type]);
 
-  useEffect(() => {
-    handleRefresh();
+  // Polling for logs.
+  if (local) {
+    useEffect(() => {
+      const logInterval = setInterval(async () => {
+        const { result = [] } = await apiRequest('/api/wns', { command: 'log' });
+        setLog(result);
+      }, LOG_POLL_INTERVAL);
 
-    // Polling for logs.
-    const logInterval = setInterval(async () => {
-      const { result = [] } = await apiRequest('/api/wns', { command: 'log' });
-      setLog(result);
-    }, LOG_POLL_INTERVAL);
-
-    return () => {
-      clearInterval(logInterval);
-    };
-  }, []);
+      return () => {
+        clearInterval(logInterval);
+      };
+    }, []);
+  }
 
   // TODO(burdon): Factor out.
   const sortBy = field => () => setSort({ sort: field, ascend: (field === sort ? !ascend : true) });
@@ -203,28 +213,37 @@ const Page = () => {
                 <TableCell onClick={sortBy('name')}>Name</TableCell>
                 <TableCell onClick={sortBy('version')} className={classes.colShort}>Version</TableCell>
                 <TableCell onClick={sortBy('attributes.displayName')}>Description</TableCell>
+                <TableCell onClick={sortBy('attributes.package')}>Package Hash</TableCell>
                 <TableCell onClick={sortBy('createTime')} className={classes.colShort}>Created</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, type, name, version, createTime, attributes: { displayName } }) => (
-                <TableRow key={id} size="small">
-                  <TableCell>{type}</TableCell>
-                  <TableCell>{name}</TableCell>
-                  <TableCell>{version}</TableCell>
-                  <TableCell>{displayName}</TableCell>
-                  <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
-                </TableRow>
-              ))}
+              {records.sort(sorter)
+                .map(({ id, type, name, version, createTime, attributes: { displayName, package: pkg } }) => (
+                  <TableRow key={id} size="small">
+                    <TableCell>{type}</TableCell>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>{version}</TableCell>
+                    <TableCell>{displayName}</TableCell>
+                    <TableCell title={pkg}>
+                      {pkg && (
+                        <Link href={`${ipfsConsoleUrl}/#/ipfs/${pkg}`} target="ipfs">{pkg}</Link>
+                      )}
+                    </TableCell>
+                    <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
 
         <div className={classes.result}>
-          <Json json={result} />
+          <Json json={result} level={2} />
         </div>
 
-        <Log log={log} onClear={handleLogClear} />
+        {local && (
+          <Log log={log} onClear={handleLogClear} />
+        )}
       </Content>
 
       <Error message={error} onClose={handleResetErrors} />
