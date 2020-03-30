@@ -4,8 +4,8 @@
 
 import debug from 'debug';
 
-import { exec } from './util/exec';
 import { TOPIC, SECRET_KEY } from '../../lib/bot_factory';
+import { exec } from './util/exec';
 
 const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
 
@@ -38,15 +38,9 @@ export default async (req, res) => {
         break;
       }
 
-      case 'shutdown': {
+      case 'stop': {
         const { output } = await exec('wire', { args: ['bot', 'factory', 'stop'] });
         result = output;
-        break;
-      }
-
-      case 'status': {
-        const { output } = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
-        result = output ? JSON.parse(output) : { started: 'false' };
         break;
       }
 
@@ -59,6 +53,12 @@ export default async (req, res) => {
         break;
       }
 
+      case 'status': {
+        const { output } = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
+        result = output ? JSON.parse(output) : { running: 'false' };
+        break;
+      }
+
       default: {
         statusCode = 400;
       }
@@ -67,6 +67,10 @@ export default async (req, res) => {
     // TODO(burdon): Sporadic Error (polling logs).
     // at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
     log(err);
+
+    if (String(err).match(/No such file or directory/)) {
+      await exec('touch', { args: [BOT_FACTORY_LOG_FILE_PATH] });
+    }
 
     statusCode = 500;
     error = String(err);

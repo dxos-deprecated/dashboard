@@ -70,7 +70,7 @@ const Page = () => {
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/bots', { command: 'shutdown' });
+    const status = await apiRequest('/api/bots', { command: 'stop' });
     setStatus(status);
   };
 
@@ -81,8 +81,11 @@ const Page = () => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { result } = await apiRequest('/api/bots', { command: 'log' });
-      setLog(result);
+      const { result, error } = await apiRequest('/api/bots', { command: 'log' });
+      setStatus({ error });
+      if (!error) {
+        setLog(result);
+      }
     }, LOG_POLL_INTERVAL);
 
     return () => {
