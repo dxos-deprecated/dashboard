@@ -16,7 +16,8 @@ routes:
 services:
   wns:
 #   endpoint: 'http://127.0.0.1:9473/graphql'
-    endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'
+#   endpoint: 'https://wns-testnet.dev.wireline.ninja/graphql'
+    endpoint: 'http://wns1.bozemanpass.net:9473/graphql'
 
   signal:
     server: 'http://127.0.0.1:4000'
