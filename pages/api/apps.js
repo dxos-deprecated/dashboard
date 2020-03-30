@@ -5,6 +5,8 @@
 import debug from 'debug';
 import find from 'find-process';
 
+import config from '../../lib/config';
+
 import { exec } from './util/exec';
 
 const log = debug('dxos:dashboard:apps');
@@ -12,6 +14,10 @@ const log = debug('dxos:dashboard:apps');
 // TODO(burdon): Currently paths and ports are hard-coded in the apache config.
 // TODO(burdon): The path isn't required since the frontend proxy maps the external path to the server's port.
 // Otherwise, the registry record must contain the path information.
+
+// TODO(burdon): Configure nginx to re-route on the fly? via WNS query.
+// /app/editor/1.2
+
 const ROUTES = {
   'wireline.io/editor': {
     path: '/editor',
@@ -110,8 +116,17 @@ export default async (req, res) => {
           '--port', port
         ];
 
+        const env = {
+          // TODO(burdon): Which env is required?
+          ...process.env,
+
+          WIRE_WNS_ENDPOINT: config.services.wns.endpoint,
+          WIRE_IPFS_SERVER: config.services.ipfs.server,
+          WIRE_IPFS_GATEWAY: config.services.ipfs.gateway
+        };
+
         // TODO(burdon): This seems to kill the current process?
-        const { pid } = await exec('wire', { args, detached: true });
+        const { pid } = await exec('wire', { args, env, detached: true });
         result = { pid, path, port };
         break;
       }
@@ -141,7 +156,7 @@ export default async (req, res) => {
     log(err);
 
     statusCode = 500;
-    error = err;
+    error = String(err);
   }
 
   res.statusCode = statusCode;

@@ -6,7 +6,7 @@ import React from 'react';
 
 import MuiTableCell from '@material-ui/core/TableCell';
 
-const TableCell = ({ children, ...rest }) => (
+const TableCell = ({ children, title, ...rest }) => (
   <MuiTableCell
     {...rest}
     style={{
@@ -14,6 +14,7 @@ const TableCell = ({ children, ...rest }) => (
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap'
     }}
+    title={title}
   >
     {children}
   </MuiTableCell>

@@ -4,6 +4,8 @@
 
 import debug from 'debug';
 
+import config from '../../lib/config';
+
 import { exec } from './util/exec';
 
 const log = debug('dxos:dashboard:ipfs');
@@ -19,6 +21,18 @@ export default async (req, res) => {
   let error;
   try {
     switch (command) {
+      case 'webui': {
+        // curl -Ls -o /dev/null -w %{url_effective} http://127.0.0.1:5001/webui
+        const { output } = await exec('curl', { args: [
+          '-Ls',
+          '-o', '/dev/null',
+          '-w', '%{url_effective}',
+          config.services.ipfs.webui
+        ] });
+        result = output;
+        break;
+      }
+
       case 'version': {
         const { output } = await exec('ipfs', { args: ['version'] });
         [, result] = output.match(/ipfs version ([0-9\\.]+)/i);
@@ -26,7 +40,7 @@ export default async (req, res) => {
       }
 
       case 'start': {
-        const { output } = await exec('ipfs', { args: ['daemon'], match: /Daemon is ready/ });
+        const { output } = await exec('ipfs', { args: ['daemon', '--writable'], detached: true });
         result = output;
         break;
       }
@@ -48,7 +62,7 @@ export default async (req, res) => {
     if (err.match(/ipfs daemon is running/)) {
       error = 'IPFS daemon already running';
     } else {
-      error = err;
+      error = String(err);
     }
   }
 

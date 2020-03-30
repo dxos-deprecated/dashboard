@@ -2,7 +2,7 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import clsx from 'clsx';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,8 +57,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// E[2020-03-29|16:42:50.338] Stopping peer for error module=p2p...
-
 const Log = ({ log, onClear }) => {
   const classes = useStyles();
 
@@ -69,18 +67,36 @@ const Log = ({ log, onClear }) => {
   };
 
   const Line = ({ message }) => {
-    const match = message.match(/(.)\[(.+)\|(.+)\] (.+)/);
-    if (match) {
-      const [, level, date, ts, message] = match;
-      return (
-        <div>
-          <span className={clsx(classes.level, levels[level])}>{level}</span>
-          <span className={classes.ts}>{date}</span>
-          <span className={classes.ts}>{ts}</span>
-          <span>{message}</span>
-        </div>
-      );
-    }
+    // https://regex101.com/
+    const patterns = [
+      // I[2020-03-30|15:29:05.436] Executed block module=state height=11533 validTxs=0 invalidTxs=0
+      /(.)\[(.+)\|(.+)] (.+)/,
+
+      // [cors] 2020/03/30 15:28:53 Handler: Actual request
+      /\[(\w+)] (\S+) (\S+) (.+)/,
+
+      // 2020-03-30T18:02:43.189Z bot-factory
+      /()(\S+)T(\S+)Z (.+)/
+    ];
+
+    patterns.some(pattern => {
+      const match = message.match(pattern);
+      if (match) {
+        const [, level = 'I', date, ts, text] = match;
+        message = (
+          <Fragment>
+            <span className={clsx(classes.level, levels[level])}>{level}</span>
+            <span className={classes.ts}>{date}</span>
+            <span className={classes.ts}>{ts}</span>
+            <span>{text}</span>
+          </Fragment>
+        );
+
+        return true;
+      }
+
+      return false;
+    });
 
     return (
       <div>{message}</div>

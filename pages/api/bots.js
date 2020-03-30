@@ -64,10 +64,12 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
+    // TODO(burdon): Sporadic Error (polling logs).
+    // at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
     log(err);
 
     statusCode = 500;
-    error = err;
+    error = String(err);
   }
 
   res.statusCode = statusCode;

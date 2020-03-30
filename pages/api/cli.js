@@ -34,7 +34,7 @@ export default async (req, res) => {
     log(err);
 
     statusCode = 500;
-    error = err;
+    error = String(err);
   }
 
   res.statusCode = statusCode;

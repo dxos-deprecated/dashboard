@@ -68,13 +68,17 @@ const Page = () => {
     // console.log(hash, data);
   };
 
-  // TODO(burdon): Should be detached process!
+  // TODO(burdon): Link to Chrome extension (info panel).
+  // https://chrome.google.com/webstore/detail/ipfs-companion/nibjojkomfdiaoajekhjakgkdhaomnch?hl=en
   const handleStart = async () => {
+    // TODO(burdon): Can we detach after matching.
     const { ts, error } = await apiRequest('/api/ipfs', { command: 'start' });
     if (error) {
       setStatus({ ts, error });
     } else {
-      await handleRefresh();
+      setTimeout(() => {
+        handleRefresh();
+      }, 5000);
     }
   };
 
@@ -85,7 +89,7 @@ const Page = () => {
 
   const handleOpen = () => {
     // TODO(burdon): Convert link.
-    window.open(config.services.ipfs.console, '_ipfs_');
+    window.open(config.services.ipfs.webui, '_ipfs_');
   };
 
   useEffect(ignorePromise(handleRefresh), []);

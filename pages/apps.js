@@ -18,7 +18,7 @@ import StopIcon from '@material-ui/icons/HighlightOff';
 
 import { apiRequest } from '../lib/request';
 import { useRegistry, withLayout } from '../hooks';
-import { ignorePromise } from '../lib/util';
+import { createAbsoluteUrl, ignorePromise } from '../lib/util';
 
 import AppContext from '../components/AppContext';
 import Content from '../components/Content';
@@ -80,11 +80,9 @@ const Page = () => {
   };
 
   const handleStart = async (name, version) => {
-    // TODO(burdon): Frequently hangs (does wire serve detach?)
     const status = await apiRequest('/api/apps', { command: 'start', name, version });
     const { result: { path, port }, ...rest } = status;
-    const { protocol, hostname } = window.location;
-    const url = `${protocol}//${hostname}:${port || 80}${path}`;
+    const url = createAbsoluteUrl({ port, path });
     setStatus({ result: { url }, ...rest, ts: Date.now() });
     await handleRefresh();
   };
@@ -103,9 +101,7 @@ const Page = () => {
     const appRecord = apps[`wrn:app:${name}`];
     if (appRecord) {
       const { port, path } = appRecord;
-      // TODO(burdon): Factor out link creation.
-      const { protocol, hostname } = window.location;
-      return `${protocol}//${hostname}:${port || 80}${path}`;
+      return createAbsoluteUrl({ port, path });
     }
   };
 

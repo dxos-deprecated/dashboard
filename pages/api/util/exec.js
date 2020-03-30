@@ -7,7 +7,7 @@ import { spawn } from 'child_process';
 
 const log = debug('dxos:dashboard:exec');
 
-const createError = (obj, code) => new Error(obj ? String(obj).replace('\n', '') : `Code: ${code}`);
+const createError = (obj, code) => new Error(obj ? String(obj).replace('\n', '') : `Exit code: ${code}`);
 
 /**
  * Exec terminal command.
@@ -17,7 +17,7 @@ const createError = (obj, code) => new Error(obj ? String(obj).replace('\n', '')
  */
 // TODO(burdon): Factor out (common with CLI?)
 export const exec = (command, options = {}) => {
-  const { args = [], detached, match, timeout, kill } = options;
+  const { args = [], env, detached, match, timeout, kill } = options;
 
   return new Promise((resolve, reject) => {
     let output;
@@ -26,10 +26,11 @@ export const exec = (command, options = {}) => {
     // https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
     const childProcess = spawn(command, args, {
       shell: true,
-      detached,
+      env,
 
       // Child process will terminate with the parent process unless stdio is untangled from parent.
       // https://nodejs.org/api/child_process.html#child_process_options_detached
+      detached,
       stdio: detached && 'ignore',
     });
 
@@ -48,7 +49,9 @@ export const exec = (command, options = {}) => {
     }
 
     // Closed.
-    childProcess.on('close', code => {
+    // TODO(burdon): close vs exit.
+    childProcess.on('exit', code => {
+      // TODO(burdon): Code only valid if child exited on its own.
       log(`Closed[${pid}]: ${code}`);
       if (code === 0) {
         resolve({ pid, output });

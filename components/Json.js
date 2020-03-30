@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Json = ({ json }) => {
+const Json = ({ json, level = 3 }) => {
   const classes = useStyles();
 
   return (
@@ -24,7 +24,9 @@ const Json = ({ json }) => {
         theme="ashes"
         hideRoot={true}
         sortObjectKeys={true}
-        shouldExpandNode={() => true}
+        shouldExpandNode={({ ...rest }) => {
+          return (Object.keys(rest).length) < level;
+        }}
         getItemString={() => <span />}
         valueRenderer={(raw, value) => {
           // Strip quotes (makes triple-click copy-and-paste easier).
