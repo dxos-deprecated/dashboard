@@ -72,8 +72,11 @@ export default async (req, res) => {
               }
 
               case '--port': {
-                // eslint-disable-next-line prefer-destructuring
-                port = argList[0];
+                // Assumes routes set-up (no port) in production.
+                if (process.env.NODE_ENV !== 'production') {
+                  // eslint-disable-next-line prefer-destructuring
+                  port = argList[0];
+                }
                 argList = [];
                 break;
               }
