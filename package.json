@@ -9,6 +9,7 @@
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next build && next start",
+    "start:precompile": "next start",
     "test": "jest --rootDir ./pages/api --verbose --passWithNoTests"
   },
   "repository": {
