@@ -2,8 +2,9 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import React, { Fragment } from 'react';
 import clsx from 'clsx';
+import moment from 'moment';
+import React, { Fragment } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -39,10 +40,12 @@ const useStyles = makeStyles(theme => ({
   },
 
   level: {
+    display: 'inline-block',
     marginRight: 8,
+    width: 32
   },
   level_info: {
-    color: grey[700]
+    color: grey[700],
   },
   level_warn: {
     color: orange[700]
@@ -66,28 +69,38 @@ const Log = ({ log, onClear }) => {
     'E': classes.level_error
   };
 
+  // TODO(burdon): Parse in backend and normalize numbers.
   const Line = ({ message }) => {
     // https://regex101.com/
     const patterns = [
-      // I[2020-03-30|15:29:05.436] Executed block module=state height=11533 validTxs=0 invalidTxs=0
-      /(.)\[(.+)\|(.+)] (.+)/,
-
-      // [cors] 2020/03/30 15:28:53 Handler: Actual request
-      /\[(\w+)] (\S+) (\S+) (.+)/,
-
-      // 2020-03-30T18:02:43.189Z bot-factory
-      /()(\S+)T(\S+)Z (.+)/
+      {
+        // 2020-03-30T18:02:43.189Z bot-factory
+        pattern: /()(.+Z)\s+(.+)/,
+        transform: ([datetime]) => moment(datetime)
+      },
+      {
+        // I[2020-03-30|15:29:05.436] Executed block module=state height=11533 validTxs=0 invalidTxs=0
+        pattern: /(.)\[(.+)\|(.+)]\s+(.+)/,
+        transform: ([date, time]) => moment(`${date} ${time}`)
+      },
+      {
+        // [cors] 2020/03/30 15:28:53 Handler: Actual request
+        pattern: /\[(\w+)] (\S+) (\S+)\s+(.+)/,
+        transform: ([date, time]) => moment(`${date.replace(/\//g, '-')} ${time}`)
+      }
     ];
 
-    patterns.some(pattern => {
+    patterns.some(({ pattern, transform }) => {
       const match = message.match(pattern);
       if (match) {
-        const [, level = 'I', date, ts, text] = match;
+        const [, level = 'I', ...rest] = match;
+        const datetime = transform(rest).format('YYYY-MM-DD HH:mm:ss');
+        const text = match[match.length - 1];
+
         message = (
           <Fragment>
             <span className={clsx(classes.level, levels[level])}>{level}</span>
-            <span className={classes.ts}>{date}</span>
-            <span className={classes.ts}>{ts}</span>
+            <span className={classes.ts}>{datetime}</span>
             <span>{text}</span>
           </Fragment>
         );
