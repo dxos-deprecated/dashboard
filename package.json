@@ -2,14 +2,15 @@
   "name": "@dxos/xbox-dashboard",
   "version": "1.0.5",
   "description": "XBox dashboard/console.",
-  "scripts": {
+  "bin": "server.js",
+  "scripts": {    
+    "binaries": "rm -rf ./out && pkg . -o ./out/dash",
     "build": "next build",
     "dev": "DEBUG=dxos:* next",
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
-    "start": "next build && next start",
-    "start:precompile": "next start",
+    "start": "next start",
     "test": "jest --rootDir ./pages/api --verbose --passWithNoTests"
   },
   "repository": {
@@ -66,8 +67,14 @@
     "jest": "^25.1.0",
     "lint": "^0.7.0",
     "lint-staged": "^9.5.0",
+    "pkg": "^4.4.5",
     "pre-commit": "^1.2.2",
     "webpack": "^4.41.2",
     "webpack-version-file-plugin": "^0.4.0"
-  }
+  },
+  "pkg": {
+    "assets": [".next/**/*"],
+    "scripts": [".next/dist/**/*.js"],
+    "targets": ["node12-macos-x64", "node12-linux-x64"]
+  }  
 }
