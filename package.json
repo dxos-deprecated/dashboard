@@ -35,6 +35,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.42",
     "@wirelineio/registry-client": "^0.4.3",
+    "babel-runtime": "^6.26.0",
     "clsx": "^1.1.0",
     "debug": "^4.1.1",
     "find-process": "^1.4.3",
