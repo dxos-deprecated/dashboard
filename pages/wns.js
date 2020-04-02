@@ -30,7 +30,7 @@ import Json from '../components/Json';
 import Log from '../components/Log';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
-import { ignorePromise } from '../lib/util';
+import { ignorePromise, safeParseJson } from '../lib/util';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -76,6 +76,44 @@ const types = [
   { key: 'wrn:app', label: 'App' },
   { key: 'wrn:type', label: 'Type' }
 ];
+
+/**
+ * Render IPFS links in package.
+ * @param {string} ipfsConsoleUrl
+ * @param {string} type
+ * @param {string} pkg
+ */
+const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
+  const obj = safeParseJson(pkg);
+
+  if (!obj) {
+    // Not an object, must be a CID.
+    return <Link href={`${ipfsConsoleUrl}/#/explore/${pkg}`} target="ipfs">{pkg}</Link>;
+  }
+
+  // eslint-disable-next-line default-case
+  switch (type) {
+    case 'wrn:bot': {
+      const packageLinks = [];
+
+      Object.keys(obj).forEach(platform => {
+        Object.keys(obj[platform]).forEach(arch => {
+          const cid = obj[platform][arch];
+          packageLinks.push(
+            <Fragment>
+              <Link key={cid} href={`${ipfsConsoleUrl}/#/explore/${cid}`} title={cid} target="ipfs">{platform}/{arch}: {cid}</Link>
+              <br />
+            </Fragment>
+          );
+        });
+      });
+
+      return <Fragment>{packageLinks}</Fragment>;
+    }
+  }
+
+  return null;
+};
 
 const Page = () => {
   const classes = useStyles();
@@ -226,9 +264,7 @@ const Page = () => {
                     <TableCell>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
                     <TableCell title={pkg}>
-                      {pkg && (
-                        <Link href={`${ipfsConsoleUrl}/#/ipfs/${pkg}`} target="ipfs">{pkg}</Link>
-                      )}
+                      {pkg && <PackageLink ipfsConsoleUrl={ipfsConsoleUrl} type={type} pkg={pkg} />}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                   </TableRow>
