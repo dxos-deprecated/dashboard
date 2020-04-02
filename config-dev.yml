@@ -3,7 +3,7 @@
 #
 
 app:
-  title: 'Dashboard'
+  title: 'Console'
   website: 'https://dxos.org'
   debug: "dxos:dashboard:*"
 
