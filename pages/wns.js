@@ -30,7 +30,7 @@ import Json from '../components/Json';
 import Log from '../components/Log';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
-import { ignorePromise, tryParseJson } from '../lib/util';
+import { ignorePromise, safeParseJson } from '../lib/util';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -83,8 +83,8 @@ const types = [
  * @param {string} type
  * @param {string} pkg
  */
-const renderPackageLinks = (ipfsConsoleUrl, type, pkg) => {
-  const obj = tryParseJson(pkg);
+const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
+  const obj = safeParseJson(pkg);
 
   if (!obj) {
     // Not an object, must be a CID.
@@ -264,7 +264,7 @@ const Page = () => {
                     <TableCell>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
                     <TableCell title={pkg}>
-                      {pkg && renderPackageLinks(ipfsConsoleUrl, type, pkg)}
+                      {pkg && <PackageLink ipfsConsoleUrl={ipfsConsoleUrl} type={type} pkg={pkg} />}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                   </TableRow>
