@@ -5,7 +5,7 @@
   "bin": "server.js",
   "scripts": {
     "binaries": "rm -rf ./out && pkg . -o ./out/dash",
-    "pack": "npm run build && npm run binaries",
+    "bundle": "npm run build && npm run binaries",
     "build": "next build",
     "dev": "DEBUG=dxos:* next",
     "lint": "eslint ./src --ignore-path .eslintignore",

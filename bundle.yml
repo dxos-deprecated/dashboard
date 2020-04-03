@@ -1,6 +1,6 @@
 id: 'wrn:bundle:dxos/dashboard'
 name: Dashboard
-build: yarn run pack
+build: yarn run bundle
 public: out
 version: 0.0.6
 package:
