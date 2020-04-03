@@ -84,5 +84,8 @@
     "lint": "^0.7.0",
     "lint-staged": "^9.5.0",
     "pre-commit": "^1.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
