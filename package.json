@@ -1,11 +1,23 @@
 {
   "name": "@dxos/xbox-dashboard",
-  "version": "1.0.5",
+  "version": "1.0.0-beta.0",
   "description": "XBox dashboard/console.",
-  "bin": "server.js",
+  "bin": {
+    "dxos-dashboard": "./bin/bin.js"
+  },
+  "files": [
+    ".next/",
+    "bin",
+    "components",
+    "hooks",
+    "lib",
+    "pages",
+    "public",
+    "config-*.*",
+    "next.config.js",
+    "version.json"
+  ],
   "scripts": {
-    "binaries": "rm -rf ./out && pkg . -o ./out/dash",
-    "bundle": "npm run build && npm run binaries",
     "build": "next build",
     "dev": "DEBUG=dxos:* next",
     "lint": "eslint ./src --ignore-path .eslintignore",
@@ -30,6 +42,7 @@
     "lint:staged"
   ],
   "dependencies": {
+    "@dxos/async": "^1.0.0-beta.0",
     "@dxos/crypto": "^0.0.1",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
@@ -55,10 +68,11 @@
     "react-dom": "^16.12.0",
     "react-force-graph": "^1.30.1",
     "superagent": "^5.2.1",
-    "systeminformation": "^4.21.1"
+    "systeminformation": "^4.21.1",
+    "webpack": "^4.41.2",
+    "webpack-version-file-plugin": "^0.4.0"
   },
   "devDependencies": {
-    "@dxos/async": "^1.0.0-beta.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-config-airbnb": "^18.0.0",
@@ -69,21 +83,6 @@
     "jest": "^25.1.0",
     "lint": "^0.7.0",
     "lint-staged": "^9.5.0",
-    "pkg": "^4.4.5",
-    "pre-commit": "^1.2.2",
-    "webpack": "^4.41.2",
-    "webpack-version-file-plugin": "^0.4.0"
-  },
-  "pkg": {
-    "assets": [
-      ".next/**/*"
-    ],
-    "scripts": [
-      ".next/dist/**/*.js"
-    ],
-    "targets": [
-      "node12-macos-x64",
-      "node12-linux-x64"
-    ]
+    "pre-commit": "^1.2.2"
   }
 }
