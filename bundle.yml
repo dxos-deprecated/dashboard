@@ -1,0 +1,10 @@
+id: 'wrn:bundle:dxos/dashboard'
+name: Dashboard
+build: yarn run pack
+public: out
+version: 0.0.6
+package:
+  linux:
+    x64: QmWvWSFv5tjfdE9vnpQzsXQrgTSJipsS6i8EVjK9bZ2uFc
+  macos:
+    x64: QmS8SAwD58uJqUffsWDNEAa6ARMpPEKScQdquz8Kby1UR9

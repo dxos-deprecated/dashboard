@@ -107,4 +107,8 @@ dist
 
 .idea/modules.xml
 
+# Output for pkg binaries
 out/
+
+# Temp folder wire dash
+.dash/
