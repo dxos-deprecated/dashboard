@@ -16,7 +16,7 @@ import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import Json from '../components/Json';
+import JsonTreeView from '../components/JsonTreeView';
 import Toolbar from '../components/Toolbar';
 
 /**
@@ -107,7 +107,7 @@ const Page = () => {
       </Toolbar>
 
       <Content updated={ts}>
-        <Json json={result} />
+        <JsonTreeView data={result} />
       </Content>
 
       <Error message={error} onClose={resetError} />

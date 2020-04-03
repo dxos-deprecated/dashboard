@@ -19,7 +19,7 @@ import { withLayout } from '../hooks';
 import AppContext from '../components/AppContext';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import Json from '../components/Json';
+import JsonTreeView from '../components/JsonTreeView';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
 
@@ -79,7 +79,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <Json json={{ version }} />
+        <JsonTreeView data={{ version }} />
       </Content>
 
       <Error message={error} onClose={resetError} />

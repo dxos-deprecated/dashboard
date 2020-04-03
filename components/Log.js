@@ -9,54 +9,46 @@ import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/ClearAll';
-import green from '@material-ui/core/colors/green';
-import grey from '@material-ui/core/colors/grey';
-import red from '@material-ui/core/colors/red';
-import orange from '@material-ui/core/colors/orange';
 
 import Toolbar from './Toolbar';
 
 const useStyles = makeStyles(theme => ({
-
   root: {
     display: 'flex',
     flex: 1,
-    flexDirection: 'column',
-    overflow: 'hidden'
+    flexDirection: 'column'
   },
 
   container: {
     display: 'flex',
     flex: 1,
-    overflow: 'scroll',
-    backgroundColor: grey[100],
+    overflowX: 'scroll',
+    overflowY: 'scroll'
   },
 
   log: {
     padding: theme.spacing(1),
-    fontSize: 14,
-    fontFamily: 'Roboto+Mono, monospace',
+    fontSize: 16,
+    // fontFamily: 'monospace',
     whiteSpace: 'nowrap'
   },
 
   level: {
     display: 'inline-block',
+    width: 48,
     marginRight: 8,
-    width: 32
-  },
-  level_info: {
-    color: grey[700],
+    color: theme.palette.grey[500]
   },
   level_warn: {
-    color: orange[700]
+    color: theme.palette.warning.main
   },
   level_error: {
-    color: red[700]
+    color: theme.palette.error.main
   },
 
   ts: {
     marginRight: 8,
-    color: green[700]
+    color: theme.palette.primary[500]
   }
 }));
 
@@ -64,9 +56,9 @@ const Log = ({ log, onClear }) => {
   const classes = useStyles();
 
   const levels = {
-    'I': classes.level_info,
-    'W': classes.level_warn,
-    'E': classes.level_error
+    'I': { label: 'INFO', className: classes.level_info },
+    'W': { label: 'WARN', className: classes.level_warn },
+    'E': { label: 'ERROR', className: classes.level_error }
   };
 
   // TODO(burdon): Parse in backend and normalize numbers.
@@ -97,11 +89,14 @@ const Log = ({ log, onClear }) => {
         const datetime = transform(rest).format('YYYY-MM-DD HH:mm:ss');
         const text = match[match.length - 1];
 
+        const { label, className } = levels[level] || levels['I'];
+        const pkg = levels[level] ? '' : `[${level}]: `;
+
         message = (
           <Fragment>
-            <span className={clsx(classes.level, levels[level])}>{level}</span>
             <span className={classes.ts}>{datetime}</span>
-            <span>{text}</span>
+            <span className={clsx(classes.level, className)}>{label || level}</span>
+            <span>{pkg}{text}</span>
           </Fragment>
         );
 
@@ -118,6 +113,7 @@ const Log = ({ log, onClear }) => {
 
   return (
     <div className={classes.root}>
+      {false && (
       <Toolbar variant="dense">
         <div>
           <IconButton onClick={onClear} title="Clear log">
@@ -125,6 +121,7 @@ const Log = ({ log, onClear }) => {
           </IconButton>
         </div>
       </Toolbar>
+      )}
       <div className={classes.container}>
         <div className={classes.log}>
           { log.reverse().map((line, i) => <Line key={i} message={line} />) }

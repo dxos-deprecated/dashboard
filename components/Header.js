@@ -18,6 +18,8 @@ import DxOSIcon from './icons/DXOS';
 import AppContext from './AppContext';
 
 const useStyles = makeStyles((theme) => ({
+  offset: theme.mixins.denseToolbar,
+
   logo: {
     marginTop: 4,
     marginRight: theme.spacing(2),
@@ -35,9 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
   link: {
     color: blueGrey[900]
-  },
-
-  offset: theme.mixins.toolbar
+  }
 }));
 
 const Header = () => {
@@ -47,7 +47,7 @@ const Header = () => {
   return (
     <Fragment>
       <AppBar position="fixed">
-        <Toolbar>
+        <Toolbar variant="dense">
           <Link href="/">
             <div className={classes.logo}>
               <DxOSIcon />
