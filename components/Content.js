@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
 
 import Timer from './Timer';
 
@@ -12,8 +13,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
-    overflow: 'hidden',
-    backgroundColor: 'white'
+    overflow: 'hidden'
   },
 
   inner: {
@@ -34,7 +34,7 @@ const Content = ({ children, updated }) => {
 
   // TODO(burdon): Move Timer to statusbar.
   return (
-    <div className={classes.root}>
+    <Paper className={classes.root}>
       <div className={classes.inner}>
         {children}
       </div>
@@ -42,7 +42,7 @@ const Content = ({ children, updated }) => {
       <div className={classes.timer}>
         <Timer start={updated} />
       </div>
-    </div>
+    </Paper>
   );
 };
 

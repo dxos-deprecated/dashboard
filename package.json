@@ -3,7 +3,7 @@
   "version": "1.0.5",
   "description": "XBox dashboard/console.",
   "bin": "server.js",
-  "scripts": {    
+  "scripts": {
     "binaries": "rm -rf ./out && pkg . -o ./out/dash",
     "build": "next build",
     "dev": "DEBUG=dxos:* next",
@@ -30,7 +30,6 @@
   ],
   "dependencies": {
     "@dxos/crypto": "^0.0.1",
-    "@dxos/react-json-tree": "^0.12.0",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.42",
@@ -43,6 +42,7 @@
     "ipfs-http-client": "^42.0.0",
     "js-yaml-loader": "^1.2.2",
     "lodash.get": "^4.4.2",
+    "lodash.isplainobject": "^4.0.6",
     "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "next": "^9.3.2",
@@ -74,8 +74,15 @@
     "webpack-version-file-plugin": "^0.4.0"
   },
   "pkg": {
-    "assets": [".next/**/*"],
-    "scripts": [".next/dist/**/*.js"],
-    "targets": ["node12-macos-x64", "node12-linux-x64"]
-  }  
+    "assets": [
+      ".next/**/*"
+    ],
+    "scripts": [
+      ".next/dist/**/*.js"
+    ],
+    "targets": [
+      "node12-macos-x64",
+      "node12-linux-x64"
+    ]
+  }
 }

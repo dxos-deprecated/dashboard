@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     height: 32,
     color: grey[100],
-    backgroundColor: grey[800],
+    backgroundColor: grey[900],
 
     '&> div': {
       flex: 1

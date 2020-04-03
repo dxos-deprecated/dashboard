@@ -9,7 +9,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   root: {
     position: 'fixed',
     display: 'flex',
@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     flexShrink: 0,
     width: 240,
-    borderRight: '1px solid lightgray'
+    borderRight: theme.palette.border
   },
 
   content: {

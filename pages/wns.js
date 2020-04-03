@@ -7,7 +7,6 @@ import moment from 'moment';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import grey from '@material-ui/core/colors/grey';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,8 +25,9 @@ import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import Json from '../components/Json';
+import JsonTreeView from '../components/JsonTreeView';
 import Log from '../components/Log';
+import Section from '../components/Section';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
 import { ignorePromise, safeParseJson } from '../lib/util';
@@ -54,26 +54,18 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  result: {
-    flex: 1,
-    overflow: 'scroll',
-    borderTop: `1px solid ${grey[300]}`
-  },
-
   colShort: {
     width: 160
   },
 
-  selected: {
-    backgroundColor: grey[300]
-  },
+  selected: {},
 }));
 
 const types = [
   { key: null, label: 'ALL' },
-  { key: 'wrn:bot-factory', label: 'Bot Factory' },
-  { key: 'wrn:bot', label: 'Bot' },
   { key: 'wrn:app', label: 'App' },
+  { key: 'wrn:bot', label: 'Bot' },
+  { key: 'wrn:bot-factory', label: 'Bot Factory' },
   { key: 'wrn:type', label: 'Type' }
 ];
 
@@ -214,6 +206,9 @@ const Page = () => {
     <Fragment>
       <Toolbar>
         <div>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
           <ButtonGroup
             className={classes.buttons}
             disableRipple
@@ -233,10 +228,6 @@ const Page = () => {
               </Button>
             ))}
           </ButtonGroup>
-
-          <IconButton onClick={handleRefresh} title="Restart">
-            <RefreshIcon />
-          </IconButton>
         </div>
 
         <ControlButtons onStart={handleStart} onStop={handleStop} onOpen={handleOpen} />
@@ -273,12 +264,14 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <div className={classes.result}>
-          <Json json={result} level={2} />
-        </div>
+        <Section label="Properties">
+          <JsonTreeView data={result} expanded={['sync']} label="status" />
+        </Section>
 
         {local && (
-          <Log log={log} onClear={handleLogClear} />
+          <Section label="Log">
+            <Log log={log} onClear={handleLogClear} />
+          </Section>
         )}
       </Content>
 

@@ -8,7 +8,7 @@ import { withLayout } from '../hooks';
 
 import AppContext from '../components/AppContext';
 import Content from '../components/Content';
-import Json from '../components/Json';
+import JsonTreeView from '../components/JsonTreeView';
 
 const Page = () => {
   const { config } = useContext(AppContext);
@@ -16,7 +16,7 @@ const Page = () => {
   return (
     <Fragment>
       <Content>
-        <Json json={config} />
+        <JsonTreeView data={config} />
       </Content>
     </Fragment>
   );

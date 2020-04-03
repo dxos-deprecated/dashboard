@@ -6,7 +6,8 @@ import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
-import theme from '../lib/theme';
+import config from '../lib/config';
+import createTheme from '../lib/theme';
 
 export default class MyDocument extends Document {
   render() {
@@ -14,7 +15,7 @@ export default class MyDocument extends Document {
       <html lang="en">
         <Head>
           {/* PWA primary color */}
-          <meta name="theme-color" content={theme.palette.primary.main} />
+          <meta name="theme-color" content={createTheme(config).palette.primary} />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           <link
             rel="stylesheet"

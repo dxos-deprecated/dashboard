@@ -20,7 +20,7 @@ import { withLayout } from '../hooks';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import Json from '../components/Json';
+import JsonTreeView from '../components/JsonTreeView';
 import Log from '../components/Log';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
@@ -130,7 +130,7 @@ const Page = () => {
           </Table>
         </TableContainer>
 
-        <Json json={stats} />
+        <JsonTreeView data={stats} />
 
         <Log log={log} onClear={handleLogClear} />
       </Content>

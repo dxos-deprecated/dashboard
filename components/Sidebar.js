@@ -9,11 +9,20 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import { useRouter } from 'next/router';
+import clsx from 'clsx';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   list: {
     padding: 0
-  }
+  },
+
+  icon: {
+    color: theme.palette.grey[500]
+  },
+
+  selected: {
+    color: theme.palette.primary.main
+  },
 }));
 
 const Sidebar = ({ modules }) => {
@@ -25,7 +34,7 @@ const Sidebar = ({ modules }) => {
       {modules.map(({ path, title, icon: Icon }) => (
         <ListItem button selected={path === router.pathname} key={path} onClick={() => router.push(path)}>
           <ListItemIcon classes={{ root: classes.icon }}>
-            <Icon />
+            <Icon className={clsx(classes.icon, path === router.pathname && classes.selected)} />
           </ListItemIcon>
           <ListItemText primary={title} />
         </ListItem>

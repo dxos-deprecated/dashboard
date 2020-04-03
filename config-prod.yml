@@ -6,6 +6,7 @@ app:
   title: 'Console'
   website: 'https://dxos.org'
   debug: "dxos:dashboard:*"
+  theme: 'dark'
 
 # Client routes (for Apache/NGINX proxy).
 routes:

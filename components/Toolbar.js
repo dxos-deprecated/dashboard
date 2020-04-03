@@ -5,13 +5,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import MuiToolbar from '@material-ui/core/Toolbar';
-import grey from '@material-ui/core/colors/grey';
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
-    backgroundColor: grey[200],
 
     '& > button': {
       margin: theme.spacing(0.5),
