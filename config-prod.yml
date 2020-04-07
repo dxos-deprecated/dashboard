@@ -18,7 +18,7 @@ routes:
 # DxOS services.
 services:
   wns:
-    endpoint: 'http://wns1.bozemanpass.net:9473/graphql'
+    endpoint: 'http://node1.dxos.network:9473/graphql'
 
   signal:
     server: 'http://127.0.0.1:4000'
