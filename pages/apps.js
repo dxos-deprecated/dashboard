@@ -54,7 +54,6 @@ const useStyles = makeStyles(() => ({
 const Page = ({ config }) => {
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
-  const [apps, setApps] = useState([]);
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
 
@@ -66,17 +65,6 @@ const Page = ({ config }) => {
     registry.queryRecords({ type: 'wrn:app' })
       .then(records => setRecords(records))
       .catch(({ errors }) => setStatus({ error: errors }));
-
-    const status = await apiRequest('/api/apps', { command: 'list' });
-    const { result: { apps }, ...rest } = status;
-
-    const appMap = apps.reduce((map, { wrn, port, path }) => {
-      map[wrn] = { port, path };
-      return map;
-    }, {});
-
-    setApps(appMap);
-    setStatus(rest);
   };
 
   const handleStart = async () => {
@@ -95,13 +83,9 @@ const Page = ({ config }) => {
 
   const sorter = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 
-  const getLink = name => {
-    const appRecord = apps[`wrn:app:${name}`];
-    if (appRecord) {
-      const { path } = appRecord;
-      return getServiceUrl(joinUrl('app.server', path));
-    }
-  };
+  // TODO(burdon): Test if deployed.
+  // TODO(burdon): WNS should have path.
+  const getAppUrl = name => joinUrl(getServiceUrl('app.server'), name);
 
   return (
     <Layout config={config}>
@@ -128,7 +112,7 @@ const Page = ({ config }) => {
             </TableHead>
             <TableBody>
               {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => {
-                const link = getLink(name);
+                const link = getAppUrl(name);
 
                 return (
                   <TableRow key={id} size="small">

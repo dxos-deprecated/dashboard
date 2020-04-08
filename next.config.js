@@ -7,6 +7,13 @@ const webpack = require('webpack');
 const withImages = require('next-images');
 const VersionFile = require('webpack-version-file-plugin');
 
+// System config (for wire CLI).
+const WIRE_CONFIG = process.env.WIRE_CONFIG || './config/config-dev.yml';
+
+// Wire app routes.
+// TODO(burdon): Remove.
+const WIRE_APP_ROUTES = process.env.WIRE_APP_ROUTES || './config/routes.yml';
+
 // Build-time config.
 const CONFIG_FILE = process.env.CONFIG_FILE || 'config-dev';
 
@@ -18,10 +25,6 @@ const CONFIG_FILE = process.env.CONFIG_FILE || 'config-dev';
 const CONFIG_ENDPOINT = process.env.CONFIG_ENDPOINT || 'http://127.0.0.1:9000/.well-known/dxos';
 
 module.exports = withImages({
-
-  // https://nextjs.org/docs/api-reference/next.config.js/runtime-configuration
-  serverRuntimeConfig: {},
-  publicRuntimeConfig: {},
 
   webpack(config) {
     config.module.rules.push(
@@ -40,6 +43,8 @@ module.exports = withImages({
         CONFIG_ENDPOINT: String(CONFIG_ENDPOINT),
         DEBUG: String(process.env.DEBUG),
         NODE_ENV: String(process.env.NODE_ENV),
+        WIRE_CONFIG: String(WIRE_CONFIG),
+        WIRE_APP_ROUTES: String(WIRE_APP_ROUTES)
       }),
 
       // Define the build config file based on the target.

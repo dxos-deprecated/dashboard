@@ -1,0 +1,11 @@
+#
+# wire app serve --config ./config/routes.yml
+#
+
+routes:
+  - path: /editor
+    app: wrn:app:wireline.io/editor
+  - path: /messenger
+    app: wrn:app:wireline.io/messenger
+  - path: /planner
+    app: wrn:app:wireline.io/planner
