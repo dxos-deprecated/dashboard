@@ -12,13 +12,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { getDyanmicConfig } from '../lib/config';
 import { httpRequest } from '../lib/request';
 import { ignorePromise } from '../lib/util';
 
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import Layout from '../components/Layout';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
@@ -68,8 +69,8 @@ const Page = ({ config }) => {
             <TableBody>
               {channels.map(({ channel, peers }) => (
                 <TableRow key={channel} size="small">
-                  <TableCell>{channel}</TableCell>
-                  <TableCell>
+                  <TableCell monospace>{channel}</TableCell>
+                  <TableCell monospace>
                     {peers.map(peer => <div key={peer}>{ peer }</div>)}
                   </TableCell>
                 </TableRow>

@@ -14,13 +14,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { apiRequest } from '../lib/request';
 import { getDyanmicConfig } from '../lib/config';
 
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import Log from '../components/Log';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';

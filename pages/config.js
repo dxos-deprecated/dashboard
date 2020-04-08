@@ -4,11 +4,12 @@
 
 import React from 'react';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { getDyanmicConfig } from '../lib/config';
 
 import Content from '../components/Content';
 import Layout from '../components/Layout';
-import JsonTreeView from '../components/JsonTreeView';
 import Toolbar from '../components/Toolbar';
 
 const Page = ({ config }) => {

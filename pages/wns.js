@@ -18,6 +18,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { getDyanmicConfig, getServiceUrl } from '../lib/config';
 import { apiRequest } from '../lib/request';
 import { ignorePromise, safeParseJson } from '../lib/util';
@@ -26,7 +28,6 @@ import { useRegistry, useIsMounted } from '../hooks';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import Layout from '../components/Layout';
 import Log from '../components/Log';
 import Section from '../components/Section';
@@ -254,11 +255,11 @@ const Page = ({ config }) => {
               {records.sort(sorter)
                 .map(({ id, type, name, version, createTime, attributes: { displayName, package: pkg } }) => (
                   <TableRow key={id} size="small">
-                    <TableCell>{type}</TableCell>
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{version}</TableCell>
+                    <TableCell monospace>{type}</TableCell>
+                    <TableCell monospace>{name}</TableCell>
+                    <TableCell monospace>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
-                    <TableCell title={pkg}>
+                    <TableCell title={pkg} monospace>
                       {pkg && <PackageLink ipfsConsoleUrl={getServiceUrl('ipfs.webui')} type={type} pkg={pkg} />}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>

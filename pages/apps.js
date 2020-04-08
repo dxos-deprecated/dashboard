@@ -14,6 +14,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { getDyanmicConfig, getServiceUrl } from '../lib/config';
 import { apiRequest } from '../lib/request';
 import { ignorePromise, joinUrl } from '../lib/util';
@@ -21,7 +23,6 @@ import { useRegistry } from '../hooks';
 
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
 import Layout from '../components/Layout';
@@ -116,10 +117,10 @@ const Page = ({ config }) => {
 
                 return (
                   <TableRow key={id} size="small">
-                    <TableCell>{name}</TableCell>
-                    <TableCell>{version}</TableCell>
+                    <TableCell monospace>{name}</TableCell>
+                    <TableCell monospace>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
-                    <TableCell>
+                    <TableCell monospace>
                       {link && (
                         <Link href={link} target={name}>{link}</Link>
                       )}

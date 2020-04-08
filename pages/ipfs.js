@@ -5,8 +5,16 @@
 import IpfsHttpClient from 'ipfs-http-client';
 import React, { useEffect, useState } from 'react';
 
+import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
+
+import { JsonTreeView } from '@dxos/react-ux';
 
 import { getDyanmicConfig } from '../lib/config';
 import { apiRequest } from '../lib/request';
@@ -16,9 +24,26 @@ import { useIsMounted } from '../hooks';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import Layout from '../components/Layout';
+import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
+
+const useStyles = makeStyles(() => ({
+  tableContainer: {
+    flex: 1,
+    overflowY: 'scroll'
+  },
+
+  table: {
+    tableLayout: 'fixed',
+
+    '& th': {
+      fontVariant: 'all-small-caps',
+      fontSize: 18,
+      cursor: 'ns-resize'
+    }
+  }
+}));
 
 /**
  * NOTE: Must set-up CORS first.
@@ -31,6 +56,7 @@ import Toolbar from '../components/Toolbar';
  * @constructor
  */
 const Page = ({ config }) => {
+  const classes = useStyles();
   const isMounted = useIsMounted();
   const [{ ts, result, error }, setStatus] = useState({});
 
@@ -44,9 +70,23 @@ const Page = ({ config }) => {
       const ipfs = IpfsHttpClient(config.services.ipfs.server);
       const version = await ipfs.version();
       const status = await ipfs.id();
+
+      // All local files.
+      // TODO(burdon): Join with WNS query?
+      let files = 0;
+      const refs = [];
+      for await (const ref of ipfs.refs.local()) {
+        if (ref.err) {
+          console.error(ref.err);
+        } else {
+          files++;
+          // refs.push(ref.ref);
+        }
+      }
+
       if (isMounted.current) {
         status.addresses = status.addresses.map(address => String(address));
-        setStatus({ ts: Date.now(), result: { version, status } });
+        setStatus({ ts: Date.now(), result: { version, status, refs, files } });
       }
     } catch (error) {
       let message = String(error);
@@ -60,12 +100,6 @@ const Page = ({ config }) => {
         setStatus({ ts: Date.now(), error: message });
       }
     }
-
-    // TODO(burdon): List files referenced from the registry.
-    // TODO(burdon): Button to retrive and pin file on local node.
-    // const data = await IpfsHttpClient.urlSource('https://ipfs.io/images/ipfs-logo.svg');
-    // const hash = await ipfs.add(data);
-    // console.log(hash, data);
   };
 
   // TODO(burdon): Link to Chrome extension (info panel).
@@ -94,6 +128,8 @@ const Page = ({ config }) => {
 
   useEffect(ignorePromise(handleRefresh), []);
 
+  const { refs = [], files, ...rest } = result || {};
+
   return (
     <Layout config={config}>
       <Toolbar>
@@ -107,7 +143,26 @@ const Page = ({ config }) => {
       </Toolbar>
 
       <Content updated={ts}>
-        <JsonTreeView data={result} />
+        {refs.length > 0 && (
+          <TableContainer className={classes.tableContainer}>
+            <Table stickyHeader size="small" className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Hash</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {refs.map((ref) => (
+                  <TableRow key={ref} size="small">
+                    <TableCell monospace>{ref}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        <JsonTreeView data={{ ...rest, stats: { files } }} />
       </Content>
 
       <Error message={error} onClose={resetError} />

@@ -7,13 +7,14 @@ import React, { useEffect, useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { JsonTreeView } from '@dxos/react-ux';
+
 import { getDyanmicConfig } from '../lib/config';
 import { apiRequest } from '../lib/request';
 import { ignorePromise } from '../lib/util';
 
 import Content from '../components/Content';
 import Error from '../components/Error';
-import JsonTreeView from '../components/JsonTreeView';
 import Toolbar from '../components/Toolbar';
 import Layout from '../components/Layout';
 
