@@ -66,9 +66,9 @@ const types = [
   { key: null, label: 'ALL' },
   { key: 'wrn:xbox', label: 'XBox' },
   { key: 'wrn:resource', label: 'Resource' },
-  { key: 'wrn:type', label: 'Type' },
   { key: 'wrn:app', label: 'App' },
   { key: 'wrn:bot', label: 'Bot' },
+  { key: 'wrn:type', label: 'Type' },
 ];
 
 /**
