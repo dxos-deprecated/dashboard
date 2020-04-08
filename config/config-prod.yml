@@ -1,0 +1,9 @@
+#
+# NODE_ENV === production
+#
+
+app:
+  title: 'Console'
+  website: 'https://dxos.org'
+  debug: "dxos:dashboard:*"
+  theme: 'dark'

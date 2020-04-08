@@ -2,7 +2,7 @@
 // Copyright 2020 DxOS
 //
 
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,7 +15,6 @@ import PublicIcon from '@material-ui/icons/Public';
 import Link from 'next/link';
 
 import DxOSIcon from './icons/DXOS';
-import AppContext from './AppContext';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.denseToolbar,
@@ -40,8 +39,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Header = () => {
-  const { config } = useContext(AppContext);
+const Header = ({ config }) => {
   const classes = useStyles();
 
   return (

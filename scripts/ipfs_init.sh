@@ -1,8 +1,11 @@
 #!/bin/sh
 
-ipfs init
+# First time only.
+if [ ! -f ~/.ipfs/config ]; then
+  ipfs init
+fi
 
-ipfs config gateway 8888
+ipfs config Addresses.Gateway /ip4/127.0.0.1/tcp/8080
 
 # Enable CORS for dashboard
 # https://github.com/ipfs/js-ipfs-http-client/tree/master/examples/bundle-webpack#setup

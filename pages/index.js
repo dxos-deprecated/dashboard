@@ -2,21 +2,22 @@
 // Copyright 2020 DxOS
 //
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { getDyanmicConfig } from '../lib/config';
 import { apiRequest } from '../lib/request';
 import { ignorePromise } from '../lib/util';
-import { withLayout } from '../hooks';
 
 import Content from '../components/Content';
 import Error from '../components/Error';
 import JsonTreeView from '../components/JsonTreeView';
 import Toolbar from '../components/Toolbar';
+import Layout from '../components/Layout';
 
-const Page = () => {
+const Page = ({ config }) => {
   const [{ ts, result, error }, setStatus] = useState({});
 
   const resetError = () => setStatus({ ts, result, error: undefined });
@@ -29,7 +30,7 @@ const Page = () => {
   useEffect(ignorePromise(handleRefresh), []);
 
   return (
-    <Fragment>
+    <Layout config={config}>
       <Toolbar>
         <div>
           <IconButton onClick={handleRefresh} title="Restart">
@@ -43,8 +44,10 @@ const Page = () => {
       </Content>
 
       <Error message={error} onClose={resetError} />
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

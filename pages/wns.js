@@ -4,7 +4,7 @@
 
 import get from 'lodash.get';
 import moment from 'moment';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -18,19 +18,20 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { getDyanmicConfig, getServiceUrl } from '../lib/config';
 import { apiRequest } from '../lib/request';
-import { withLayout, useRegistry, useIsMounted } from '../hooks';
+import { ignorePromise, safeParseJson } from '../lib/util';
+import { useRegistry, useIsMounted } from '../hooks';
 
-import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
 import JsonTreeView from '../components/JsonTreeView';
+import Layout from '../components/Layout';
 import Log from '../components/Log';
 import Section from '../components/Section';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
-import { ignorePromise, safeParseJson } from '../lib/util';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -63,10 +64,11 @@ const useStyles = makeStyles(theme => ({
 
 const types = [
   { key: null, label: 'ALL' },
+  { key: 'wrn:xbox', label: 'XBox' },
+  { key: 'wrn:resource', label: 'Resource' },
+  { key: 'wrn:type', label: 'Type' },
   { key: 'wrn:app', label: 'App' },
   { key: 'wrn:bot', label: 'Bot' },
-  { key: 'wrn:bot-factory', label: 'Bot Factory' },
-  { key: 'wrn:type', label: 'Type' }
 ];
 
 /**
@@ -80,6 +82,7 @@ const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
 
   if (!obj) {
     // Not an object, must be a CID.
+    // TODO(burdon): Relative path.
     return <Link href={`${ipfsConsoleUrl}/#/explore/${pkg}`} target="ipfs">{pkg}</Link>;
   }
 
@@ -93,8 +96,14 @@ const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
           const cid = obj[platform][arch];
           packageLinks.push(
             <Fragment>
-              <Link key={cid} href={`${ipfsConsoleUrl}/#/explore/${cid}`} title={cid} target="ipfs">{platform}/{arch}: {cid}</Link>
-              <br />
+              <Link
+                key={cid}
+                href={`${ipfsConsoleUrl}/#/explore/${cid}`}
+                title={cid}
+                target="ipfs"
+              >
+                {platform}/{arch}: {cid}
+              </Link>
             </Fragment>
           );
         });
@@ -107,17 +116,15 @@ const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
   return null;
 };
 
-const Page = () => {
+const Page = ({ config }) => {
   const classes = useStyles();
   const isMounted = useIsMounted();
-  const { config } = useContext(AppContext);
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
   const [log, setLog] = useState([]);
   const [{ sort, ascend }, setSort] = useState({ sort: 'type', ascend: true });
-  const [ipfsConsoleUrl, setIpfsConsoleUrl] = useState();
-  const { registry, endpoint, local } = useRegistry(config);
+  const { registry, webui, local } = useRegistry(config);
 
   const handleRefresh = async () => {
     // TODO(burdon): Format records.
@@ -149,9 +156,6 @@ const Page = () => {
           setStatus({ error: errors.map(({ message }) => message) });
         }
       });
-
-    const { result } = await apiRequest('/api/ipfs', { command: 'webui' });
-    setIpfsConsoleUrl(result);
   };
 
   const handleStart = !local ? undefined : async () => {
@@ -169,7 +173,7 @@ const Page = () => {
   };
 
   const handleOpen = () => {
-    window.open(endpoint, '_wns_');
+    window.open(webui, '_wns_');
   };
 
   // TODO(burdon): Set polling timestamp to now.
@@ -203,7 +207,7 @@ const Page = () => {
   };
 
   return (
-    <Fragment>
+    <Layout config={config}>
       <Toolbar>
         <div>
           <IconButton onClick={handleRefresh} title="Restart">
@@ -255,7 +259,7 @@ const Page = () => {
                     <TableCell>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
                     <TableCell title={pkg}>
-                      {pkg && <PackageLink ipfsConsoleUrl={ipfsConsoleUrl} type={type} pkg={pkg} />}
+                      {pkg && <PackageLink ipfsConsoleUrl={getServiceUrl('ipfs.webui')} type={type} pkg={pkg} />}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                   </TableRow>
@@ -276,8 +280,10 @@ const Page = () => {
       </Content>
 
       <Error message={error} onClose={handleResetErrors} />
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

@@ -2,7 +2,7 @@
 // Copyright 2020 DxOS
 //
 
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,19 +13,19 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import StartIcon from '@material-ui/icons/PlayCircleOutline';
-import StopIcon from '@material-ui/icons/HighlightOff';
 
+import { getDyanmicConfig, getServiceUrl } from '../lib/config';
 import { apiRequest } from '../lib/request';
-import { useRegistry, withLayout } from '../hooks';
-import { createAbsoluteUrl, ignorePromise } from '../lib/util';
+import { ignorePromise, joinUrl } from '../lib/util';
+import { useRegistry } from '../hooks';
 
-import AppContext from '../components/AppContext';
 import Content from '../components/Content';
 import Error from '../components/Error';
 import JsonTreeView from '../components/JsonTreeView';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
+import Layout from '../components/Layout';
+import ControlButtons from '../components/ControlButtons';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -51,13 +51,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Page = () => {
-  const { config } = useContext(AppContext);
+const Page = ({ config }) => {
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const [apps, setApps] = useState([]);
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
+
   const { ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });
@@ -79,16 +79,14 @@ const Page = () => {
     setStatus(rest);
   };
 
-  const handleStart = async (name, version) => {
-    const status = await apiRequest('/api/apps', { command: 'start', name, version });
-    const { result: { path, port }, ...rest } = status;
-    const url = createAbsoluteUrl({ port, path });
-    setStatus({ result: { url }, ...rest, ts: Date.now() });
+  const handleStart = async () => {
+    const status = await apiRequest('/api/apps', { command: 'start' });
+    setStatus({ ...status, ts: Date.now() });
     await handleRefresh();
   };
 
-  const handlStop = async (name, version) => {
-    const status = await apiRequest('/api/apps', { command: 'stop', name, version });
+  const handleStop = async () => {
+    const status = await apiRequest('/api/apps', { command: 'stop' });
     setStatus({ ...status, ts: Date.now() });
     await handleRefresh();
   };
@@ -100,19 +98,21 @@ const Page = () => {
   const getLink = name => {
     const appRecord = apps[`wrn:app:${name}`];
     if (appRecord) {
-      const { port, path } = appRecord;
-      return createAbsoluteUrl({ port, path });
+      const { path } = appRecord;
+      return getServiceUrl(joinUrl('app.server', path));
     }
   };
 
   return (
-    <Fragment>
+    <Layout config={config}>
       <Toolbar>
         <div>
           <IconButton onClick={handleRefresh} title="Restart">
             <RefreshIcon />
           </IconButton>
         </div>
+
+        <ControlButtons onStart={handleStart} onStop={handleStop}  />
       </Toolbar>
 
       <Content updated={ts}>
@@ -124,7 +124,6 @@ const Page = () => {
                 <TableCell className={classes.colShort}>Version</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Link</TableCell>
-                <TableCell className={classes.colShort} />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -141,14 +140,6 @@ const Page = () => {
                         <Link href={link} target={name}>{link}</Link>
                       )}
                     </TableCell>
-                    <TableCell className={classes.action}>
-                      <IconButton onClick={() => handleStart(name, version)} title="Start">
-                        <StartIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handlStop(name, version)} title="Stop">
-                        <StopIcon />
-                      </IconButton>
-                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -160,8 +151,10 @@ const Page = () => {
       </Content>
 
       <Error message={error} onClose={resetError} />
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

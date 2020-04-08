@@ -9,7 +9,7 @@ import { ServerStyleSheets } from '@material-ui/core/styles';
 import config from '../lib/config';
 import createTheme from '../lib/theme';
 
-export default class MyDocument extends Document {
+export default class DashboardDocument extends Document {
   render() {
     return (
       <html lang="en">
@@ -31,7 +31,7 @@ export default class MyDocument extends Document {
   }
 }
 
-MyDocument.getInitialProps = async ctx => {
+DashboardDocument.getInitialProps = async ctx => {
   // Resolution order
   //
   // On the server:

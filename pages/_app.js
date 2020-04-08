@@ -12,9 +12,9 @@ import AppContext from '../components/AppContext';
 
 import config from '../lib/config';
 import createTheme from '../lib/theme';
+import modules from '../lib/modules';
 
 export default class DashboardApp extends App {
-
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -32,9 +32,9 @@ export default class DashboardApp extends App {
           <title>{config.app.title}</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
-        <ThemeProvider theme={createTheme(config)}>
+        <ThemeProvider theme={createTheme(config.app.theme)}>
           <CssBaseline />
-          <AppContext.Provider value={{ config }}>
+          <AppContext.Provider value={{ config, modules, sidebar: true }}>
             <Component {...pageProps} />
           </AppContext.Provider>
         </ThemeProvider>

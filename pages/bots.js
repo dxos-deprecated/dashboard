@@ -3,7 +3,7 @@
 //
 
 import moment from 'moment';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,7 +15,7 @@ import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { apiRequest } from '../lib/request';
-import { withLayout } from '../hooks';
+import { getDyanmicConfig } from '../lib/config';
 
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
@@ -24,6 +24,7 @@ import JsonTreeView from '../components/JsonTreeView';
 import Log from '../components/Log';
 import TableCell from '../components/TableCell';
 import Toolbar from '../components/Toolbar';
+import Layout from '../components/Layout';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -47,7 +48,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Page = () => {
+const Page = ({ config }) => {
   const classes = useStyles();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const { bots = [], ...stats } = result;
@@ -94,7 +95,7 @@ const Page = () => {
   }, []);
 
   return (
-    <Fragment>
+    <Layout config={config}>
       <Toolbar>
         <div>
           <IconButton onClick={handleRefresh} title="Restart">
@@ -136,8 +137,10 @@ const Page = () => {
       </Content>
 
       <Error message={error} onClose={resetError} />
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

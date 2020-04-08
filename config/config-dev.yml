@@ -1,29 +1,24 @@
 #
-# NODE_ENV === production
+# NODE_ENV === development
 #
 
 app:
   title: 'Console'
   website: 'https://dxos.org'
-  debug: "dxos:dashboard:*"
-  theme: 'dark'
+  debug: 'dxos:dashboard:*'
 
-# Client routes (for Apache/NGINX proxy).
-routes:
-  wns:
-    graphql: '/graphql'
-  ipfs:
-    graphql: '/webui'
-
-# DxOS services.
 services:
+  app:
+    server: 'http://127.0.0.1:6000'
+
   wns:
     endpoint: 'http://127.0.0.1:9473/graphql'
+    webui: 'http://127.0.0.1:9473'
 
   signal:
     server: 'http://127.0.0.1:4000'
 
   ipfs:
     server: '/ip4/127.0.0.1/tcp/5001'
-    gateway: 'http://127.0.0.1:8888/ipfs/'
+    gateway: '/ip4//127.0.0.1:8888/ipfs/'
     webui: 'http://127.0.0.1:5001/webui'

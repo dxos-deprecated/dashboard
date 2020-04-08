@@ -2,24 +2,24 @@
 // Copyright 2020 DxOS
 //
 
-import React, { Fragment, useContext } from 'react';
+import React from 'react';
 
-import { withLayout } from '../hooks';
+import { getDyanmicConfig } from '../lib/config';
 
-import AppContext from '../components/AppContext';
 import Content from '../components/Content';
+import Layout from '../components/Layout';
 import JsonTreeView from '../components/JsonTreeView';
 
-const Page = () => {
-  const { config } = useContext(AppContext);
-
+const Page = ({ config }) => {
   return (
-    <Fragment>
+    <Layout config={config}>
       <Content>
         <JsonTreeView data={config} />
       </Content>
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

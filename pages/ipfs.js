@@ -3,20 +3,21 @@
 //
 
 import IpfsHttpClient from 'ipfs-http-client';
-import React, { Fragment, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import { getDyanmicConfig } from '../lib/config';
 import { apiRequest } from '../lib/request';
 import { ignorePromise } from '../lib/util';
-import { withLayout, useIsMounted } from '../hooks';
+import { useIsMounted } from '../hooks';
 
-import AppContext from '../components/AppContext';
 import ControlButtons from '../components/ControlButtons';
 import Content from '../components/Content';
 import Error from '../components/Error';
 import JsonTreeView from '../components/JsonTreeView';
+import Layout from '../components/Layout';
 import Toolbar from '../components/Toolbar';
 
 /**
@@ -29,9 +30,8 @@ import Toolbar from '../components/Toolbar';
  *
  * @constructor
  */
-const Page = () => {
+const Page = ({ config }) => {
   const isMounted = useIsMounted();
-  const { config } = useContext(AppContext);
   const [{ ts, result, error }, setStatus] = useState({});
 
   // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
@@ -95,7 +95,7 @@ const Page = () => {
   useEffect(ignorePromise(handleRefresh), []);
 
   return (
-    <Fragment>
+    <Layout config={config}>
       <Toolbar>
         <div>
           <IconButton onClick={handleRefresh} title="Restart">
@@ -111,8 +111,10 @@ const Page = () => {
       </Content>
 
       <Error message={error} onClose={resetError} />
-    </Fragment>
+    </Layout>
   );
 };
 
-export default withLayout(Page);
+Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
+
+export default Page;

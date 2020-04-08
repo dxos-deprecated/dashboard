@@ -6,8 +6,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 
-import { withLayout } from '../hooks';
-
 import DxOSIcon from '../components/icons/DXOS';
 
 const useStyles = makeStyles(() => ({
@@ -45,4 +43,4 @@ const Page = () => {
   );
 };
 
-export default withLayout(Page, { sidebar: false });
+export default Page;
