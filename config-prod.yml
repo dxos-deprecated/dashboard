@@ -18,7 +18,7 @@ routes:
 # DxOS services.
 services:
   wns:
-    endpoint: 'http://127.0.0.1:9473/graphql'
+    endpoint: 'https://node1.dxos.network/wns/graphql'
 
   signal:
     server: 'http://127.0.0.1:4000'
