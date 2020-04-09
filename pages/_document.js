@@ -16,7 +16,7 @@ export default class DashboardDocument extends Document {
         <Head>
           {/* PWA primary color */}
           <meta name="theme-color" content={createTheme(config).palette.primary} />
-          <link rel="shortcut icon" href="/static/favicon.ico" />
+          <link rel="shortcut icon" href="/console/favicon.ico" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

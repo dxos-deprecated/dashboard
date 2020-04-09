@@ -2,14 +2,14 @@
 // Copyright 2020 DxOS
 //
 
+import clsx from 'clsx';
+import { useRouter } from 'next/router';
+
 import { makeStyles } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
-import { useRouter } from 'next/router';
-import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   list: {

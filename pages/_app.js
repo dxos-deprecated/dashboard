@@ -15,6 +15,7 @@ import createTheme from '../lib/theme';
 import modules from '../lib/modules';
 
 export default class DashboardApp extends App {
+
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');

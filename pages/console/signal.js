@@ -14,15 +14,15 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../lib/config';
-import { httpRequest } from '../lib/request';
-import { ignorePromise } from '../lib/util';
+import { getDyanmicConfig } from '../../lib/config';
+import { httpRequest } from '../../lib/request';
+import { ignorePromise } from '../../lib/util';
 
-import Content from '../components/Content';
-import Error from '../components/Error';
-import Layout from '../components/Layout';
-import TableCell from '../components/TableCell';
-import Toolbar from '../components/Toolbar';
+import Content from '../../components/Content';
+import Error from '../../components/Error';
+import Layout from '../../components/Layout';
+import TableCell from '../../components/TableCell';
+import Toolbar from '../../components/Toolbar';
 
 const useStyles = makeStyles(() => ({
   table: {
@@ -41,7 +41,7 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpRequest(config.services.signal.server);
+    const status = await httpRequest(config.services.signal.api);
     setStatus(status);
   };
 

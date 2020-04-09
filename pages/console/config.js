@@ -6,11 +6,11 @@ import React from 'react';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../lib/config';
+import { getDyanmicConfig } from '../../lib/config';
 
-import Content from '../components/Content';
-import Layout from '../components/Layout';
-import Toolbar from '../components/Toolbar';
+import Content from '../../components/Content';
+import Layout from '../../components/Layout';
+import Toolbar from '../../components/Toolbar';
 
 const Page = ({ config }) => {
   return (

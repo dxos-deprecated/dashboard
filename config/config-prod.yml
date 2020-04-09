@@ -7,3 +7,6 @@ app:
   website: 'https://dxos.org'
   debug: "dxos:dashboard:*"
   theme: 'dark'
+
+system:
+  metadataEndpoint: 'https://127.0.0.1/.well-known/dxos'

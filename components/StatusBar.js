@@ -4,14 +4,13 @@
 
 import moment from 'moment';
 import React from 'react';
+import Link from 'next/link';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import AboutIcon from '@material-ui/icons/PowerSettingsNew';
 import grey from '@material-ui/core/colors/grey';
-
-import Link from 'next/link';
 
 const useStyles = makeStyles(() => ({
   toolbar: {
@@ -46,7 +45,7 @@ const StatusBar = ({ config }) => {
       <div style={{ textAlign: 'center' }}>© DxOS.org</div>
 
       <div style={{ textAlign: 'right' }}>
-        <Link href="/about">
+        <Link href="/console/about">
           <IconButton edge="start" color="inherit" aria-label="about">
             <AboutIcon />
           </IconButton>

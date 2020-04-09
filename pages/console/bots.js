@@ -16,16 +16,16 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { apiRequest } from '../lib/request';
-import { getDyanmicConfig } from '../lib/config';
+import { apiRequest } from '../../lib/request';
+import { getDyanmicConfig } from '../../lib/config';
 
-import ControlButtons from '../components/ControlButtons';
-import Content from '../components/Content';
-import Error from '../components/Error';
-import Log from '../components/Log';
-import TableCell from '../components/TableCell';
-import Toolbar from '../components/Toolbar';
-import Layout from '../components/Layout';
+import ControlButtons from '../../components/ControlButtons';
+import Content from '../../components/Content';
+import Error from '../../components/Error';
+import Log from '../../components/Log';
+import TableCell from '../../components/TableCell';
+import Toolbar from '../../components/Toolbar';
+import Layout from '../../components/Layout';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 

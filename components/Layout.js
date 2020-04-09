@@ -5,7 +5,7 @@
 import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core';
 
-import Header from './Header';
+import AppBar from './AppBar';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
 import AppContext from './AppContext';
@@ -51,7 +51,7 @@ const Layout = ({ config, children }) => {
 
   return (
     <div className={classes.root}>
-      <Header config={config} />
+      <AppBar config={config} />
 
       <div className={classes.container}>
         {sidebar && (

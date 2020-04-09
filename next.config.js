@@ -26,6 +26,8 @@ const CONFIG_ENDPOINT = process.env.CONFIG_ENDPOINT || 'http://127.0.0.1:9000/.w
 
 module.exports = withImages({
 
+  // TODO(burdon): Figure out equivalent of PUBLIC_URL for '/console' prefix.
+
   webpack(config) {
     config.module.rules.push(
       {

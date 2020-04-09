@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="Sources" pattern="file[dashboard]:public/static//*||file[dashboard]:pages//*||file[dashboard]:lib//*" />
+  <scope name="Sources" pattern="file[dashboard]:public/console//*||file[dashboard]:pages//*||file[dashboard]:lib//*" />
 </component>

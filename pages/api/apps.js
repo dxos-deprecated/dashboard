@@ -5,7 +5,6 @@
 import debug from 'debug';
 import find from 'find-process';
 
-import config from '../../lib/config';
 import { exec } from './util/exec';
 
 const log = debug('dxos:dashboard:apps');
@@ -23,7 +22,7 @@ export default async (req, res) => {
     switch (command) {
       case 'start': {
         const args = [
-          'app', 'serve', '--config', config.system.appRoutes
+          'app', 'serve'
         ];
 
         await exec('wire', { args, detached: true });

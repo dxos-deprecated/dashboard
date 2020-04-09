@@ -6,7 +6,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 
-import DxOSIcon from '../components/icons/DXOS';
+import DxOSIcon from '../../components/icons/DXOS';
 
 const useStyles = makeStyles(() => ({
   outer: {

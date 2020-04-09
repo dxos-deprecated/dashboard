@@ -20,19 +20,19 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig, getServiceUrl } from '../lib/config';
-import { apiRequest } from '../lib/request';
-import { ignorePromise, safeParseJson } from '../lib/util';
-import { useRegistry, useIsMounted } from '../hooks';
+import { getDyanmicConfig, getServiceUrl } from '../../lib/config';
+import { apiRequest } from '../../lib/request';
+import { ignorePromise, safeParseJson } from '../../lib/util';
+import { useRegistry, useIsMounted } from '../../hooks';
 
-import ControlButtons from '../components/ControlButtons';
-import Content from '../components/Content';
-import Error from '../components/Error';
-import Layout from '../components/Layout';
-import Log from '../components/Log';
-import Section from '../components/Section';
-import TableCell from '../components/TableCell';
-import Toolbar from '../components/Toolbar';
+import ControlButtons from '../../components/ControlButtons';
+import Content from '../../components/Content';
+import Error from '../../components/Error';
+import Layout from '../../components/Layout';
+import Log from '../../components/Log';
+import Section from '../../components/Section';
+import TableCell from '../../components/TableCell';
+import Toolbar from '../../components/Toolbar';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 

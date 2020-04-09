@@ -16,17 +16,17 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig, getServiceUrl } from '../lib/config';
-import { apiRequest } from '../lib/request';
-import { ignorePromise, joinUrl } from '../lib/util';
-import { useRegistry } from '../hooks';
+import { getDyanmicConfig, getServiceUrl } from '../../lib/config';
+import { apiRequest } from '../../lib/request';
+import { ignorePromise, joinUrl } from '../../lib/util';
+import { useRegistry } from '../../hooks';
 
-import Content from '../components/Content';
-import Error from '../components/Error';
-import TableCell from '../components/TableCell';
-import Toolbar from '../components/Toolbar';
-import Layout from '../components/Layout';
-import ControlButtons from '../components/ControlButtons';
+import Content from '../../components/Content';
+import Error from '../../components/Error';
+import TableCell from '../../components/TableCell';
+import Toolbar from '../../components/Toolbar';
+import Layout from '../../components/Layout';
+import ControlButtons from '../../components/ControlButtons';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {

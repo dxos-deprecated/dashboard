@@ -3,16 +3,15 @@
 //
 
 import React, { Fragment } from 'react';
+import Link from 'next/link';
 
 import { makeStyles } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
+import MuiAppBar from '@material-ui/core/AppBar';
 import MuiLink from '@material-ui/core/Link';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import PublicIcon from '@material-ui/icons/Public';
-
-import Link from 'next/link';
 
 import DxOSIcon from './icons/DXOS';
 
@@ -39,14 +38,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Header = ({ config }) => {
+const AppBar = ({ config }) => {
   const classes = useStyles();
 
   return (
     <Fragment>
-      <AppBar position="fixed">
+      <MuiAppBar position="fixed">
         <Toolbar variant="dense">
-          <Link href="/">
+          <Link href="/console">
             <div className={classes.logo}>
               <DxOSIcon />
             </div>
@@ -60,11 +59,11 @@ const Header = ({ config }) => {
             </MuiLink>
           </div>
         </Toolbar>
-      </AppBar>
+      </MuiAppBar>
 
       <div className={classes.offset} />
     </Fragment>
   );
 };
 
-export default Header;
+export default AppBar;
