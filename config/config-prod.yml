@@ -9,4 +9,4 @@ app:
   theme: 'dark'
 
 system:
-  metadataEndpoint: 'https://127.0.0.1/.well-known/dxos'
+  metadataEndpoint: '/.well-known/dxos'

@@ -7,22 +7,8 @@ const webpack = require('webpack');
 const withImages = require('next-images');
 const VersionFile = require('webpack-version-file-plugin');
 
-// System config (for wire CLI).
-const WIRE_CONFIG = process.env.WIRE_CONFIG || './config/config-dev.yml';
-
-// Wire app routes.
-// TODO(burdon): Remove.
-const WIRE_APP_ROUTES = process.env.WIRE_APP_ROUTES || './config/routes.yml';
-
 // Build-time config.
-const CONFIG_FILE = process.env.CONFIG_FILE || 'config-dev';
-
-//
-// yarn config-server
-// curl http://localhost:9000/.well-known/dxos (dev)
-// curl http://localhost/.well-known/dxos (production)
-//
-const CONFIG_ENDPOINT = process.env.CONFIG_ENDPOINT || 'http://127.0.0.1:9000/.well-known/dxos';
+const STATIC_CONFIG_FILE = process.env.STATIC_CONFIG_FILE || 'config-dev';
 
 module.exports = withImages({
 
@@ -42,17 +28,21 @@ module.exports = withImages({
 
     config.plugins.push(
       new webpack.EnvironmentPlugin({
-        CONFIG_ENDPOINT: String(CONFIG_ENDPOINT),
-        DEBUG: String(process.env.DEBUG),
         NODE_ENV: String(process.env.NODE_ENV),
-        WIRE_CONFIG: String(WIRE_CONFIG),
-        WIRE_APP_ROUTES: String(WIRE_APP_ROUTES)
+        DEBUG: String(process.env.DEBUG),
+
+        //
+        // yarn config-server
+        // curl http://localhost:9000/.well-known/dxos (dev)
+        // curl http://localhost/.well-known/dxos (production)
+        //
+        CONFIG_ENDPOINT: String(process.env.CONFIG_ENDPOINT)
       }),
 
       // Define the build config file based on the target.
       // https://webpack.js.org/plugins/normal-module-replacement-plugin
-      new webpack.NormalModuleReplacementPlugin(/(.*)__CONFIG_FILE__/, (resource) => {
-        resource.request = resource.request.replace(/__CONFIG_FILE__/, CONFIG_FILE);
+      new webpack.NormalModuleReplacementPlugin(/(.*)__STATIC_CONFIG_FILE__/, (resource) => {
+        resource.request = resource.request.replace(/__STATIC_CONFIG_FILE__/, STATIC_CONFIG_FILE);
       }),
 
       new VersionFile({

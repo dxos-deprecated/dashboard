@@ -25,5 +25,4 @@ services:
     webui: 'http://127.0.0.1:5001/webui'
 
 system:
-  metadataEndpoint: 'https://127.0.0.1:9000/.well-known/dxos'
-
+  metadataEndpoint: 'http://127.0.0.1:9000/.well-known/dxos'

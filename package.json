@@ -58,6 +58,7 @@
     "ipfs-http-client": "^42.0.0",
     "js-yaml": "^3.13.1",
     "js-yaml-loader": "^1.2.2",
+    "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2",
     "lodash.isplainobject": "^4.0.6",
     "lodash.pick": "^4.4.0",

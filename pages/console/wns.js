@@ -260,7 +260,9 @@ const Page = ({ config }) => {
                     <TableCell monospace>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
                     <TableCell title={pkg} monospace>
-                      {pkg && <PackageLink ipfsConsoleUrl={getServiceUrl('ipfs.webui')} type={type} pkg={pkg} />}
+                      {pkg && (
+                        <PackageLink ipfsConsoleUrl={getServiceUrl(config, 'ipfs.webui')} type={type} pkg={pkg} />
+                      )}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
                   </TableRow>

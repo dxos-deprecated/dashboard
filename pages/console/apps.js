@@ -86,7 +86,7 @@ const Page = ({ config }) => {
 
   // TODO(burdon): Test if deployed.
   // TODO(burdon): WNS should have path.
-  const getAppUrl = name => joinUrl(getServiceUrl('app.server'), name);
+  const getAppUrl = name => joinUrl(getServiceUrl(config, 'app.server'), name);
 
   return (
     <Layout config={config}>
