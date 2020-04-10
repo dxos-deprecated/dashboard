@@ -8,7 +8,7 @@ const withImages = require('next-images');
 const VersionFile = require('webpack-version-file-plugin');
 
 // Build-time config.
-const STATIC_CONFIG_FILE = process.env.STATIC_CONFIG_FILE || 'config-dev';
+const CONFIG_FILE = (process.env.NODE_ENV === 'production') ? 'config-prod' : 'config-dev';
 
 module.exports = withImages({
 
@@ -41,8 +41,8 @@ module.exports = withImages({
 
       // Define the build config file based on the target.
       // https://webpack.js.org/plugins/normal-module-replacement-plugin
-      new webpack.NormalModuleReplacementPlugin(/(.*)__STATIC_CONFIG_FILE__/, (resource) => {
-        resource.request = resource.request.replace(/__STATIC_CONFIG_FILE__/, STATIC_CONFIG_FILE);
+      new webpack.NormalModuleReplacementPlugin(/(.*)__CONFIG_FILE__/, (resource) => {
+        resource.request = resource.request.replace(/__CONFIG_FILE__/, CONFIG_FILE);
       }),
 
       new VersionFile({

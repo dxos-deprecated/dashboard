@@ -9,7 +9,7 @@ app:
 
 services:
   app:
-    server: 'http://127.0.0.1:4000'
+    server: 'http://127.0.0.1:6000'
 
   wns:
     endpoint: 'http://127.0.0.1:9473/graphql'
