@@ -19,6 +19,7 @@ import { httpRequest } from '../../lib/request';
 import { ignorePromise } from '../../lib/util';
 
 import Content from '../../components/Content';
+import ControlButtons from '../../components/ControlButtons';
 import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
@@ -45,6 +46,9 @@ const Page = ({ config }) => {
     setStatus(status);
   };
 
+  const handleStart = () => {};
+  const handleStop = () => {};
+
   useEffect(ignorePromise(handleRefresh), []);
 
   return (
@@ -55,6 +59,8 @@ const Page = ({ config }) => {
             <RefreshIcon />
           </IconButton>
         </div>
+
+        <ControlButtons onStart={handleStart} onStop={handleStop} />
       </Toolbar>
 
       <Content updated={ts}>

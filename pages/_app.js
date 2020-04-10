@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import debug from 'debug';
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
@@ -13,6 +14,9 @@ import AppContext from '../components/AppContext';
 import config from '../lib/config';
 import createTheme from '../lib/theme';
 import modules from '../lib/modules';
+import logo from '../config/logo.txt';
+
+const log = debug('dxos:dashboard:app');
 
 export default class DashboardApp extends App {
 
@@ -22,6 +26,9 @@ export default class DashboardApp extends App {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+
+    console.log(logo);
+    log('Config:', JSON.stringify(config, undefined, 2));
   }
 
   render() {

@@ -5,7 +5,6 @@
 app:
   title: 'Console'
   website: 'https://dxos.org'
-  debug: 'dxos:dashboard:*'
 
 services:
   app:
@@ -25,4 +24,5 @@ services:
     webui: 'http://127.0.0.1:5001/webui'
 
 system:
-  metadataEndpoint: 'http://127.0.0.1:9000/.well-known/dxos'
+  debug: 'dxos:dashboard*'
+  wellknownEndpoint: 'http://127.0.0.1:9000/.well-known/dxos'

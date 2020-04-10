@@ -19,11 +19,12 @@
   ],
   "scripts": {
     "build": "next build",
-    "dev": "DEBUG=dxos:* next",
+    "dev": "next",
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next start",
+    "start:test": "WELLKNOWN_ENDPOINT=http://127.0.0.1:9000/.well-known/dxos next start",
     "test": "jest --rootDir ./pages/api --verbose --passWithNoTests",
     "well-known": "npx http-server ./config --cors --port 9000 --ext json"
   },
@@ -61,6 +62,7 @@
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2",
     "lodash.isplainobject": "^4.0.6",
+    "lodash.merge": "^4.6.2",
     "lodash.pick": "^4.4.0",
     "moment": "^2.24.0",
     "next": "^9.3.2",

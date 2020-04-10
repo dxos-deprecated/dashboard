@@ -5,8 +5,8 @@
 app:
   title: 'Console'
   website: 'https://dxos.org'
-  debug: "dxos:dashboard:*"
   theme: 'dark'
 
 system:
-  metadataEndpoint: '/.well-known/dxos'
+  debug: "dxos:dashboard*"
+  wellknownEndpoint: '/.well-known/dxos'

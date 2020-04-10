@@ -27,16 +27,21 @@ module.exports = withImages({
     );
 
     config.plugins.push(
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: String(process.env.NODE_ENV),
-        DEBUG: String(process.env.DEBUG),
+      // Define directly since EnvironmentPlugin shows warnings for undefined variables.
+      new webpack.DefinePlugin({
+
+        // production/development
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+
+        // Logging.
+        'process.env.DEBUG': JSON.stringify(process.env.DEBUG),
 
         //
-        // yarn config-server
+        // yarn well-known
         // curl http://localhost:9000/.well-known/dxos (dev)
         // curl http://localhost/.well-known/dxos (production)
         //
-        CONFIG_ENDPOINT: String(process.env.CONFIG_ENDPOINT)
+        'process.env.WELLKNOWN_ENDPOINT': JSON.stringify(process.env.WELLKNOWN_ENDPOINT),
       }),
 
       // Define the build config file based on the target.
