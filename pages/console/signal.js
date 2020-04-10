@@ -42,7 +42,7 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpRequest(config.services.signal.api);
+    const status = await httpRequest(`${config.services.signal.api}/status`);
     setStatus(status);
   };
 

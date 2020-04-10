@@ -1,20 +1,20 @@
 {
   "services": {
     "app": {
-      "server": "http://127.0.0.1:6000"
+      "server": "https://xbox.local/app/"
     },
     "ipfs": {
-      "server": "/ip4/127.0.0.1/tcp/5001",
-      "gateway": "/ip4//127.0.0.1:8888/ipfs/",
-      "webui": "http://127.0.0.1:5001/webui"
+      "server": "https://xbox.local/dxos/ipfs/api/",
+      "gateway": "https://xbox.local/dxos/ipfs/gateway/",
+      "webui": "https://xbox.local/dxos/ipfs/webui/"
     },
     "signal": {
-      "server": "http://127.0.0.1:4000",
-      "api": "http://127.0.0.1:4000"
+      "server": "wss://xbox.local/dxos/signal",
+      "api": "https://xbox.local/dxos/signal"
     },
     "wns": {
-      "endpoint": "http://127.0.0.1:9473/graphql",
-      "webui": "http://127.0.0.1:9473"
+      "endpoint": "https://xbox.local/dxos/wns/graphql",
+      "webui": "https://xbox.local/dxos/wns/"
     }
   }
 }
