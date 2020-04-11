@@ -21,8 +21,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { JsonTreeView } from '@dxos/react-ux';
 
 import { getDyanmicConfig, getServiceUrl } from '../../lib/config';
-import { apiRequest } from '../../lib/request';
-import { ignorePromise, safeParseJson } from '../../lib/util';
+import { httpGet, ignorePromise, safeParseJson } from '../../lib/util';
 import { useRegistry, useIsMounted } from '../../hooks';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -119,7 +118,7 @@ const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
 
 const Page = ({ config }) => {
   const classes = useStyles();
-  const isMounted = useIsMounted();
+  const { ifMounted } = useIsMounted();
   const [{ ts, result, error } = {}, setStatus] = useState({});
   const [type, setType] = useState(types[0].key);
   const [records, setRecords] = useState([]);
@@ -131,46 +130,39 @@ const Page = ({ config }) => {
     // TODO(burdon): Format records.
     registry.getStatus()
       .then(result => {
-        if (isMounted.current) {
-          setStatus({ ts: Date.now(), result });
-        }
+        ifMounted(() => setStatus({ ts: Date.now(), result }));
       })
       .catch(() => {
         // TODO(burdon): Should return an Error.
         // const errors = [new Error('HTTP Error')];
         const errors = [{ message: 'HTTP Error' }];
-        if (isMounted.current) {
-          setStatus({ ts: Date.now(), error: errors.map(({ message }) => message) });
-        }
+        ifMounted(() => setStatus({ ts: Date.now(), error: errors.map(({ message }) => message) }));
       });
 
     registry.queryRecords({ type })
       .then(records => {
-        if (isMounted.current) {
-          setRecords(records);
-        }
+        ifMounted(() => setRecords(records));
       })
       .catch(() => {
         // TODO(burdon): Should return an Error.
         const errors = [{ message: 'HTTP Error' }];
-        if (isMounted.current) {
-          setStatus({ error: errors.map(({ message }) => message) });
-        }
+        ifMounted(() => setStatus({ error: errors.map(({ message }) => message) }));
       });
   };
 
   const handleStart = !local ? undefined : async () => {
-    const { ts, error } = await apiRequest('/api/wns', { command: 'start' });
-    if (error) {
+    const { ts, error } = await httpGet('/api/wns', { command: 'start' });
+    ifMounted(async () => {
       setStatus({ ts, error });
-    } else {
-      await handleRefresh();
-    }
+      if (!error) {
+        await handleRefresh();
+      }
+    });
   };
 
   const handleStop = !local ? undefined : async () => {
-    const status = await apiRequest('/api/wns', { command: 'shutdown' });
-    setStatus(status);
+    const status = await httpGet('/api/wns', { command: 'shutdown' });
+    ifMounted(() => setStatus(status));
   };
 
   const handleOpen = () => {
@@ -188,8 +180,11 @@ const Page = ({ config }) => {
   if (local) {
     useEffect(() => {
       const logInterval = setInterval(async () => {
-        const { result = [] } = await apiRequest('/api/wns', { command: 'log' });
-        setLog(result);
+        const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
+        setStatus({ ts, error });
+        if (!error) {
+          setLog(log);
+        }
       }, LOG_POLL_INTERVAL);
 
       return () => {

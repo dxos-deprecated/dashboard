@@ -16,7 +16,6 @@ export default async (req, res) => {
 
   let statusCode = 200;
   let result = {};
-  let error;
   try {
     switch (command) {
       case 'version': {
@@ -26,14 +25,12 @@ export default async (req, res) => {
       }
 
       case 'start': {
-        const { output } = await exec('ipfs', { args: ['daemon', '--writable'], detached: true });
-        result = output;
+        await exec('ipfs', { args: ['daemon', '--writable'], detached: true });
         break;
       }
 
       case 'shutdown': {
-        const { output } = await exec('ipfs', { args: ['shutdown'] });
-        result = output;
+        await exec('ipfs', { args: ['shutdown'] });
         break;
       }
 
@@ -43,16 +40,11 @@ export default async (req, res) => {
     }
   } catch (err) {
     log(err);
-
     statusCode = 500;
-    if (err.match(/ipfs daemon is running/)) {
-      error = 'IPFS daemon already running';
-    } else {
-      error = String(err);
-    }
+    result = {
+      error: String(err)
+    };
   }
 
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ result, error }));
+  res.status(statusCode).json(result);
 };

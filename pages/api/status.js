@@ -2,7 +2,6 @@
 // Copyright 2020 DxOS
 //
 
-import debug from 'debug';
 import moment from 'moment';
 import pick from 'lodash.pick';
 import os from 'os';
@@ -10,8 +9,6 @@ import si from 'systeminformation';
 
 import config from '../../lib/config';
 import { exec } from './util/exec';
-
-const log = debug('dxos:dashboard');
 
 const num = new Intl.NumberFormat('en', { maximumSignificantDigits: 3 });
 
@@ -29,7 +26,6 @@ const size = (n, unit) => {
 };
 
 export default async (req, res) => {
-  log(JSON.stringify(config));
 
   //
   // System
@@ -92,11 +88,8 @@ export default async (req, res) => {
     cli: version
   };
 
-  const result = {
+  res.json({
     system,
     dxos
-  };
-
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ result }));
+  });
 };

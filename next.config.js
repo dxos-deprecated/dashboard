@@ -39,7 +39,6 @@ module.exports = withImages({
         //
         // yarn well-known
         // curl http://localhost:9000/.well-known/dxos (dev)
-        // curl http://localhost/.well-known/dxos (production)
         //
         'process.env.WELLKNOWN_ENDPOINT': JSON.stringify(process.env.WELLKNOWN_ENDPOINT),
       }),

@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Log = ({ log, onClear }) => {
+const Log = ({ log = [], onClear }) => {
   const classes = useStyles();
 
   const levels = {

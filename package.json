@@ -24,9 +24,8 @@
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next start",
-    "start:test": "WELLKNOWN_ENDPOINT=http://127.0.0.1:9000/.well-known/dxos next start",
     "test": "jest --rootDir ./pages/api --verbose --passWithNoTests",
-    "well-known": "npx http-server ./config --cors --port 9000 --ext json"
+    "well-known": "npx http-server ./config -c-1 --cors --port 9000 --ext json"
   },
   "repository": {
     "type": "git",
@@ -46,7 +45,7 @@
   "dependencies": {
     "@dxos/async": "^1.0.0-beta.0",
     "@dxos/crypto": "^0.0.1",
-    "@dxos/react-ux": "^1.0.0-beta.19",
+    "@dxos/react-ux": "^1.0.0-beta.20",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.42",
@@ -57,6 +56,7 @@
     "find-process": "^1.4.3",
     "fs-extra": "^8.1.0",
     "ipfs-http-client": "^42.0.0",
+    "isomorphic-unfetch": "^3.0.0",
     "js-yaml": "^3.13.1",
     "js-yaml-loader": "^1.2.2",
     "lodash.defaultsdeep": "^4.6.1",
@@ -76,7 +76,6 @@
     "react": "16.12.0",
     "react-dom": "^16.12.0",
     "react-force-graph": "^1.30.1",
-    "superagent": "^5.2.1",
     "systeminformation": "^4.21.1"
   },
   "devDependencies": {

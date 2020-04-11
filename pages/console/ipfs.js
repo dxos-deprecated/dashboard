@@ -17,8 +17,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { JsonTreeView } from '@dxos/react-ux';
 
 import { getDyanmicConfig } from '../../lib/config';
-import { apiRequest } from '../../lib/request';
-import { ignorePromise } from '../../lib/util';
+import { httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -57,7 +56,7 @@ const useStyles = makeStyles(() => ({
  */
 const Page = ({ config }) => {
   const classes = useStyles();
-  const isMounted = useIsMounted();
+  const { ifMounted } = useIsMounted();
   const [{ ts, result, error }, setStatus] = useState({});
 
   // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
@@ -84,10 +83,10 @@ const Page = ({ config }) => {
         }
       }
 
-      if (isMounted.current) {
+      ifMounted(() => {
         status.addresses = status.addresses.map(address => String(address));
         setStatus({ ts: Date.now(), result: { version, status, refs, files } });
-      }
+      });
     } catch (error) {
       let message = String(error);
       if (String(error).match(/Failed to fetch/)) {
@@ -96,9 +95,7 @@ const Page = ({ config }) => {
         ];
       }
 
-      if (isMounted.current) {
-        setStatus({ ts: Date.now(), error: message });
-      }
+      ifMounted(() => setStatus({ ts: Date.now(), error: message }));
     }
   };
 
@@ -106,10 +103,9 @@ const Page = ({ config }) => {
   // https://chrome.google.com/webstore/detail/ipfs-companion/nibjojkomfdiaoajekhjakgkdhaomnch?hl=en
   const handleStart = async () => {
     // TODO(burdon): Can we detach after matching.
-    const { ts, error } = await apiRequest('/api/ipfs', { command: 'start' });
-    if (error) {
-      setStatus({ ts, error });
-    } else {
+    const { ts, error } = await httpGet('/api/ipfs', { command: 'start' });
+    setStatus({ ts, error });
+    if (!error) {
       setTimeout(() => {
         handleRefresh();
       }, 5000);
@@ -117,7 +113,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/ipfs', { command: 'shutdown' });
+    const status = await httpGet('/api/ipfs', { command: 'shutdown' });
     setStatus(status);
   };
 

@@ -16,5 +16,11 @@
       "endpoint": "http://127.0.0.1:9473/graphql",
       "webui": "http://127.0.0.1:9473"
     }
+  },
+
+  "routes": {
+    "test": {
+      "endpoint": "/test"
+    }
   }
 }

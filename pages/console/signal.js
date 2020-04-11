@@ -15,8 +15,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { JsonTreeView } from '@dxos/react-ux';
 
 import { getDyanmicConfig } from '../../lib/config';
-import { httpRequest } from '../../lib/request';
-import { ignorePromise } from '../../lib/util';
+import { httpGet, ignorePromise } from '../../lib/util';
+import { useIsMounted } from '../../hooks';
 
 import Content from '../../components/Content';
 import ControlButtons from '../../components/ControlButtons';
@@ -37,13 +37,14 @@ const useStyles = makeStyles(() => ({
 
 const Page = ({ config }) => {
   const classes = useStyles();
+  const { ifMounted } = useIsMounted();
   const [{ ts, result: { version, channels = [] } = {}, error }, setStatus] = useState({});
 
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpRequest(config.services.signal.api);
-    setStatus(status);
+    const status = await httpGet(config.services.signal.api);
+    ifMounted(() => setStatus(status));
   };
 
   const handleStart = () => {};

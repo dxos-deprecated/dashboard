@@ -17,9 +17,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { JsonTreeView } from '@dxos/react-ux';
 
 import { getDyanmicConfig, getServiceUrl } from '../../lib/config';
-import { apiRequest } from '../../lib/request';
-import { ignorePromise, joinUrl } from '../../lib/util';
-import { useRegistry } from '../../hooks';
+import { httpGet, ignorePromise, joinUrl } from '../../lib/util';
+import { useIsMounted, useRegistry } from '../../hooks';
 
 import Content from '../../components/Content';
 import Error from '../../components/Error';
@@ -54,6 +53,7 @@ const useStyles = makeStyles(() => ({
 
 const Page = ({ config }) => {
   const classes = useStyles();
+  const { ifMounted } = useIsMounted();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
@@ -62,22 +62,26 @@ const Page = ({ config }) => {
 
   const resetError = () => setStatus({ ts, error: undefined });
 
-  const handleRefresh = async () => {
+  const handleRefresh = () => {
     registry.queryRecords({ type: 'wrn:app' })
-      .then(records => setRecords(records))
-      .catch(({ errors }) => setStatus({ error: errors }));
+      .then(records => ifMounted(() => setRecords(records)))
+      .catch(({ errors }) => ifMounted(() => setStatus({ error: errors })));
   };
 
   const handleStart = async () => {
-    const status = await apiRequest('/api/apps', { command: 'start' });
-    setStatus({ ...status, ts: Date.now() });
-    await handleRefresh();
+    const status = await httpGet('/api/apps', { command: 'start' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/apps', { command: 'stop' });
-    setStatus({ ...status, ts: Date.now() });
-    await handleRefresh();
+    const status = await httpGet('/api/apps', { command: 'stop' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
   };
 
   useEffect(ignorePromise(handleRefresh), []);

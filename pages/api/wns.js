@@ -14,32 +14,29 @@ const WNS_LOG_FILE_PATH = '/tmp/wns.log';
 const WNS_LOG_NUM_LINES = 50;
 
 export default async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const { searchParams } = url;
-
-  const command = searchParams.get('command');
-
   let statusCode = 200;
   let result = {};
-  let error;
+
   try {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const { searchParams } = url;
+    const command = searchParams.get('command');
+
     switch (command) {
       case 'start': {
         const args = ['start', '--gql-server', '--gql-playground', '2>&1', '|', 'tee', WNS_LOG_FILE_PATH];
-        const { output } = await exec('wnsd', { args, match: /Executed block/ });
-        result = output;
+        await exec('wnsd', { args, match: /Executed block/ });
         break;
       }
 
       case 'shutdown': {
-        const { output } = await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
-        result = output;
+        await exec('killall', { args: ['-SIGKILL', 'wnsd'] });
         break;
       }
 
       case 'log': {
         const { output: log } = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
-        result = log.split('\n');
+        result = { log: log.split('\n') };
         break;
       }
 
@@ -49,12 +46,11 @@ export default async (req, res) => {
     }
   } catch (err) {
     log(err);
-
     statusCode = 500;
-    error = String(err);
+    result = {
+      error: String(err)
+    };
   }
 
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ result, error }));
+  res.status(statusCode).json(result);
 };

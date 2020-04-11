@@ -12,6 +12,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+
   list: {
     padding: 0
   },
@@ -25,11 +32,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Sidebar = ({ modules }) => {
+const Sidebar = ({ modules: { services, settings } }) => {
   const classes = useStyles();
   const router = useRouter();
 
-  return (
+  const Modules = ({ modules }) => (
     <List aria-label="items" className={classes.list}>
       {modules.map(({ path, title, icon: Icon }) => (
         <ListItem button selected={path === router.pathname} key={path} onClick={() => router.push(path)}>
@@ -40,6 +47,13 @@ const Sidebar = ({ modules }) => {
         </ListItem>
       ))}
     </List>
+  );
+
+  return (
+    <div className={classes.root}>
+      <Modules modules={services} />
+      <Modules modules={settings} />
+    </div>
   );
 };
 

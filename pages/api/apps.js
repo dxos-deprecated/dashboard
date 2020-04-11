@@ -17,7 +17,6 @@ export default async (req, res) => {
 
   let statusCode = 200;
   let result = {};
-  let error;
   try {
     switch (command) {
       case 'start': {
@@ -52,12 +51,11 @@ export default async (req, res) => {
     }
   } catch (err) {
     log(err);
-
     statusCode = 500;
-    error = String(err);
+    result = {
+      error: String(err)
+    };
   }
 
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ result, error }));
+  res.status(statusCode).json(result);
 };

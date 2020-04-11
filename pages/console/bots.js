@@ -16,8 +16,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { apiRequest } from '../../lib/request';
 import { getDyanmicConfig } from '../../lib/config';
+import { httpGet } from '../../lib/util';
 
 import ControlButtons from '../../components/ControlButtons';
 import Content from '../../components/Content';
@@ -26,6 +26,7 @@ import Log from '../../components/Log';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
+import { useIsMounted } from '../../hooks';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -51,6 +52,7 @@ const useStyles = makeStyles(() => ({
 
 const Page = ({ config }) => {
   const classes = useStyles();
+  const { ifMounted } = useIsMounted();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const { bots = [], ...stats } = result;
   const [log, setLog] = useState([]);
@@ -58,22 +60,23 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await apiRequest('/api/bots', { command: 'status' });
-    setStatus({ ...status, ts: Date.now() });
+    const status = await httpGet('/api/bots', { command: 'status' });
+    ifMounted(() => setStatus(status));
   };
 
   const handleStart = async () => {
-    const { ts, error } = await apiRequest('/api/bots', { command: 'start' });
-    if (error) {
+    const { ts, error } = await httpGet('/api/bots', { command: 'start' });
+    ifMounted(() => {
       setStatus({ ts, error });
-    } else {
-      await handleRefresh();
-    }
+      if (!error) {
+        handleRefresh();
+      }
+    });
   };
 
   const handleStop = async () => {
-    const status = await apiRequest('/api/bots', { command: 'stop' });
-    setStatus(status);
+    const status = await httpGet('/api/bots', { command: 'stop' });
+    ifMounted(() => setStatus(status));
   };
 
   const handleLogClear = () => setLog([]);
@@ -83,11 +86,13 @@ const Page = ({ config }) => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { result, error } = await apiRequest('/api/bots', { command: 'log' });
-      setStatus({ error });
-      if (!error) {
-        setLog(result);
-      }
+      const { result, error } = await httpGet('/api/bots', { command: 'log' });
+      ifMounted(() => {
+        setStatus({ error });
+        if (!error) {
+          setLog(result);
+        }
+      });
     }, LOG_POLL_INTERVAL);
 
     return () => {
