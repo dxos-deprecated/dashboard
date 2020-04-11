@@ -12,7 +12,8 @@ const CONFIG_FILE = (process.env.NODE_ENV === 'production') ? 'config-prod' : 'c
 
 module.exports = withImages({
 
-  // TODO(burdon): Figure out equivalent of PUBLIC_URL for '/console' prefix.
+  // https://github.com/zeit/next.js/issues/5602
+  assetPrefix: (process.env.NODE_ENV === 'production') ? '/console' : '',
 
   webpack(config) {
     config.module.rules.push(
