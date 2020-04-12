@@ -5,26 +5,24 @@
 app:
   title: 'Console'
   website: 'https://dxos.org'
-  debug: "dxos:dashboard:*"
 
-# Client routes for local development.
-routes:
-  wns:
-    port: 9473
-    graphql: '/graphql'
-  ipfs:
-    port: 5001
-    graphql: '/webui'
-
-# DxOS services.
 services:
+  app:
+    server: 'http://127.0.0.1:6000'
+
   wns:
     endpoint: 'http://127.0.0.1:9473/graphql'
+    webui: 'http://127.0.0.1:9473'
 
   signal:
     server: 'http://127.0.0.1:4000'
+    api: 'http://127.0.0.1:4000'
 
   ipfs:
     server: '/ip4/127.0.0.1/tcp/5001'
     gateway: '/ip4//127.0.0.1:8888/ipfs/'
     webui: 'http://127.0.0.1:5001/webui'
+
+system:
+  debug: 'dxos:dashboard*'
+  wellknownEndpoint: 'http://127.0.0.1:9000/.well-known/dxos'

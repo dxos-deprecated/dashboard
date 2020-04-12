@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import debug from 'debug';
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
@@ -12,6 +13,10 @@ import AppContext from '../components/AppContext';
 
 import config from '../lib/config';
 import createTheme from '../lib/theme';
+import modules from '../lib/modules';
+import logo from '../config/logo.txt';
+
+const log = debug('dxos:dashboard:app');
 
 export default class DashboardApp extends App {
 
@@ -21,6 +26,9 @@ export default class DashboardApp extends App {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+
+    console.log(logo);
+    log('Config:', JSON.stringify(config, undefined, 2));
   }
 
   render() {
@@ -32,9 +40,9 @@ export default class DashboardApp extends App {
           <title>{config.app.title}</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
-        <ThemeProvider theme={createTheme(config)}>
+        <ThemeProvider theme={createTheme(config.app.theme)}>
           <CssBaseline />
-          <AppContext.Provider value={{ config }}>
+          <AppContext.Provider value={{ config, modules, sidebar: true }}>
             <Component {...pageProps} />
           </AppContext.Provider>
         </ThemeProvider>

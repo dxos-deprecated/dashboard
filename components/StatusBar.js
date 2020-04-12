@@ -3,17 +3,14 @@
 //
 
 import moment from 'moment';
-import React, { useContext } from 'react';
+import React from 'react';
+import Link from 'next/link';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import AboutIcon from '@material-ui/icons/PowerSettingsNew';
 import grey from '@material-ui/core/colors/grey';
-
-import Link from 'next/link';
-
-import AppContext from './AppContext';
 
 const useStyles = makeStyles(() => ({
   toolbar: {
@@ -33,9 +30,10 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const StatusBar = () => {
-  const { config: { build: { name, buildDate, version } } } = useContext(AppContext);
+const StatusBar = ({ config }) => {
   const classes = useStyles();
+
+  const { build: { name, buildDate, version } } = config;
 
   return (
     <Toolbar variant="dense" className={classes.toolbar}>
@@ -47,7 +45,7 @@ const StatusBar = () => {
       <div style={{ textAlign: 'center' }}>© DxOS.org</div>
 
       <div style={{ textAlign: 'right' }}>
-        <Link href="/about">
+        <Link href="/console/about">
           <IconButton edge="start" color="inherit" aria-label="about">
             <AboutIcon />
           </IconButton>

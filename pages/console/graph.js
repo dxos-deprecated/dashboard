@@ -24,7 +24,7 @@ const Page = () => {
     }
 
     // eslint-disable-next-line global-require
-    const Graph  = require('../components/Graph').default;
+    const Graph = require('../../components/Graph').default;
 
     return <Graph data={genRandomTree(50)} />;
   };

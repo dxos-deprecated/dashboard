@@ -2,12 +2,13 @@
 // Copyright 2020 DxOS
 //
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core';
 
-import Header from './Header';
+import AppBar from './AppBar';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
+import AppContext from './AppContext';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     flexShrink: 0,
     width: 240,
-    borderRight: theme.palette.border
+    borderRight: `1px solid ${theme.palette.primary.dark}`
   },
 
   content: {
@@ -44,12 +45,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Layout = ({ children, modules, sidebar = true }) => {
+const Layout = ({ config, children }) => {
   const classes = useStyles();
+  const { modules, sidebar } = useContext(AppContext);
 
   return (
     <div className={classes.root}>
-      <Header />
+      <AppBar config={config} />
 
       <div className={classes.container}>
         {sidebar && (
@@ -63,7 +65,7 @@ const Layout = ({ children, modules, sidebar = true }) => {
         </div>
       </div>
 
-      <StatusBar />
+      <StatusBar config={config} />
     </div>
   );
 };

@@ -15,7 +15,7 @@ const createError = (obj, code) => new Error(obj ? String(obj).replace('\n', '')
  * @param {Object} options
  * @returns {Promise<{error, pid}>}
  */
-// TODO(burdon): Factor out (common with CLI?)
+// TODO(burdon): Factor out (common with CLI/PM2?)
 export const exec = (command, options = {}) => {
   const { args = [], env, detached, match, timeout, kill } = options;
 

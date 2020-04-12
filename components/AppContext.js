@@ -4,8 +4,7 @@
 
 import { createContext } from 'react';
 
-import config from '../lib/config';
-
-const AppContext = createContext({ config });
+// Cross-application state.
+const AppContext = createContext();
 
 export default AppContext;

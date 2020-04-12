@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
 export const useIsMounted = () => {
   const isMounted = useRef(false);
+
   useEffect(() => {
     isMounted.current = true;
     return () => {
@@ -16,5 +17,14 @@ export const useIsMounted = () => {
     };
   }, []);
 
-  return isMounted;
+  return {
+    isMounted,
+
+    // Only call if mounted.
+    ifMounted: (f) => {
+      if (isMounted.current) {
+        return f();
+      }
+    }
+  };
 };

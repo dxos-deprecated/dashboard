@@ -22,7 +22,6 @@ export default async (req, res) => {
 
   let statusCode = 200;
   let result = {};
-  let error;
   try {
     switch (command) {
       case 'start': {
@@ -66,17 +65,16 @@ export default async (req, res) => {
   } catch (err) {
     // TODO(burdon): Sporadic Error (polling logs).
     // at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
-    log(err);
-
     if (String(err).match(/No such file or directory/)) {
       await exec('touch', { args: [BOT_FACTORY_LOG_FILE_PATH] });
     }
 
+    log(err);
     statusCode = 500;
-    error = String(err);
+    result = {
+      error: String(err)
+    };
   }
 
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ result, error }));
+  res.status(statusCode).json(result);
 };
