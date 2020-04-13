@@ -40,7 +40,7 @@ export const isLocalhost = url => {
  * Join URL parts.
  * @return {string}
  */
-export const joinUrl = (...parts) => parts.filter(Boolean).map(p => (p[0] === '/' ? p.substring(1) : p)).join('/');
+export const joinUrl = (...parts) => parts.filter(Boolean).join('/');
 
 /**
  * Creates URL with query string.

@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import get from 'lodash.get';
 import IpfsHttpClient from 'ipfs-http-client';
 import React, { useEffect, useState } from 'react';
 
@@ -60,14 +61,12 @@ const Page = ({ config }) => {
   const { ifMounted } = useIsMounted();
   const [{ ts, result, error }, setStatus] = useState({});
 
-  // https://reactjs.org/blog/2015/12/16/ismounted-antipattern.html
-
   const resetError = () => setStatus({ ts, result, error: undefined });
 
   const handleRefresh = async () => {
     try {
       // https://github.com/ipfs/js-ipfs-http-client#api
-      const ipfs = IpfsHttpClient(config.services.ipfs.server);
+      const ipfs = IpfsHttpClient(get(config, 'services.ipfs.server'));
       const version = await ipfs.version();
       const status = await ipfs.id();
 

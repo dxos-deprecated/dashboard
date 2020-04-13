@@ -8,8 +8,8 @@ services:
     server: 'http://127.0.0.1:6000'
 
   wns:
-    endpoint: 'http://127.0.0.1:9473/graphql'
-    webui: 'http://127.0.0.1:9473'
+    server: 'http://127.0.0.1:9473/api'
+    webui: 'http://127.0.0.1:9473/webui'
 
   signal:
     server: 'http://127.0.0.1:4000'
@@ -25,18 +25,18 @@ services:
 
 routes:
   app:
-    server: '/app'
+    server: '/dxos/app'
 
   wns:
-    endpoint: '/dxos/wns/api'         # TODO(burdon): Change to /
-    webui: '/dxos/wns/webui'
+    server: '/dxos/wns/graphql'
+    webui: '/dxos/wns/console'
 
   signal:
-    api: '/dxos/signal'
+    api: '/dxos/signal/status'
 
   ipfs:
-    server: '/ipfs'
-    webui: '/ipfs/webui'
+    server: '/dxos/ipfs/api'
+    webui: '/dxos/ipfs/webui'
 
   wellknown:
     endpoint: '/.well-known/dxos'
