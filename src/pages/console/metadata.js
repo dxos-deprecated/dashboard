@@ -3,13 +3,12 @@
 //
 
 import React, { useEffect, useState } from 'react';
-
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../../lib/config';
+import { getServiceUrl } from '../../lib/config';
 import { httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
@@ -18,16 +17,23 @@ import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 import Error from '../../components/Error';
 
+export { getServerSideProps } from '../../lib/server/config';
+
 const Page = ({ config }) => {
   const { ifMounted } = useIsMounted();
   const [{ ts, result, error }, setStatus] = useState({});
 
   const resetError = () => setStatus({ ts, result, error: undefined });
 
+  //
+  // https://tools.ietf.org/html/rfc5785
+  // yarn well-known
+  // curl http://localhost:9000/.well-known/dxos (dev)
+  //
   const handleRefresh = async () => {
-    const { system: { wellknownEndpoint } } = config;
-    if (wellknownEndpoint) {
-      const status = await httpGet(wellknownEndpoint);
+    const endpoint = getServiceUrl(config, 'wellknown.endpoint');
+    if (endpoint) {
+      const status = await httpGet(endpoint);
       ifMounted(() => setStatus(status));
     } else {
       setStatus({ error: 'Well-known endpoint not configured.' });
@@ -54,7 +60,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;

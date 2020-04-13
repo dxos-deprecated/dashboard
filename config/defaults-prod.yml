@@ -9,4 +9,7 @@ app:
 
 system:
   debug: "dxos:dashboard*"
-  wellknownEndpoint: '/.well-known/dxos'
+
+routes:
+  wellknown:
+    endpoint: '/.well-known/dxos'

@@ -9,7 +9,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../../lib/config';
 import { httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
@@ -17,6 +16,8 @@ import Content from '../../components/Content';
 import Error from '../../components/Error';
 import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
+
+export { getServerSideProps } from '../../lib/server/config';
 
 const Page = ({ config }) => {
   const { ifMounted } = useIsMounted();
@@ -49,7 +50,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;

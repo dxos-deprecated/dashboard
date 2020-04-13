@@ -4,9 +4,9 @@
 
 import debug from 'debug';
 
-import { exec } from './util/exec';
+import { exec } from '../../lib/server/exec';
 
-const log = debug('dxos:dashboard:cli');
+const log = debug('dxos:dashboard:ipfs');
 
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -19,9 +19,18 @@ export default async (req, res) => {
   try {
     switch (command) {
       case 'version': {
-        // TODO(burdon): Expect JSON.
-        const { output: version } = await exec('wire', { args: ['version'] });
-        result = version;
+        const { output } = await exec('ipfs', { args: ['version'] });
+        [, result] = output.match(/ipfs version ([0-9\\.]+)/i);
+        break;
+      }
+
+      case 'start': {
+        await exec('ipfs', { args: ['daemon', '--writable'], detached: true });
+        break;
+      }
+
+      case 'shutdown': {
+        await exec('ipfs', { args: ['shutdown'] });
         break;
       }
 

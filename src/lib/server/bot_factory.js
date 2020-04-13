@@ -2,20 +2,21 @@
 // Copyright 2020 DxOS
 //
 
+// TODO(burdon): Move to config; retrieve from config.
 // TODO(egorgripasov): Temp file, remove once BotFactory could be registered in WNS.
 
 import debug from 'debug';
-import yaml from 'node-yaml';
+import yaml from 'node-yaml';                   // TODO(burdon): Replace with js-yaml
 import { existsSync } from 'fs';
 import { ensureFileSync } from 'fs-extra';
 import { homedir } from 'os';
 
 import { createKeyPair, keyToString } from '@dxos/crypto';
 
-// TODO(burdon): ???
 const FACTORY_FILE_PATH = '~/.wireline/botfactory';
 
 const log = debug('dxos:dashboard:factory');
+
 const factoryPath = FACTORY_FILE_PATH.replace('~', homedir());
 
 let config;

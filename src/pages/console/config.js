@@ -3,19 +3,31 @@
 //
 
 import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
-
-import { getDyanmicConfig } from '../../lib/config';
 
 import Content from '../../components/Content';
 import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 
+export { getServerSideProps } from '../../lib/server/config';
+
 const Page = ({ config }) => {
+  const handleRefresh = async () => {
+    window.location.reload();
+  };
+
   return (
     <Layout config={config}>
-      <Toolbar />
+      <Toolbar>
+        <div>
+          <IconButton onClick={handleRefresh} title="Restart">
+            <RefreshIcon />
+          </IconButton>
+        </div>
+      </Toolbar>
 
       <Content>
         <JsonTreeView data={config} />
@@ -23,7 +35,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;

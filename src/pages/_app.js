@@ -14,11 +14,16 @@ import AppContext from '../components/AppContext';
 import config from '../lib/config';
 import createTheme from '../lib/theme';
 import modules from '../lib/modules';
-import logo from '../config/logo.txt';
+import logo from '../../config/logo.txt';
+
+export { getServerSideProps } from '../lib/server/config';
 
 const log = debug('dxos:dashboard:app');
 
-export default class DashboardApp extends App {
+/**
+ * https://nextjs.org/docs/advanced-features/custom-app
+ */
+class DashboardApp extends App {
 
   componentDidMount() {
     // Remove the server-side injected CSS.
@@ -27,6 +32,7 @@ export default class DashboardApp extends App {
       jssStyles.parentElement.removeChild(jssStyles);
     }
 
+    debug.enable(config.system.debug);
     console.log(logo);
     log('Config:', JSON.stringify(config, undefined, 2));
   }
@@ -50,3 +56,5 @@ export default class DashboardApp extends App {
     );
   }
 }
+
+export default DashboardApp;

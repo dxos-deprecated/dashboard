@@ -4,8 +4,8 @@
 
 import debug from 'debug';
 
-import { TOPIC, SECRET_KEY } from '../../lib/bot_factory';
-import { exec } from './util/exec';
+import { TOPIC, SECRET_KEY } from '../../lib/server/bot_factory';
+import { exec } from '../../lib/server/exec';
 
 const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
 
@@ -44,7 +44,7 @@ export default async (req, res) => {
       }
 
       case 'log': {
-        const { output: log } = await exec('tail', {
+        const { output: log = [] } = await exec('tail', {
           args: [`-${BOT_FACTORY_LOG_NUM_LINES}`, BOT_FACTORY_LOG_FILE_PATH]
         });
 

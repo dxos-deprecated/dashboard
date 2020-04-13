@@ -8,10 +8,10 @@
   "files": [
     ".next/",
     "bin",
-    "components",
-    "hooks",
-    "lib",
-    "pages",
+    "src/components",
+    "src/hooks",
+    "src/lib",
+    "src/pages",
     "public",
     "config-*.*",
     "next.config.js",
@@ -19,12 +19,12 @@
   ],
   "scripts": {
     "build": "next build",
-    "dev": "next",
+    "dev": "CONFIG_FILE=./config/config-dev.yml next",
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next start",
-    "test": "jest --rootDir ./pages/api --verbose --passWithNoTests",
+    "test": "jest --rootDir src/lib/server --verbose --passWithNoTests",
     "well-known": "npx http-server ./config -c-1 --cors --port 9000 --ext json"
   },
   "repository": {

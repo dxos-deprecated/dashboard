@@ -20,7 +20,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig, getServiceUrl } from '../../lib/config';
+import { getServiceUrl } from '../../lib/config';
 import { httpGet, ignorePromise, safeParseJson } from '../../lib/util';
 import { useRegistry, useIsMounted } from '../../hooks';
 
@@ -32,6 +32,8 @@ import Log from '../../components/Log';
 import Section from '../../components/Section';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
+
+export { getServerSideProps } from '../../lib/server/config';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -181,8 +183,9 @@ const Page = ({ config }) => {
     useEffect(() => {
       const logInterval = setInterval(async () => {
         const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
-        setStatus({ ts, error });
-        if (!error) {
+        if (error) {
+          setStatus({ ts, result, error });
+        } else {
           setLog(log);
         }
       }, LOG_POLL_INTERVAL);
@@ -281,7 +284,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;
