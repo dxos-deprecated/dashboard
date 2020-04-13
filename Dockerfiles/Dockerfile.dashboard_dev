@@ -1,6 +1,6 @@
 FROM node:12.16.2-buster AS builder
 
-COPY dashboard /opt/dashboard
+COPY . /opt/dashboard
 
 WORKDIR /opt/dashboard
 RUN yarn
