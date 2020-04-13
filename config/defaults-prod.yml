@@ -1,0 +1,15 @@
+#
+# NODE_ENV === production
+#
+
+app:
+  title: 'Console'
+  website: 'https://dxos.org'
+  theme: 'dark'
+
+system:
+  debug: "dxos:dashboard*"
+
+routes:
+  wellknown:
+    endpoint: '/.well-known/dxos'

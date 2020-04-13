@@ -1,0 +1,10 @@
+#
+# NODE_ENV === development
+#
+
+app:
+  title: 'Console'
+  website: 'https://dxos.org'
+
+system:
+  debug: 'dxos:dashboard*'
