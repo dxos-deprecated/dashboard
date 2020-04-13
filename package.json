@@ -23,8 +23,10 @@
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
+    "setup:proxy": "scripts/macos/setup_local_proxy.sh",
+    "cleanup:proxy": "scripts/macos/cleanup_local_proxy.sh",
     "//": "IMPORTANT: CONFIG_FILE must be set for both build and start.",
-    "start": "CONFIG_FILE=./config/config-prod.yml next build && next start",
+    "start": "yarn setup:proxy && CONFIG_FILE=./config/config-prod.yml next build && next start",
     "test": "jest --rootDir src/lib/server --verbose --passWithNoTests",
     "well-known": "npx http-server ./config -c-1 --cors --port 9000 --ext json"
   },
