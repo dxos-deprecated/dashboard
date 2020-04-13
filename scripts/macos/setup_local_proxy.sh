@@ -17,7 +17,7 @@ if [[ -d "/etc/ssl/private" ]]; then
 fi
 
 sudo cp -f scripts/macos/ca/xbox.local.key /etc/ssl/private/xbox.local.key
-sudo cp -f scripts/macos/apache-dashboard-proxy.conf /etc/apache2/other/
+sudo cp -f scripts/macos/xbox-ssl.conf /etc/apache2/other/
 
 sudo scripts/macos/install_cert.sh /etc/ssl/certs/xboxCA.crt
 
