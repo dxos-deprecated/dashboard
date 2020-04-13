@@ -2,10 +2,6 @@
 # NODE_ENV === development
 #
 
-app:
-  title: 'Console'
-  website: 'https://dxos.org'
-
 services:
   app:
     server: 'http://127.0.0.1:6000'
@@ -23,6 +19,8 @@ services:
     gateway: '/ip4//127.0.0.1:8888/ipfs/'
     webui: 'http://127.0.0.1:5001/webui'
 
+  wellknown:
+    endpoint: 'http://127.0.0.1:9000/.well-known/dxos'
+
 system:
   debug: 'dxos:dashboard*'
-  wellknownEndpoint: 'http://127.0.0.1:9000/.well-known/dxos'

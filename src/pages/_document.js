@@ -7,13 +7,17 @@ import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
-import logo from '../config/logo.txt';
+import logo from '../../config/logo.txt';
 import config from '../lib/config';
 import createTheme from '../lib/theme';
 
 const log = debug('dxos:dashboard');
 
-export default class DashboardDocument extends Document {
+/**
+ * Server-side document rendering.
+ * https://nextjs.org/docs/advanced-features/custom-document
+ */
+class DashboardDocument extends Document {
   render() {
     return (
       <html lang="en">
@@ -87,3 +91,5 @@ DashboardDocument.getInitialProps = async ctx => {
     styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
   };
 };
+
+export default DashboardDocument;

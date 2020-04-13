@@ -14,7 +14,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../../lib/config';
 import { httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
@@ -24,6 +23,8 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
+
+export { getServerSideProps } from '../../lib/config';
 
 const useStyles = makeStyles(() => ({
   table: {
@@ -93,7 +94,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;
