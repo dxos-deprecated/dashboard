@@ -16,7 +16,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getDyanmicConfig } from '../../lib/config';
 import { httpGet } from '../../lib/util';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -27,6 +26,8 @@ import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import { useIsMounted } from '../../hooks';
+
+export { getServerSideProps } from '../../lib/config';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
@@ -86,10 +87,11 @@ const Page = ({ config }) => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { result, error } = await httpGet('/api/bots', { command: 'log' });
+      const { ts, error, result } = await httpGet('/api/bots', { command: 'log' });
       ifMounted(() => {
-        setStatus({ error });
-        if (!error) {
+        if (error) {
+          setStatus({ ts, error });
+        } else {
           setLog(result);
         }
       });
@@ -146,7 +148,5 @@ const Page = ({ config }) => {
     </Layout>
   );
 };
-
-Page.getInitialProps = async () => ({ config: await getDyanmicConfig() });
 
 export default Page;
