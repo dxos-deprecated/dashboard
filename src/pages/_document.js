@@ -7,7 +7,6 @@ import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
-import logo from '../../config/logo.txt';
 import config from '../lib/config';
 import createTheme from '../lib/theme';
 
@@ -65,13 +64,6 @@ class DashboardDocument extends Document {
  * @param {Object} ctx
  */
 DashboardDocument.getInitialProps = async ctx => {
-  const { build: { name, version } } = config;
-
-  console.log();
-  console.log(logo);
-  console.log(`  ${name} ${version}`);
-  console.log();
-
   log('Config:', JSON.stringify(config, undefined, 2));
 
   // Render app and page and get the context of the page with collected side effects.

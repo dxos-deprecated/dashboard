@@ -6,6 +6,7 @@ import moment from 'moment';
 import pick from 'lodash.pick';
 import os from 'os';
 import si from 'systeminformation';
+import sort from 'sort-json';
 
 import { exec } from '../../lib/server/exec';
 import config from './config';
@@ -88,8 +89,8 @@ export default async (req, res) => {
     cli: version
   };
 
-  res.json({
-    system,
-    dxos
-  });
+  res.json(sort({
+    dxos,
+    system
+  }));
 };

@@ -35,7 +35,10 @@ export default async (req, res) => {
       }
 
       case 'log': {
-        const { output: log = [] } = await exec('tail', { args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH] });
+        const { output: log = '' } = await exec('tail', {
+          args: [`-${WNS_LOG_NUM_LINES}`, WNS_LOG_FILE_PATH]
+        });
+
         result = { log: log.split('\n') };
         break;
       }

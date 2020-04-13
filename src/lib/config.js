@@ -6,6 +6,7 @@ import assert from 'assert';
 import debug from 'debug';
 import get from 'lodash.get';
 import merge from 'lodash.merge';
+import sort from 'sort-json';
 
 import build from '../../version.json';
 
@@ -16,13 +17,13 @@ import defaults from '../../config/__DEFAULTS_FILE__.yml';
 import { joinUrl } from './util';
 
 // TODO(burdon): Use dxos/config.
-const config = merge({}, build, defaults, {
+const config = sort(merge({}, build, defaults, {
   system: {
     env: process.env.NODE_ENV,
     debug: process.env.DEBUG,
     configFile: process.env.CONFIG_FILE
   }
-});
+}));
 
 // Config logging.
 debug.enable(config.system.debug);

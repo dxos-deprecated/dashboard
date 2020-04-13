@@ -1,0 +1,42 @@
+#
+# NODE_ENV === production
+# NOTE: Set CONFIG_FILE to swap out this config file.
+#
+
+services:
+  app:
+    server: 'http://127.0.0.1:6000'
+
+  wns:
+    endpoint: 'http://127.0.0.1:9473/graphql'
+    webui: 'http://127.0.0.1:9473'
+
+  signal:
+    server: 'http://127.0.0.1:4000'
+    api: 'http://127.0.0.1:4000'
+
+  ipfs:
+    server: '/ip4/127.0.0.1/tcp/5001'
+    gateway: '/ip4//127.0.0.1:8888/ipfs/'
+    webui: 'http://127.0.0.1:5001/webui'
+
+  wellknown:
+    endpoint: 'http://127.0.0.1:9000/.well-known/dxos'
+
+routes:
+  app:
+    server: '/app'
+
+  wns:
+    endpoint: '/dxos/wns/api'         # TODO(burdon): Change to /
+    webui: '/dxos/wns/webui'
+
+  signal:
+    api: '/dxos/signal'
+
+  ipfs:
+    server: '/ipfs'
+    webui: '/ipfs/webui'
+
+  wellknown:
+    endpoint: '/.well-known/dxos'

@@ -10,6 +10,9 @@ const VersionFile = require('webpack-version-file-plugin');
 // Build-time config.
 const DEFAULTS_FILE = (process.env.NODE_ENV === 'production') ? 'defaults-prod' : 'defaults-dev';
 
+// NOTE: The same environment variables must be used for build and start.
+console.log('Config:', DEFAULTS_FILE, process.env.CONFIG_FILE);
+
 module.exports = withImages({
 
   // The equivalent of PUBLIC_URL is not supported so fake it by serving pages and assets from the "/console" folder.

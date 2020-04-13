@@ -6,6 +6,7 @@ import assert from 'assert';
 import debug from 'debug';
 import fs from 'fs';
 import merge from 'lodash.merge';
+import sort from 'sort-json';
 import yaml from 'js-yaml';
 
 import staticConfig from '../config';
@@ -16,10 +17,13 @@ import staticConfig from '../config';
  */
 export const getConfig = async () => {
   const { system: { configFile } } = staticConfig;
+  if (!configFile) {
+    return staticConfig;
+  }
 
   const runtimeConfig = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
 
-  const config = merge({}, staticConfig, runtimeConfig);
+  const config = sort(merge({}, staticConfig, runtimeConfig));
 
   debug.enable(config.system.debug);
 
