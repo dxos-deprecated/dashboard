@@ -5,7 +5,7 @@
 import debug from 'debug';
 import find from 'find-process';
 
-import { exec } from './util/exec';
+import { exec } from '../../lib/server/exec';
 
 const log = debug('dxos:dashboard:apps');
 

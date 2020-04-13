@@ -24,7 +24,7 @@
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "start": "next start",
-    "test": "jest --rootDir src/pages/api --verbose --passWithNoTests",
+    "test": "jest --rootDir src/lib/server --verbose --passWithNoTests",
     "well-known": "npx http-server ./config -c-1 --cors --port 9000 --ext json"
   },
   "repository": {

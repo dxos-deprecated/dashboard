@@ -16,7 +16,7 @@ import createTheme from '../lib/theme';
 import modules from '../lib/modules';
 import logo from '../../config/logo.txt';
 
-export { getServerSideProps } from '../lib/config';
+export { getServerSideProps } from '../lib/server/config';
 
 const log = debug('dxos:dashboard:app');
 

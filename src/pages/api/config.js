@@ -2,9 +2,8 @@
 // Copyright 2020 Wireline, Inc.
 //
 
+import { getConfig } from '../../lib/server/config';
+
 export default async (req, res) => {
-
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-
-  res.json({ result: { foo: 100 } });
+  res.json({ result: { config: await getConfig() } });
 };

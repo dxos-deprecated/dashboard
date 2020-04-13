@@ -7,8 +7,8 @@ import pick from 'lodash.pick';
 import os from 'os';
 import si from 'systeminformation';
 
-import config from '../../lib/config';
-import { exec } from './util/exec';
+import { exec } from '../../lib/server/exec';
+import config from './config';
 
 const num = new Intl.NumberFormat('en', { maximumSignificantDigits: 3 });
 

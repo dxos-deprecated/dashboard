@@ -17,7 +17,7 @@ import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 import Error from '../../components/Error';
 
-export { getServerSideProps } from '../../lib/config';
+export { getServerSideProps } from '../../lib/server/config';
 
 const Page = ({ config }) => {
   const { ifMounted } = useIsMounted();

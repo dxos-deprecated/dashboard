@@ -28,45 +28,6 @@ const config = merge({}, build, defaults, {
 debug.enable(config.system.debug);
 
 /**
- * Return dynamic configuration (loads config file).
- * Returned `props` are passed to the component.
- * NOTE: This function must be exported in each page that requires it.
- *
- * https://nextjs.org/docs/basic-features/data-fetching#getserversideprops-server-side-rendering
-
- * @param {Object} ctx - Request context
- * @returns {Promise<{props}>}
- */
-export const getServerSideProps = async () => {
-  assert(typeof window === 'undefined');
-
-  const { system: { configFile } } = config;
-  if (!configFile) {
-    return {
-      props: {
-        config
-      }
-    };
-  }
-
-  /* eslint-disable global-require */
-  const fs = require('fs');
-  const yaml = require('js-yaml');
-
-  const result = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
-
-  const mergedConfig = merge({}, config, result);
-
-  debug.enable(mergedConfig.system.debug);
-
-  return {
-    props: {
-      config: mergedConfig
-    }
-  };
-};
-
-/**
  * Returns a relative URL if a route is specifed.
  * @param {Object} config
  * @param {string} service

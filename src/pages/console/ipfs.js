@@ -26,7 +26,7 @@ import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 
-export { getServerSideProps } from '../../lib/config';
+export { getServerSideProps } from '../../lib/server/config';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {

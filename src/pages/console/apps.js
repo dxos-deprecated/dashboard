@@ -27,7 +27,7 @@ import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import ControlButtons from '../../components/ControlButtons';
 
-export { getServerSideProps } from '../../lib/config';
+export { getServerSideProps } from '../../lib/server/config';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {

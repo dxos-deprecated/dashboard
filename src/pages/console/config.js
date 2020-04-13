@@ -12,7 +12,7 @@ import Content from '../../components/Content';
 import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 
-export { getServerSideProps } from '../../lib/config';
+export { getServerSideProps } from '../../lib/server/config';
 
 const Page = ({ config }) => {
   const handleRefresh = async () => {

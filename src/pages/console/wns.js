@@ -33,7 +33,7 @@ import Section from '../../components/Section';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 
-export { getServerSideProps } from '../../lib/config';
+export { getServerSideProps } from '../../lib/server/config';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
