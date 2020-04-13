@@ -55,10 +55,7 @@ export const getServerSideProps = async () => {
 
   const result = yaml.safeLoad(fs.readFileSync(configFile, 'utf8'));
 
-  const mergedConfig = {
-    ...config,
-    ...result
-  };
+  const mergedConfig = merge({}, config, result);
 
   debug.enable(mergedConfig.system.debug);
 

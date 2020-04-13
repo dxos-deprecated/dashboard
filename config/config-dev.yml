@@ -21,6 +21,3 @@ services:
 
   wellknown:
     endpoint: 'http://127.0.0.1:9000/.well-known/dxos'
-
-system:
-  debug: 'dxos:dashboard*'

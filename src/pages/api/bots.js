@@ -44,7 +44,7 @@ export default async (req, res) => {
       }
 
       case 'log': {
-        const { output: log } = await exec('tail', {
+        const { output: log = [] } = await exec('tail', {
           args: [`-${BOT_FACTORY_LOG_NUM_LINES}`, BOT_FACTORY_LOG_FILE_PATH]
         });
 
