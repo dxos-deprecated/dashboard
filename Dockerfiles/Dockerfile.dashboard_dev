@@ -1,0 +1,13 @@
+FROM node:12.16.2-buster AS builder
+
+COPY dashboard /opt/dashboard
+
+WORKDIR /opt/dashboard
+RUN yarn
+RUN yarn build
+
+FROM node:12.16.2-buster AS runner
+
+COPY --from=builder /opt/dashboard /opt/dashboard
+WORKDIR /opt/dashboard
+CMD yarn start
