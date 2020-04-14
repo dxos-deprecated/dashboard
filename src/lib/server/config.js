@@ -11,6 +11,8 @@ import yaml from 'js-yaml';
 
 import staticConfig from '../config';
 
+const log = debug('dxos:dashboard:config');
+
 /**
  * Loads the config file.
  * @return {Promise<Object>}
@@ -40,12 +42,26 @@ export const getConfig = async () => {
  * @param {Object} ctx - Request context
  * @returns {Promise<{props}>}
  */
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (ctx) => {
   assert(typeof window === 'undefined');
 
+  const config = await getConfig();
+
+  if (process.env.BASE_URL) {
+    config.baseUrl = process.env.BASE_URL;
+    log('Base URL set by ENV.');
+  } else if (!config.baseUrl) {
+    const protocol = ctx.req.socket.encrypted ? 'https' : 'http';
+    const { host } = ctx.req.headers;
+    config.baseUrl = `${protocol}://${host}`;
+    log('Base URL not configured, using default value.');
+  }
+  log(`Base URL: ${config.baseUrl}`);
+
+  // Must set `null` because `undefined` is not serializable.
   return {
     props: {
-      config: await getConfig()
+      config
     }
   };
 };

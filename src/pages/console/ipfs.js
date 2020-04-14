@@ -2,7 +2,6 @@
 // Copyright 2020 DxOS
 //
 
-import get from 'lodash.get';
 import IpfsHttpClient from 'ipfs-http-client';
 import React, { useEffect, useState } from 'react';
 
@@ -26,6 +25,7 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
+import { getServiceUrl } from '../../lib/config';
 
 export { getServerSideProps } from '../../lib/server/config';
 
@@ -66,7 +66,7 @@ const Page = ({ config }) => {
   const handleRefresh = async () => {
     try {
       // https://github.com/ipfs/js-ipfs-http-client#api
-      const ipfs = IpfsHttpClient(get(config, 'services.ipfs.server'));
+      const ipfs = IpfsHttpClient(getServiceUrl(config, 'ipfs.server'));
       const version = await ipfs.version();
       const status = await ipfs.id();
 
@@ -119,7 +119,7 @@ const Page = ({ config }) => {
 
   const handleOpen = () => {
     // TODO(burdon): Convert link.
-    window.open(config.services.ipfs.webui, '_ipfs_');
+    window.open(getServiceUrl(config, 'ipfs.webui', '_ipfs_'));
   };
 
   useEffect(ignorePromise(handleRefresh), []);

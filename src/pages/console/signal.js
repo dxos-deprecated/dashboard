@@ -23,6 +23,7 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
+import { getServiceUrl } from '../../lib/config';
 
 export { getServerSideProps } from '../../lib/server/config';
 
@@ -44,7 +45,7 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet(config.services.signal.api);
+    const status = await httpGet(getServiceUrl(config, 'signal.api'));
     ifMounted(() => setStatus(status));
   };
 

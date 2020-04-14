@@ -29,18 +29,24 @@ const config = sort(merge({}, build, defaults, {
 debug.enable(config.system.debug);
 
 /**
- * Returns a relative URL if a route is specifed.
+ * Returns an absolute URL to the specified service. If a route is specified that will be used,
+ * but if not, it will be a direct URL to the service.
+ * // TODO(telackey): Do we have to deal with multiaddrs?
  * @param {Object} config
  * @param {string} service
  * @param {string} [pathname]
  * @returns {string|*}
  */
 export const getServiceUrl = (config, service, pathname) => {
-  const { routes, services } = config;
+  const { routes, services, baseUrl } = config;
+  assert(baseUrl, `Invalid baseUrl: ${baseUrl}`);
 
-  const url = get(routes, service, get(services, service));
-  assert(url, `Invalid service definition: ${service}`);
-  return joinUrl(url, pathname);
+  const routeOrService = get(routes, service, get(services, service));
+  assert(routeOrService, `Invalid service definition: ${service}`);
+
+  const url = joinUrl(routeOrService, pathname);
+
+  return url.match(/^https?:/) ? url : joinUrl(config.baseUrl, url);
 };
 
 export default config;
