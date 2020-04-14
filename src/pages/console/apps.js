@@ -70,7 +70,7 @@ const Page = ({ config }) => {
   };
 
   const handleStart = async () => {
-    const status = await httpGet('/api/apps', { command: 'start' });
+    const status = await httpGet('/console/api/apps', { command: 'start' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();
@@ -78,7 +78,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/apps', { command: 'stop' });
+    const status = await httpGet('/console/api/apps', { command: 'stop' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();

@@ -61,12 +61,12 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet('/api/bots', { command: 'status' });
+    const status = await httpGet('/console/api/bots', { command: 'status' });
     ifMounted(() => setStatus(status));
   };
 
   const handleStart = async () => {
-    const { ts, error } = await httpGet('/api/bots', { command: 'start' });
+    const { ts, error } = await httpGet('/console/api/bots', { command: 'start' });
     ifMounted(() => {
       setStatus({ ts, error });
       if (!error) {
@@ -76,7 +76,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/bots', { command: 'stop' });
+    const status = await httpGet('/console/api/bots', { command: 'stop' });
     ifMounted(() => setStatus(status));
   };
 
@@ -87,7 +87,7 @@ const Page = ({ config }) => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { ts, error, result } = await httpGet('/api/bots', { command: 'log' });
+      const { ts, error, result } = await httpGet('/console/api/bots', { command: 'log' });
       ifMounted(() => {
         if (error) {
           setStatus({ ts, error });

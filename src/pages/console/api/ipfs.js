@@ -4,7 +4,7 @@
 
 import debug from 'debug';
 
-import { exec } from '../../lib/server/exec';
+import { exec } from '../../../lib/server/exec';
 
 const log = debug('dxos:dashboard:ipfs');
 
