@@ -21,6 +21,11 @@ module.exports = withImages({
 
   webpack(config) {
 
+    // TODO(burdon): ???
+    // config.browser = {
+    //   child_process: false
+    // };
+
     // Required for getServerSideProps server-only require/imports.
     config.node = {
       fs: 'empty'

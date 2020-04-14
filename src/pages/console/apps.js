@@ -16,8 +16,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getServiceUrl } from '../../lib/config';
-import { httpGet, ignorePromise, joinUrl } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted, useRegistry } from '../../hooks';
 
 import Content from '../../components/Content';
@@ -60,6 +59,11 @@ const Page = ({ config }) => {
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
 
+  // TODO(telackey): This doesn't make sense to do SSR, so bail.
+  if (!registry) {
+    return null;
+  }
+
   const { ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });
@@ -90,9 +94,9 @@ const Page = ({ config }) => {
 
   const sorter = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 
-  // TODO(burdon): Test if deployed.
   // TODO(burdon): WNS should have path.
-  const getAppUrl = name => joinUrl(getServiceUrl(config, 'app.server'), name);
+  // TODO(burdon): Test if app is deployed.
+  const getAppUrl = name => getServiceUrl(config, 'app.server', { path: name });
 
   return (
     <Layout config={config}>

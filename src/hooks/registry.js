@@ -2,23 +2,27 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import assert from 'assert';
-import get from 'lodash.get';
-
 import { Registry } from '@wirelineio/registry-client';
 
-import { getServiceUrl } from '../lib/config';
-import { isLocalhost } from '../lib/util';
+import { getServiceUrl, isLocalhost } from '../lib/util';
 
 export const useRegistry = (config) => {
-  const endpoint = get(config, 'services.wns.server');
-  assert(endpoint);
+  let endpoint;
+
+  try {
+    // If this is tried server-side, it will fail.
+    endpoint = getServiceUrl(config, 'wns.server', { absolute: true });
+  } catch (err) {
+    return {};
+  }
 
   const registry = new Registry(endpoint);
 
   return {
-    webui: getServiceUrl(config, 'wns.webui'),
-    local: isLocalhost(endpoint),
     registry,
+    webui: getServiceUrl(config, 'wns.webui', { absolute: true }),
+
+    // True if can start/stop from dashbaord.
+    local: isLocalhost(endpoint),
   };
 };

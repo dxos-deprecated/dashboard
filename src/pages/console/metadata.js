@@ -8,8 +8,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getServiceUrl } from '../../lib/config';
-import { httpGet, ignorePromise } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
 import Content from '../../components/Content';

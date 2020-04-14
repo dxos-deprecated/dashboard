@@ -9,6 +9,8 @@
 
 CERT="${1:-xbox.local.crt}"
 
+echo "Installing certificate: $CERT"
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ${CERT}
 fi

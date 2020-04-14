@@ -2,7 +2,6 @@
 // Copyright 2020 DxOS
 //
 
-import get from 'lodash.get';
 import IpfsHttpClient from 'ipfs-http-client';
 import React, { useEffect, useState } from 'react';
 
@@ -17,7 +16,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { httpGet, ignorePromise } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -66,7 +65,7 @@ const Page = ({ config }) => {
   const handleRefresh = async () => {
     try {
       // https://github.com/ipfs/js-ipfs-http-client#api
-      const ipfs = IpfsHttpClient(get(config, 'services.ipfs.server'));
+      const ipfs = IpfsHttpClient(getServiceUrl(config, 'ipfs.server', { absolute: true }));
       const version = await ipfs.version();
       const status = await ipfs.id();
 
