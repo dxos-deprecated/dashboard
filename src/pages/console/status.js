@@ -25,7 +25,7 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, result, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet('/console/api/status');
+    const status = await httpGet('/api/status');
     ifMounted(() => setStatus(status));
   };
 

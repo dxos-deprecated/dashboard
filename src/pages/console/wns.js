@@ -153,7 +153,7 @@ const Page = ({ config }) => {
   };
 
   const handleStart = !local ? undefined : async () => {
-    const { ts, error } = await httpGet('/console/api/wns', { command: 'start' });
+    const { ts, error } = await httpGet('/api/wns', { command: 'start' });
     ifMounted(async () => {
       setStatus({ ts, error });
       if (!error) {
@@ -163,7 +163,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = !local ? undefined : async () => {
-    const status = await httpGet('/console/api/wns', { command: 'shutdown' });
+    const status = await httpGet('/api/wns', { command: 'shutdown' });
     ifMounted(() => setStatus(status));
   };
 
@@ -182,7 +182,7 @@ const Page = ({ config }) => {
   if (local) {
     useEffect(() => {
       const logInterval = setInterval(async () => {
-        const { ts, error, result: { log } } = await httpGet('/console/api/wns', { command: 'log' });
+        const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
         if (error) {
           setStatus({ ts, result, error });
         } else {

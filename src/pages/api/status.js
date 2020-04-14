@@ -8,7 +8,7 @@ import os from 'os';
 import si from 'systeminformation';
 import sort from 'sort-json';
 
-import { exec } from '../../../lib/server/exec';
+import { exec } from '../../lib/server/exec';
 import config from './config';
 
 const num = new Intl.NumberFormat('en', { maximumSignificantDigits: 3 });

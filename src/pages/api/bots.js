@@ -4,8 +4,8 @@
 
 import debug from 'debug';
 
-import { TOPIC, SECRET_KEY } from '../../../lib/server/bot_factory';
-import { exec } from '../../../lib/server/exec';
+import { TOPIC, SECRET_KEY } from '../../lib/server/bot_factory';
+import { exec } from '../../lib/server/exec';
 
 const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
 

@@ -23,6 +23,7 @@ const config = {
   }
 };
 
+// TODO(burdon): Won't run without .babelrc which breaks nextjs.
 test('getServiceUrl', () => {
   expect(() => getServiceUrl({}, 'foo.server')).toThrow();
 

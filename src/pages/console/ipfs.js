@@ -103,7 +103,7 @@ const Page = ({ config }) => {
   // https://chrome.google.com/webstore/detail/ipfs-companion/nibjojkomfdiaoajekhjakgkdhaomnch?hl=en
   const handleStart = async () => {
     // TODO(burdon): Can we detach after matching.
-    const { ts, error } = await httpGet('/console/api/ipfs', { command: 'start' });
+    const { ts, error } = await httpGet('/api/ipfs', { command: 'start' });
     setStatus({ ts, error });
     if (!error) {
       setTimeout(() => {
@@ -113,7 +113,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/console/api/ipfs', { command: 'shutdown' });
+    const status = await httpGet('/api/ipfs', { command: 'shutdown' });
     setStatus(status);
   };
 
