@@ -1810,10 +1810,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@wirelineio/registry-client@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@wirelineio/registry-client/-/registry-client-0.4.4.tgz#cc46ef4795e9b35ef4eb47696078e640561e68b8"
-  integrity sha512-HSfu2eLePLWn4E47qfjXoB6md9XWh1UP2mHiQ76dcf3pP6XnEznElJgUAhOnIdLXBGFaLSeKB9jGG3sg0NhpNQ==
+"@wirelineio/registry-client@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@wirelineio/registry-client/-/registry-client-0.4.5.tgz#c5b1cb8cdf982f3b09da166c19dfbeb94f07f3d2"
+  integrity sha512-VEqKDqsVssVDMjVWSKewyyGUqz3GKDTF9ItNIv/oKg8MhXETK1+aW+/im7F5nHyfCbTzPmq3KQuu1g6To1KDsw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     bech32 "^1.1.3"

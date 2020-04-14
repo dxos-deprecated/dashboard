@@ -5,7 +5,7 @@
 
 services:
   app:
-    server: 'http://127.0.0.1:6000'
+    server: 'http://127.0.0.1:6000'                             # TODO(burdon): ???
 
   wns:
     server: 'http://127.0.0.1:9473/api'
@@ -13,7 +13,7 @@ services:
 
   signal:
     server: 'http://127.0.0.1:4000'
-    api: 'http://127.0.0.1:4000'
+    api: 'http://127.0.0.1:4000'                                # TODO(burdon): ???
 
   ipfs:
     server: '/ip4/127.0.0.1/tcp/5001'
@@ -25,11 +25,11 @@ services:
 
 routes:
   app:
-    server: '/dxos/app'
+    server: '/app'
 
   wns:
-    server: '/dxos/wns/graphql'
-    webui: '/dxos/wns/console'
+    server: '/dxos/wns/graphql'                                 # TODO(burdon): ???
+    webui: '/dxos/wns/console'                                  # TODO(burdon): ???
 
   signal:
     api: '/dxos/signal/status'
