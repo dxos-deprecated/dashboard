@@ -59,6 +59,11 @@ const Page = ({ config }) => {
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
 
+  // TODO(telackey): This doesn't make sense to do SSR, so bail.
+  if (!registry) {
+    return null;
+  }
+
   const { ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });

@@ -7,7 +7,15 @@ import { Registry } from '@wirelineio/registry-client';
 import { getServiceUrl, isLocalhost } from '../lib/util';
 
 export const useRegistry = (config) => {
-  const endpoint = getServiceUrl(config, 'wns.server', { absolute: true });
+  let endpoint;
+
+  try {
+    // If this is tried server-side, it will fail.
+    endpoint = getServiceUrl(config, 'wns.server', { absolute: true });
+  } catch (err) {
+    return {};
+  }
+
   const registry = new Registry(endpoint);
 
   return {

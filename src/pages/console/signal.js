@@ -14,7 +14,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { httpGet, ignorePromise } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
 import Content from '../../components/Content';
@@ -44,7 +44,7 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet(config.services.signal.api);
+    const status = await httpGet(getServiceUrl(config, 'signal.api', { absolute: true }));
     ifMounted(() => setStatus(status));
   };
 

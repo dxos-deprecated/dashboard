@@ -57,7 +57,7 @@ export const getServiceUrl = (config, service, options = {}) => {
   const routePath = get(routes, service);
   if (routePath) {
     if (absolute) {
-      assert(typeof window !== 'undefined');
+      assert(typeof window !== 'undefined', 'No window!');
       return buildUrl(window.location.origin, { path: appendPath(routePath) });
     }
 
