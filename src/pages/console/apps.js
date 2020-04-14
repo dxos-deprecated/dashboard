@@ -16,8 +16,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getServiceUrl } from '../../lib/config';
-import { httpGet, ignorePromise, joinUrl } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted, useRegistry } from '../../hooks';
 
 import Content from '../../components/Content';
@@ -92,7 +91,7 @@ const Page = ({ config }) => {
 
   // TODO(burdon): Test if deployed.
   // TODO(burdon): WNS should have path.
-  const getAppUrl = name => joinUrl(getServiceUrl(config, 'app.server'), name);
+  const getAppUrl = name => getServiceUrl(config, 'app.server', { path: name });
 
   return (
     <Layout config={config}>

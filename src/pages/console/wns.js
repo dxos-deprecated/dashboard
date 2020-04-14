@@ -20,8 +20,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getServiceUrl } from '../../lib/config';
-import { httpGet, ignorePromise, safeParseJson } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise, safeParseJson } from '../../lib/util';
 import { useRegistry, useIsMounted } from '../../hooks';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -75,32 +74,33 @@ const types = [
 
 /**
  * Render IPFS links in package.
- * @param {string} ipfsConsoleUrl
- * @param {string} type
+ * @param {Object} config
+ * @param {string} [type]
  * @param {string} pkg
  */
-const PackageLink = ({ ipfsConsoleUrl, type, pkg }) => {
-  const obj = safeParseJson(pkg);
+const PackageLink = ({ config, type, pkg }) => {
 
+  // TODO(burdon): Pass in expected arg types.
+  const obj = safeParseJson(pkg);
   if (!obj) {
-    // Not an object, must be a CID.
-    // TODO(burdon): Relative path.
-    return <Link href={`${ipfsConsoleUrl}/#/explore/${pkg}`} target="ipfs">{pkg}</Link>;
+    const ipfsUrl = getServiceUrl(config, 'ipfs.webui', { path: `/#/explore/${pkg}` });
+    return <Link href={ipfsUrl} target="ipfs">{pkg}</Link>;
   }
 
   // eslint-disable-next-line default-case
   switch (type) {
     case 'wrn:bot': {
       const packageLinks = [];
-
       Object.keys(obj).forEach(platform => {
         Object.keys(obj[platform]).forEach(arch => {
           const cid = obj[platform][arch];
+          const ipfsUrl = getServiceUrl(config, 'ipfs.webui', { path: `/#/explore/${cid}` });
+
           packageLinks.push(
             <Fragment>
               <Link
                 key={cid}
-                href={`${ipfsConsoleUrl}/#/explore/${cid}`}
+                href={ipfsUrl}
                 title={cid}
                 target="ipfs"
               >
@@ -259,7 +259,7 @@ const Page = ({ config }) => {
                     <TableCell>{displayName}</TableCell>
                     <TableCell title={pkg} monospace>
                       {pkg && (
-                        <PackageLink ipfsConsoleUrl={getServiceUrl(config, 'ipfs.webui')} type={type} pkg={pkg} />
+                        <PackageLink config={config} type={type} pkg={pkg} />
                       )}
                     </TableCell>
                     <TableCell>{moment.utc(createTime).fromNow()}</TableCell>
