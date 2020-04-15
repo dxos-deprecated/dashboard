@@ -98,6 +98,9 @@ const Page = ({ config }) => {
   // TODO(burdon): WNS should have path.
   // TODO(burdon): Test if app is deployed.
   const getAppUrl = (name) =>  {
+    if (!name) {
+      return '';
+    }
     // TODO(telackey): HACK... we shouldn't be duplicating our /app route.
     // cf. https://github.com/wirelineio/incubator/issues/640
     const appRoute = get(config, 'routes.app.server');
