@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import get from 'lodash.get';
 import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -96,7 +97,15 @@ const Page = ({ config }) => {
 
   // TODO(burdon): WNS should have path.
   // TODO(burdon): Test if app is deployed.
-  const getAppUrl = name => getServiceUrl(config, 'app.server', { path: name });
+  const getAppUrl = (name) =>  {
+    // TODO(telackey): HACK... we shouldn't be duplicating our /app route.
+    // cf. https://github.com/dxos/dashboard/issues/54
+    const appRoute = get(config, 'routes.app.server');
+    if (appRoute && name.startsWith(appRoute)) {
+      name = name.slice(appRoute.length);
+    }
+    return getServiceUrl(config, 'app.server', { path: name });
+  };
 
   return (
     <Layout config={config}>
