@@ -5,7 +5,7 @@
 
 services:
   app:
-    server: 'http://127.0.0.1:6000'                             # TODO(burdon): ???
+    server: 'http://127.0.0.1:5999'                             # TODO(burdon): ???
 
   wns:
     server: 'http://127.0.0.1:9473/api'

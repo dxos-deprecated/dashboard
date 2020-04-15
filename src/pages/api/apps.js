@@ -9,6 +9,9 @@ import { exec } from '../../lib/server/exec';
 
 const log = debug('dxos:dashboard:apps');
 
+// TODO(telackey): Get from config.
+const APP_PORT = 5999;
+
 export default async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const { searchParams } = url;
@@ -21,7 +24,7 @@ export default async (req, res) => {
     switch (command) {
       case 'start': {
         const args = [
-          'app', 'serve'
+          'app', 'serve', '--port', `${APP_PORT}`
         ];
 
         await exec('wire', { args, detached: true });

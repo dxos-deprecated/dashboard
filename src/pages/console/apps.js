@@ -2,6 +2,7 @@
 // Copyright 2020 DxOS
 //
 
+import get from 'lodash.get';
 import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -96,7 +97,18 @@ const Page = ({ config }) => {
 
   // TODO(burdon): WNS should have path.
   // TODO(burdon): Test if app is deployed.
-  const getAppUrl = name => getServiceUrl(config, 'app.server', { path: name });
+  const getAppUrl = (name) =>  {
+    if (!name) {
+      return '';
+    }
+    // TODO(telackey): HACK... we shouldn't be duplicating our /app route.
+    // cf. https://github.com/wirelineio/incubator/issues/640
+    const appRoute = get(config, 'routes.app.server');
+    if (appRoute && name.startsWith(appRoute)) {
+      name = name.slice(appRoute.length);
+    }
+    return getServiceUrl(config, 'app.server', { path: name });
+  };
 
   return (
     <Layout config={config}>
@@ -122,8 +134,8 @@ const Page = ({ config }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => {
-                const link = getAppUrl(name);
+              {records.sort(sorter).map(({ id, name, version, attributes: { displayName, publicUrl } }) => {
+                const link = getAppUrl(publicUrl);
 
                 return (
                   <TableRow key={id} size="small">
