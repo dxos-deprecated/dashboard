@@ -122,8 +122,8 @@ const Page = ({ config }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => {
-                const link = getAppUrl(name);
+              {records.sort(sorter).map(({ id, name, version, attributes: { displayName, publicUrl } }) => {
+                const link = getAppUrl(publicUrl);
 
                 return (
                   <TableRow key={id} size="small">
