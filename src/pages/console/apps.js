@@ -99,7 +99,7 @@ const Page = ({ config }) => {
   // TODO(burdon): Test if app is deployed.
   const getAppUrl = (name) =>  {
     // TODO(telackey): HACK... we shouldn't be duplicating our /app route.
-    // cf. https://github.com/dxos/dashboard/issues/54
+    // cf. https://github.com/wirelineio/incubator/issues/640
     const appRoute = get(config, 'routes.app.server');
     if (appRoute && name.startsWith(appRoute)) {
       name = name.slice(appRoute.length);
