@@ -4,7 +4,7 @@
 
 import { Registry } from '@wirelineio/registry-client';
 
-import { getServiceUrl, isLocalhost } from '../lib/util';
+import { getServiceUrl } from '../lib/util';
 
 export const useRegistry = (config) => {
   let endpoint;
@@ -20,9 +20,6 @@ export const useRegistry = (config) => {
 
   return {
     registry,
-    webui: getServiceUrl(config, 'wns.webui', { absolute: true }),
-
-    // True if can start/stop from dashbaord.
-    local: isLocalhost(endpoint),
+    webui: getServiceUrl(config, 'wns.webui', { absolute: true })
   };
 };

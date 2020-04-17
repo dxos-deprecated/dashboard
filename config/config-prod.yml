@@ -36,6 +36,7 @@ routes:
 
   ipfs:
     server: '/dxos/ipfs/api'
+    gateway: '/dxos/ipfs/gateway'
     webui: '/dxos/ipfs/webui'
 
   wellknown:

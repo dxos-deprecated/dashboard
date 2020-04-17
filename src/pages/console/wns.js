@@ -83,7 +83,7 @@ const PackageLink = ({ config, type, pkg }) => {
   // TODO(burdon): Pass in expected arg types.
   const obj = safeParseJson(pkg);
   if (!obj) {
-    const ipfsUrl = getServiceUrl(config, 'ipfs.webui', { path: `/#/explore/${pkg}` });
+    const ipfsUrl = getServiceUrl(config, 'ipfs.gateway', { path: `${pkg}` });
     return <Link href={ipfsUrl} target="ipfs">{pkg}</Link>;
   }
 
@@ -94,7 +94,7 @@ const PackageLink = ({ config, type, pkg }) => {
       Object.keys(obj).forEach(platform => {
         Object.keys(obj[platform]).forEach(arch => {
           const cid = obj[platform][arch];
-          const ipfsUrl = getServiceUrl(config, 'ipfs.webui', { path: `/#/explore/${cid}` });
+          const ipfsUrl = getServiceUrl(config, 'ipfs.gateway', { path: `${cid}` });
 
           packageLinks.push(
             <Fragment>
@@ -126,7 +126,7 @@ const Page = ({ config }) => {
   const [records, setRecords] = useState([]);
   const [log, setLog] = useState([]);
   const [{ sort, ascend }, setSort] = useState({ sort: 'type', ascend: true });
-  const { registry, webui, local } = useRegistry(config);
+  const { registry, webui } = useRegistry(config);
 
   // TODO(telackey): This doesn't make sense to do SSR, so bail.
   if (!registry) {
@@ -157,7 +157,7 @@ const Page = ({ config }) => {
       });
   };
 
-  const handleStart = !local ? undefined : async () => {
+  const handleStart = async () => {
     const { ts, error } = await httpGet('/api/wns', { command: 'start' });
     ifMounted(async () => {
       setStatus({ ts, error });
@@ -167,7 +167,7 @@ const Page = ({ config }) => {
     });
   };
 
-  const handleStop = !local ? undefined : async () => {
+  const handleStop = async () => {
     const status = await httpGet('/api/wns', { command: 'shutdown' });
     ifMounted(() => setStatus(status));
   };
@@ -184,22 +184,20 @@ const Page = ({ config }) => {
   useEffect(ignorePromise(handleRefresh), [type]);
 
   // Polling for logs.
-  if (local) {
-    useEffect(() => {
-      const logInterval = setInterval(async () => {
-        const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
-        if (error) {
-          setStatus({ ts, result, error });
-        } else {
-          setLog(log);
-        }
-      }, LOG_POLL_INTERVAL);
+  useEffect(() => {
+    const logInterval = setInterval(async () => {
+      const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
+      if (error) {
+        setStatus({ ts, result, error });
+      } else {
+        setLog(log);
+      }
+    }, LOG_POLL_INTERVAL);
 
-      return () => {
-        clearInterval(logInterval);
-      };
-    }, []);
-  }
+    return () => {
+      clearInterval(logInterval);
+    };
+  }, []);
 
   // TODO(burdon): Factor out.
   const sortBy = field => () => setSort({ sort: field, ascend: (field === sort ? !ascend : true) });
@@ -278,11 +276,9 @@ const Page = ({ config }) => {
           <JsonTreeView data={result} expanded={['sync']} label="status" />
         </Section>
 
-        {local && (
-          <Section label="Log">
-            <Log log={log} onClear={handleLogClear} />
-          </Section>
-        )}
+        <Section label="Log">
+          <Log log={log} onClear={handleLogClear} />
+        </Section>
       </Content>
 
       <Error message={error} onClose={handleResetErrors} />
