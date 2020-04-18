@@ -1,0 +1,25 @@
+#
+# DxOS services.
+#
+
+services:
+  wns:
+    log: '/tmp/wns.log'
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'wns'
+          - 'start'
+        # - '--lite'
+          - '--detached'
+        match: '/Executed block/'
+  ipfs:
+    log: '/tmp/ipfs.log'
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'ipfs'
+          - 'start'
+          - '--detached'
