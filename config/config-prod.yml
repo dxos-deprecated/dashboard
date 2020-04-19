@@ -25,11 +25,11 @@ services:
 
 routes:
   app:
-    server: '/app'
+    server: '/wrn'
 
   wns:
-    server: '/dxos/wns/graphql'                                 # TODO(burdon): ???
-    webui: '/dxos/wns/console'                                  # TODO(burdon): ???
+    server: '/dxos/wns/api'                                 # TODO(burdon): ???
+    webui: '/dxos/wns/console'                              # TODO(burdon): ???
 
   signal:
     api: '/dxos/signal/status'
