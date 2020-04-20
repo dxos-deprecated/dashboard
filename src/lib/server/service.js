@@ -9,6 +9,11 @@ import { execSync } from 'child_process';
 
 const log = debug('dxos:dashboard:service');
 
+const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_INTERVAL_TIME = 1500;
+// TODO(egorgripasov): Get from config.
+const DEFAULT_LOGS_COMMAND = 'wire services logs';
+
 export class Service {
   constructor(name, config) {
     assert(name);
@@ -23,19 +28,43 @@ export class Service {
   }
 
   async runScript(command, attrs = []) {
-    const defaultScript = get(this._defaultScripts, command);
-    const script = get(this._scripts, command) || defaultScript;
+    return new Promise((resolve, reject) => {
+      const defaultScript = get(this._defaultScripts, command);
+      const script = get(this._scripts, command) || defaultScript;
 
-    assert(script);
+      assert(script);
 
-    const { command: executable, attributes = [], /* match, timeout */ } = script;
+      const { command: executable, attributes = [], match, timeout = DEFAULT_TIMEOUT } = script;
 
-    assert(command);
-    assert(this._supportedScripts.includes(command), `Command ${command} not supported.`);
+      let interval;
+      if (match && timeout) {
+        setTimeout(() => {
+          if (interval) {
+            clearInterval(interval);
+          }
+          reject(new Error(`Timed out after ${timeout}ms`));
+        }, timeout);
+      }
 
-    const commandToExec = `${executable} ${[...attributes, ...attrs].join(' ')}`.replace(/<name>/g, `"${this._name}"`);
-    log('Executing: ', commandToExec);
+      assert(command);
+      assert(this._supportedScripts.includes(command), `Command ${command} not supported.`);
 
-    return String(execSync(commandToExec));
+      const commandToExec = `${executable} ${[...attributes, ...attrs].join(' ')}`.replace(/<name>/g, `"${this._name}"`);
+      log('Executing: ', commandToExec);
+
+      const result = String(execSync(commandToExec));
+
+      if (match) {
+        interval = setInterval(() => {
+          const output = String(execSync(`${DEFAULT_LOGS_COMMAND} ${this._name}`));
+          if (output.match(new RegExp(match))) {
+            clearInterval(interval);
+            resolve(result);
+          }
+        }, DEFAULT_INTERVAL_TIME);
+      } else {
+        resolve(result);
+      }
+    });
   }
 }

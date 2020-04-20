@@ -28,6 +28,8 @@ import Toolbar from '../../components/Toolbar';
 
 export { getServerSideProps } from '../../lib/server/config';
 
+const SERVICE_NAME = 'ipfs';
+
 const useStyles = makeStyles(() => ({
   tableContainer: {
     flex: 1,
@@ -102,7 +104,7 @@ const Page = ({ config }) => {
   // https://chrome.google.com/webstore/detail/ipfs-companion/nibjojkomfdiaoajekhjakgkdhaomnch?hl=en
   const handleStart = async () => {
     // TODO(burdon): Can we detach after matching.
-    const { ts, error } = await httpGet('/api/ipfs', { command: 'start' });
+    const { ts, error } = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
     setStatus({ ts, error });
     if (!error) {
       setTimeout(() => {
@@ -112,7 +114,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/ipfs', { command: 'shutdown' });
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
     setStatus(status);
   };
 

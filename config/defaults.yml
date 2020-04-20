@@ -41,7 +41,7 @@ services:
           - '--daemon'
         # - '--procName'
         # - '<name>'
-        match: '/Executed block/'
+        match: 'Executed block'
       status:
         command: wire
         attributes:
@@ -55,4 +55,11 @@ services:
         attributes:
           - 'ipfs'
           - 'start'
-          - '--detached'
+          - '--daemon'
+  app-serve:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'app'
+          - 'serve'
