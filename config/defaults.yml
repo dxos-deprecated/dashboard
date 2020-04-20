@@ -5,28 +5,28 @@
 scripts:
   status:
     command: wire
-      attributes:
-        - 'services'
-        - 'status'
-        - '<name>'
+    attributes:
+      - 'services'
+      - 'status'
+      - '<name>'
   stop:
     command: wire
-      attributes:
-        - 'services'
-        - 'stop'
-        - '<name>'
+    attributes:
+      - 'services'
+      - 'stop'
+      - '<name>'
   restart:
     command: wire
-      attributes:
-        - 'services'
-        - 'restart'
-        - '<name>'
-  restart:
+    attributes:
+      - 'services'
+      - 'restart'
+      - '<name>'
+  logs:
     command: wire
-      attributes:
-        - 'services'
-        - 'logs'
-        - '<name>'
+    attributes:
+      - 'services'
+      - 'logs'
+      - '<name>'
 
 services:
   wns:
@@ -38,9 +38,9 @@ services:
           - 'wns'
           - 'start'
         # - '--lite'
-          - '--detached'
-          - '--procName'
-          - '<name>'
+          - '--daemon'
+        # - '--procName'
+        # - '<name>'
         match: '/Executed block/'
       status:
         command: wire

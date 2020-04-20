@@ -188,10 +188,11 @@ const Page = ({ config }) => {
   // Polling for logs.
   useEffect(() => {
     const logInterval = setInterval(async () => {
-      const { ts, error, result: { result: log } } = await httpGet('/api/service', { service: SERVICE_NAME, command: 'logs' });
+      const { ts, error, result: { result: rawLog } } = await httpGet('/api/service', { service: SERVICE_NAME, command: 'logs' });
       if (error) {
         setStatus({ ts, result, error });
       } else {
+        const log = rawLog.split('\n');
         setLog(log);
       }
     }, LOG_POLL_INTERVAL);
