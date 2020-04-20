@@ -56,10 +56,13 @@ services:
           - 'ipfs'
           - 'start'
           - '--daemon'
-  app-serve:
+  app-server:
     scripts:
       start:
         command: wire
         attributes:
           - 'app'
           - 'serve'
+          - '--daemon'
+          - '--port'
+          - 5999

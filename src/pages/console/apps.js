@@ -26,6 +26,8 @@ import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import ControlButtons from '../../components/ControlButtons';
 
+const SERVICE_NAME = 'app-server';
+
 export { getServerSideProps } from '../../lib/server/config';
 
 const APP_PATH_PREFIX = 'wrn';
@@ -77,7 +79,7 @@ const Page = ({ config }) => {
   };
 
   const handleStart = async () => {
-    const status = await httpGet('/api/apps', { command: 'start' });
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();
@@ -85,7 +87,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/apps', { command: 'stop' });
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();
