@@ -24,6 +24,8 @@ import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 
+const SERVICE_NAME = 'signal';
+
 export { getServerSideProps } from '../../lib/server/config';
 
 const useStyles = makeStyles(() => ({
@@ -48,8 +50,21 @@ const Page = ({ config }) => {
     ifMounted(() => setStatus(status));
   };
 
-  const handleStart = () => {};
-  const handleStop = () => {};
+  const handleStart = async () => {
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
+  };
+
+  const handleStop = async () => {
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
+  };
 
   useEffect(ignorePromise(handleRefresh), []);
 

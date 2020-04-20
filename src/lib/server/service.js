@@ -9,7 +9,7 @@ import { execSync } from 'child_process';
 
 const log = debug('dxos:dashboard:service');
 
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 20000;
 const DEFAULT_INTERVAL_TIME = 1500;
 // TODO(egorgripasov): Get from config.
 const DEFAULT_LOGS_COMMAND = 'wire services logs';

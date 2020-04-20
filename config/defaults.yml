@@ -66,3 +66,13 @@ services:
           - '--daemon'
           - '--port'
           - 5999
+  signal:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'signal'
+          - 'start'
+          - '--daemon'
+          - '--asBootstrap'
+        match: 'SIGNAL_PROTOCOL_TOPIC'
