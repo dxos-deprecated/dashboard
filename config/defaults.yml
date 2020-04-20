@@ -2,6 +2,32 @@
 # DxOS services.
 #
 
+scripts:
+  status:
+    command: wire
+      attributes:
+        - 'services'
+        - 'status'
+        - '<name>'
+  stop:
+    command: wire
+      attributes:
+        - 'services'
+        - 'stop'
+        - '<name>'
+  restart:
+    command: wire
+      attributes:
+        - 'services'
+        - 'restart'
+        - '<name>'
+  restart:
+    command: wire
+      attributes:
+        - 'services'
+        - 'logs'
+        - '<name>'
+
 services:
   wns:
     log: '/tmp/wns.log'
@@ -13,7 +39,14 @@ services:
           - 'start'
         # - '--lite'
           - '--detached'
+          - '--procName'
+          - '<name>'
         match: '/Executed block/'
+      status:
+        command: wire
+        attributes:
+          - 'wns'
+          - 'status'
   ipfs:
     log: '/tmp/ipfs.log'
     scripts:
