@@ -13,7 +13,7 @@
     "src/lib",
     "src/pages",
     "public",
-    "config-*.*",
+    "config",
     "next.config.js",
     "version.json"
   ],
