@@ -25,7 +25,7 @@ Build is not needed.
 ## Publish to NPM
 
 - `rm -rf ./next` (Make sure we remove next folder).
-- `yarn build`.
+- `env CONFIG_FILE=./config/config-prod.yml yarn next build`.
 - `npm version prerelease`
 - `npm publish -tag beta`
 
