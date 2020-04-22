@@ -76,3 +76,19 @@ services:
           - '--daemon'
           - '--asBootstrap'
         match: 'SIGNAL_PROTOCOL_TOPIC'
+  bot-factory:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'bot'
+          - 'factory'
+          - 'start'
+          - '--daemon'
+        match: 'bot-factory'
+      status:
+        command: wire
+        attributes:
+          - 'bot'
+          - 'factory'
+          - 'status'

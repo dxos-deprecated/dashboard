@@ -29,7 +29,7 @@ import { useIsMounted } from '../../hooks';
 
 export { getServerSideProps } from '../../lib/server/config';
 
-const LOG_POLL_INTERVAL = 3 * 1000;
+const LOG_POLL_INTERVAL = 4 * 1000;
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -61,8 +61,8 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet('/api/bots', { command: 'status' });
-    ifMounted(() => setStatus(status));
+    // const status = await httpGet('/api/bots', { command: 'status' });
+    // ifMounted(() => setStatus(status));
   };
 
   const handleStart = async () => {
@@ -87,12 +87,12 @@ const Page = ({ config }) => {
 
     // Polling for logs.
     const logInterval = setInterval(async () => {
-      const { ts, error, result } = await httpGet('/api/bots', { command: 'log' });
+      const { ts, error, result: { result } } = await httpGet('/api/bots', { command: 'logs' });
       ifMounted(() => {
         if (error) {
           setStatus({ ts, error });
         } else {
-          setLog(result);
+          setLog(result ? result.split('\n') : []);
         }
       });
     }, LOG_POLL_INTERVAL);
