@@ -8,12 +8,13 @@ import sort from 'sort-json';
 
 import build from '../../version.json';
 
+import defaults from '../../config/defaults.yml';
 // Config file is set by webpack.
 // eslint-disable-next-line import/no-unresolved
-import defaults from '../../config/__DEFAULTS_FILE__.yml';
+import defaultsForEnv from '../../config/__DEFAULTS_FILE__.yml';
 
 // TODO(burdon): Use dxos/config.
-const config = sort(merge({}, build, defaults, {
+const config = sort(merge({}, build, defaults, defaultsForEnv, {
   system: {
     env: process.env.NODE_ENV,
     debug: process.env.DEBUG,

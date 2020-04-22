@@ -4,57 +4,51 @@
 
 import debug from 'debug';
 
+import { withConfig } from '../../lib/server/config';
+import { Service } from '../../lib/server/service';
 import { TOPIC, SECRET_KEY } from '../../lib/server/bot_factory';
-import { exec } from '../../lib/server/exec';
 
-const BOT_FACTORY_LOG_FILE_PATH = '/tmp/bot-factory.log';
-
-// Number of lines to tail from the log file when polling.
-const BOT_FACTORY_LOG_NUM_LINES = 50;
+const SERVICE_NAME = 'bot-factory';
 
 const log = debug('dxos:dashboard:bots');
 
-export default async (req, res) => {
+const handler = async (req, res) => {
+  const { config } = req;
+
+  const service = new Service(SERVICE_NAME, config);
   const url = new URL(req.url, `http://${req.headers.host}`);
   const { searchParams } = url;
 
   const command = searchParams.get('command');
 
   let statusCode = 200;
-  let result = {};
+  let response = {};
   try {
     switch (command) {
       case 'start': {
-        const args = [
-          'bot', 'factory', 'start',
-          '--topic', TOPIC,
-          '--secret-key', SECRET_KEY,
-          '--single-instance',
-          '2>&1', '|', 'tee', BOT_FACTORY_LOG_FILE_PATH
-        ];
-        const { output } = await exec('wire', { args, match: /bot-factory/ });
-        result = output;
+        const result = await service.runScript(
+          command,
+          [
+            '--topic', TOPIC,
+            '--secret-key', SECRET_KEY,
+            '--single-instance'
+          ]
+        );
+
+        response = { result };
         break;
       }
 
+      case 'logs':
       case 'stop': {
-        const { output } = await exec('wire', { args: ['bot', 'factory', 'stop'] });
-        result = output;
-        break;
-      }
-
-      case 'log': {
-        const { output: log = '' } = await exec('tail', {
-          args: [`-${BOT_FACTORY_LOG_NUM_LINES}`, BOT_FACTORY_LOG_FILE_PATH]
-        });
-
-        result = log ? log.split('\n') : [];
+        const result = await service.runScript(command);
+        response = { result };
         break;
       }
 
       case 'status': {
-        const { output } = await exec('wire', { args: ['bot', 'factory', 'status', '--topic', TOPIC] });
-        result = output ? JSON.parse(output) : { running: 'false' };
+        const result = await service.runScript(command, ['--topic', TOPIC]);
+        response = { result };
         break;
       }
 
@@ -63,18 +57,14 @@ export default async (req, res) => {
       }
     }
   } catch (err) {
-    // TODO(burdon): Sporadic Error (polling logs).
-    // at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
-    if (String(err).match(/No such file or directory/)) {
-      await exec('touch', { args: [BOT_FACTORY_LOG_FILE_PATH] });
-    }
-
     log(err);
     statusCode = 500;
-    result = {
+    response = {
       error: String(err)
     };
   }
 
-  res.status(statusCode).json(result);
+  res.status(statusCode).json(response);
 };
+
+export default withConfig(handler);

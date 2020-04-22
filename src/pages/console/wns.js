@@ -36,6 +36,8 @@ export { getServerSideProps } from '../../lib/server/config';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
+const SERVICE_NAME = 'wns';
+
 const useStyles = makeStyles(theme => ({
   buttons: {
     marginLeft: theme.spacing(2)
@@ -158,7 +160,7 @@ const Page = ({ config }) => {
   };
 
   const handleStart = async () => {
-    const { ts, error } = await httpGet('/api/wns', { command: 'start' });
+    const { ts, error } = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
     ifMounted(async () => {
       setStatus({ ts, error });
       if (!error) {
@@ -168,8 +170,8 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/wns', { command: 'shutdown' });
-    ifMounted(() => setStatus(status));
+    await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
+    ifMounted(() => setStatus({}));
   };
 
   const handleOpen = () => {
@@ -186,10 +188,11 @@ const Page = ({ config }) => {
   // Polling for logs.
   useEffect(() => {
     const logInterval = setInterval(async () => {
-      const { ts, error, result: { log } } = await httpGet('/api/wns', { command: 'log' });
+      const { ts, error, result: { result: rawLog } } = await httpGet('/api/service', { service: SERVICE_NAME, command: 'logs' });
       if (error) {
         setStatus({ ts, result, error });
       } else {
+        const log = rawLog.split('\n');
         setLog(log);
       }
     }, LOG_POLL_INTERVAL);
