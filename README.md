@@ -25,8 +25,8 @@ Build is not needed.
 ## Publish to NPM
 
 - `rm -rf ./next` (Make sure we remove next folder).
+- `npm version prerelease` (Tag version has to be done before build so version.json is generated at build time with correct version).
 - `env CONFIG_FILE=./config/config-prod.yml yarn next build`.
-- `npm version prerelease`
 - `npm publish -tag beta`
 
 Finally push all changes and tags `git push --follow-tags`.
