@@ -12,6 +12,7 @@ export const useRegistry = (config) => {
 
   return {
     registry,
+
     webui: getServiceUrl(config, 'wns.webui', { absolute: true }),
 
     // True if can start/stop from dashbaord.
