@@ -1,0 +1,43 @@
+#
+# NODE_ENV === production
+# NOTE: Set CONFIG_FILE to swap out this config file.
+#
+
+services:
+  app:
+    server: 'http://127.0.0.1:5999'
+
+  ipfs:
+    server: '/ip4/127.0.0.1/tcp/5001'
+    gateway: '/ip4//127.0.0.1:8888/ipfs/'
+    webui: 'http://127.0.0.1:5001/webui'
+
+  signal:
+    server: 'http://127.0.0.1:4000'
+    api: 'http://127.0.0.1:4000'
+
+  wellknown:
+    endpoint: 'http://127.0.0.1:9000/.well-known/dxos'
+
+  wns:
+    server: 'https://node1.dxos.network/wns/api'
+    webui: 'https://node1.dxos.network/wns/webui'
+
+routes:
+  app:
+    server: '/wrn'
+
+  ipfs:
+    server: '/dxos/ipfs/api'
+    gateway: '/dxos/ipfs/gateway'
+    webui: '/dxos/ipfs/webui'
+
+  signal:
+    api: '/dxos/signal/status'
+
+  wellknown:
+    endpoint: '/.well-known/dxos'
+
+  wns:
+    server: '/dxos/wns/api'
+    webui: '/dxos/wns/console'

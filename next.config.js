@@ -8,7 +8,7 @@ const withImages = require('next-images');
 const VersionFile = require('webpack-version-file-plugin');
 
 // Build-time config.
-const DEFAULTS_FILE = (process.env.NODE_ENV === 'production') ? 'defaults-prod' : 'defaults-dev';
+const DEFAULTS_FILE = (process.env.NODE_ENV === 'production') ? 'defaults-xbox' : 'defaults-localhost';
 
 // NOTE: The same environment variables must be used for build and start.
 console.log('Config:', DEFAULTS_FILE, process.env.CONFIG_FILE);

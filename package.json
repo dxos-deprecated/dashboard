@@ -19,12 +19,14 @@
   ],
   "scripts": {
     "build": "next build",
-    "dev": "CONFIG_FILE=./config/config-dev.yml next",
+    "dev": "yarn run dev:localhost",
+    "dev:localhost": "CONFIG_FILE=./config/config-localhost.yml next",
+    "dev:devnet": "CONFIG_FILE=./config/config-devnet.yml next",
     "lint": "eslint ./src --ignore-path .eslintignore",
     "lint:fix": "lint -- --fix",
     "lint:staged": "lint-staged",
     "//": "IMPORTANT: CONFIG_FILE must be set for both build and start.",
-    "start": "CONFIG_FILE=./config/config-prod.yml next build && next start",
+    "start": "CONFIG_FILE=./config/config-xbox.yml next build && next start",
     "test": "jest --rootDir src/lib --verbose --passWithNoTests",
     "well-known": "npx http-server ./config -c-1 --cors --port 9000 --ext json"
   },
