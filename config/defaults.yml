@@ -1,0 +1,94 @@
+#
+# DxOS services.
+#
+
+scripts:
+  status:
+    command: wire
+    attributes:
+      - 'services'
+      - 'status'
+      - '<name>'
+  stop:
+    command: wire
+    attributes:
+      - 'services'
+      - 'stop'
+      - '<name>'
+  restart:
+    command: wire
+    attributes:
+      - 'services'
+      - 'restart'
+      - '<name>'
+  logs:
+    command: wire
+    attributes:
+      - 'services'
+      - 'logs'
+      - '<name>'
+
+services:
+  wns:
+    log: '/tmp/wns.log'
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'wns'
+          - 'start'
+        # - '--lite'
+          - '--daemon'
+        # - '--procName'
+        # - '<name>'
+        match: 'Executed block'
+      status:
+        command: wire
+        attributes:
+          - 'wns'
+          - 'status'
+  ipfs:
+    log: '/tmp/ipfs.log'
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'ipfs'
+          - 'start'
+          - '--daemon'
+  app-server:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'app'
+          - 'serve'
+          - '--daemon'
+          - '--port'
+          - 5999
+  signal:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'signal'
+          - 'start'
+          - '--daemon'
+          - '--asBootstrap'
+        match: 'SIGNAL_PROTOCOL_TOPIC'
+  bot-factory:
+    scripts:
+      start:
+        command: wire
+        attributes:
+          - 'bot'
+          - 'factory'
+          - 'start'
+          - '--daemon'
+        match: 'bot-factory'
+      status:
+        command: wire
+        attributes:
+          - 'bot'
+          - 'factory'
+          - 'status'

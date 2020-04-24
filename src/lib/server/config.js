@@ -31,6 +31,16 @@ export const getConfig = async () => {
 };
 
 /**
+ * Config middleware
+ * @param {Function} handler
+ */
+export const withConfig = handler => async (req, res) => {
+  const config = await getConfig();
+  req.config = config;
+  return handler(req, res);
+};
+
+/**
  * Return dynamic configuration (loads config file).
  * Returned `props` are passed to the component.
  * NOTE: This function must be exported in each page that requires it.

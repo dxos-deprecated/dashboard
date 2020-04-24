@@ -26,7 +26,11 @@ import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import ControlButtons from '../../components/ControlButtons';
 
+const SERVICE_NAME = 'app-server';
+
 export { getServerSideProps } from '../../lib/server/config';
+
+const APP_PATH_PREFIX = 'wrn';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -59,6 +63,11 @@ const Page = ({ config }) => {
   const [records, setRecords] = useState([]);
   const { registry } = useRegistry(config);
 
+  // TODO(telackey): This doesn't make sense to do SSR, so bail.
+  if (!registry) {
+    return null;
+  }
+
   const { ...stats } = result;
 
   const resetError = () => setStatus({ ts, error: undefined });
@@ -70,7 +79,7 @@ const Page = ({ config }) => {
   };
 
   const handleStart = async () => {
-    const status = await httpGet('/api/apps', { command: 'start' });
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();
@@ -78,7 +87,7 @@ const Page = ({ config }) => {
   };
 
   const handleStop = async () => {
-    const status = await httpGet('/api/apps', { command: 'stop' });
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
     ifMounted(() => {
       setStatus(status);
       handleRefresh();
@@ -91,7 +100,20 @@ const Page = ({ config }) => {
 
   // TODO(burdon): WNS should have path.
   // TODO(burdon): Test if app is deployed.
-  const getAppUrl = name => getServiceUrl(config, 'app.server', { path: name });
+  const getAppUrl = ({ name, version }) => {
+    const base = getServiceUrl(config, 'app.server');
+    const pathComponents = [base];
+
+    // `wire app serve` always expects /wrn/ to prefix the path of an app to load. That is OK in the production
+    // config where we can make it part of the the route, but in development it must be prepended since we don't
+    // want to make it part of services.app.server.
+    if (!base.startsWith(`/${APP_PATH_PREFIX}`) && !base.endsWith(`/${APP_PATH_PREFIX}`)) {
+      pathComponents.push(APP_PATH_PREFIX);
+    }
+
+    pathComponents.push(`${name}@${version}`);
+    return pathComponents.join('/');
+  };
 
   return (
     <Layout config={config}>
@@ -102,7 +124,7 @@ const Page = ({ config }) => {
           </IconButton>
         </div>
 
-        <ControlButtons onStart={handleStart} onStop={handleStop}  />
+        <ControlButtons onStart={handleStart} onStop={handleStop} />
       </Toolbar>
 
       <Content updated={ts}>
@@ -117,8 +139,8 @@ const Page = ({ config }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes: { displayName } }) => {
-                const link = getAppUrl(name);
+              {records.sort(sorter).map(({ id, name, version, attributes: { displayName, publicUrl } }) => {
+                const link = getAppUrl({ id, name, version, publicUrl });
 
                 return (
                   <TableRow key={id} size="small">

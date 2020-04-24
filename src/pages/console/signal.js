@@ -14,7 +14,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { httpGet, ignorePromise } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useIsMounted } from '../../hooks';
 
 import Content from '../../components/Content';
@@ -23,6 +23,8 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
+
+const SERVICE_NAME = 'signal';
 
 export { getServerSideProps } from '../../lib/server/config';
 
@@ -44,12 +46,25 @@ const Page = ({ config }) => {
   const resetError = () => setStatus({ ts, error: undefined });
 
   const handleRefresh = async () => {
-    const status = await httpGet(config.services.signal.api);
+    const status = await httpGet(getServiceUrl(config, 'signal.api', { absolute: true }));
     ifMounted(() => setStatus(status));
   };
 
-  const handleStart = () => {};
-  const handleStop = () => {};
+  const handleStart = async () => {
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'start' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
+  };
+
+  const handleStop = async () => {
+    const status = await httpGet('/api/service', { service: SERVICE_NAME, command: 'stop' });
+    ifMounted(() => {
+      setStatus(status);
+      handleRefresh();
+    });
+  };
 
   useEffect(ignorePromise(handleRefresh), []);
 

@@ -4,18 +4,23 @@
 
 import { Registry } from '@wirelineio/registry-client';
 
-import { getServiceUrl, isLocalhost } from '../lib/util';
+import { getServiceUrl } from '../lib/util';
 
 export const useRegistry = (config) => {
-  const endpoint = getServiceUrl(config, 'wns.server', { absolute: true });
+  let endpoint;
+
+  try {
+    // NOTE: Does not work server-side.
+    endpoint = getServiceUrl(config, 'wns.server', { absolute: true });
+  } catch (err) {
+    console.warn('Attempted to make client-side call.');
+    return {};
+  }
+
   const registry = new Registry(endpoint);
 
   return {
     registry,
-
-    webui: getServiceUrl(config, 'wns.webui', { absolute: true }),
-
-    // True if can start/stop from dashbaord.
-    local: isLocalhost(endpoint),
+    webui: getServiceUrl(config, 'wns.webui', { absolute: true })
   };
 };

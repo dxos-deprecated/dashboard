@@ -5,7 +5,7 @@
 
 services:
   app:
-    server: 'http://127.0.0.1:6000'                             # TODO(burdon): ???
+    server: 'http://127.0.0.1:5999'                             # TODO(burdon): ???
 
   wns:
     server: 'http://127.0.0.1:9473/api'
@@ -25,17 +25,18 @@ services:
 
 routes:
   app:
-    server: '/app'
+    server: '/wrn'
 
   wns:
-    server: '/dxos/wns/graphql'                                 # TODO(burdon): ???
-    webui: '/dxos/wns/console'                                  # TODO(burdon): ???
+    server: '/dxos/wns/api'                                 # TODO(burdon): ???
+    webui: '/dxos/wns/console'                              # TODO(burdon): ???
 
   signal:
     api: '/dxos/signal/status'
 
   ipfs:
     server: '/dxos/ipfs/api'
+    gateway: '/dxos/ipfs/gateway'
     webui: '/dxos/ipfs/webui'
 
   wellknown:
