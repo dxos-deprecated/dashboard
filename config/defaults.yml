@@ -30,7 +30,7 @@ scripts:
 
 services:
   wns:
-    log: '/tmp/wns.log'
+    log: '/var/log/wns.log'
     scripts:
       start:
         command: wire
@@ -41,14 +41,24 @@ services:
           - '--daemon'
         # - '--procName'
         # - '<name>'
+          - '--log-file'
+          - '<logFile>'
         match: 'Executed block'
       status:
         command: wire
         attributes:
           - 'wns'
           - 'status'
+      logs:
+        command: wire
+        attributes:
+          - 'services'
+          - 'logs'
+          - '<name>'
+          - '--log-file'
+          - '<logFile>'
   ipfs:
-    log: '/tmp/ipfs.log'
+    log: '/var/log/ipfs.log'
     scripts:
       start:
         command: wire
@@ -56,7 +66,10 @@ services:
           - 'ipfs'
           - 'start'
           - '--daemon'
+          - '--log-file'
+          - '<logFile>'
   app-server:
+    log: '/var/log/app-server.log'
     scripts:
       start:
         command: wire
@@ -66,7 +79,10 @@ services:
           - '--daemon'
           - '--port'
           - 5999
+          - '--log-file'
+          - '<logFile>'
   signal:
+    log: '/var/log/signal.log'
     scripts:
       start:
         command: wire
@@ -75,8 +91,11 @@ services:
           - 'start'
           - '--daemon'
           - '--asBootstrap'
+          - '--log-file'
+          - '<logFile>'
         match: 'SIGNAL_PROTOCOL_TOPIC'
   bot-factory:
+    log: '/var/log/bot-factory.log'
     scripts:
       start:
         command: wire
@@ -85,6 +104,8 @@ services:
           - 'factory'
           - 'start'
           - '--daemon'
+          - '--log-file'
+          - '<logFile>'
         match: 'bot-factory'
       status:
         command: wire
