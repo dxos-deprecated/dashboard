@@ -30,7 +30,7 @@ const SERVICE_NAME = 'app-server';
 
 export { getServerSideProps } from '../../lib/server/config';
 
-const APP_PATH_PREFIX = 'wrn';
+const APP_PATH_PREFIX = 'app';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
