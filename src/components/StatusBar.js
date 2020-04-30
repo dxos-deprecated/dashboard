@@ -12,6 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import AboutIcon from '@material-ui/icons/PowerSettingsNew';
 import grey from '@material-ui/core/colors/grey';
 
+import VersionCheck from './VersionCheck';
+
 const useStyles = makeStyles(() => ({
   toolbar: {
     display: 'flex',
@@ -40,6 +42,7 @@ const StatusBar = ({ config }) => {
       <div>
         <span>{`${name}/${version}`}</span>
         <span className={classes.build}> {moment(buildDate).format('L')}</span>
+        <VersionCheck config={config} />
       </div>
 
       <div style={{ textAlign: 'center' }}>© DxOS.org</div>

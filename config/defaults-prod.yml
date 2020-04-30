@@ -9,3 +9,5 @@ app:
 
 system:
   debug: "dxos:dashboard*"
+  xbox:
+    image: '/opt/xbox/IMAGE'
