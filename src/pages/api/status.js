@@ -2,14 +2,15 @@
 // Copyright 2020 DxOS
 //
 
+import fs from 'fs';
 import moment from 'moment';
 import pick from 'lodash.pick';
 import os from 'os';
 import si from 'systeminformation';
 import sort from 'sort-json';
 
+import config from '../../lib/config';
 import { exec } from '../../lib/server/exec';
-import config from './config';
 
 const num = new Intl.NumberFormat('en', { maximumSignificantDigits: 3 });
 
@@ -88,6 +89,12 @@ export default async (req, res) => {
     dashboard: config.build,
     cli: version
   };
+
+  if (fs.existsSync(config.system.xbox.image)) {
+    dxos.xbox = {
+      image: fs.readFileSync(config.system.xbox.image, { encoding: 'UTF8' }).replace(/^\s+|\s+$/g, '')
+    };
+  }
 
   res.json(sort({
     dxos,
