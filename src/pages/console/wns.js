@@ -20,7 +20,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
 
-import { getServiceUrl, httpGet, ignorePromise, safeParseJson } from '../../lib/util';
+import { getServiceUrl, httpGet, ignorePromise } from '../../lib/util';
 import { useRegistry, useIsMounted } from '../../hooks';
 
 import ControlButtons from '../../components/ControlButtons';
@@ -83,8 +83,7 @@ const types = [
 const PackageLink = ({ config, type, pkg }) => {
 
   // TODO(burdon): Pass in expected arg types.
-  const obj = safeParseJson(pkg);
-  if (!obj) {
+  if (typeof pkg === 'string') {
     const ipfsUrl = getServiceUrl(config, 'ipfs.gateway', { path: `${pkg}` });
     return <Link href={ipfsUrl} target="ipfs">{pkg}</Link>;
   }
@@ -93,9 +92,9 @@ const PackageLink = ({ config, type, pkg }) => {
   switch (type) {
     case 'wrn:bot': {
       const packageLinks = [];
-      Object.keys(obj).forEach(platform => {
-        Object.keys(obj[platform]).forEach(arch => {
-          const cid = obj[platform][arch];
+      Object.keys(pkg).forEach(platform => {
+        Object.keys(pkg[platform]).forEach(arch => {
+          const cid = pkg[platform][arch];
           const ipfsUrl = getServiceUrl(config, 'ipfs.gateway', { path: `${cid}` });
 
           packageLinks.push(
@@ -263,7 +262,7 @@ const Page = ({ config }) => {
                     <TableCell monospace>{name}</TableCell>
                     <TableCell monospace>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
-                    <TableCell title={pkg} monospace>
+                    <TableCell title={JSON.stringify(pkg)} monospace>
                       {pkg && (
                         <PackageLink config={config} type={type} pkg={pkg} />
                       )}
