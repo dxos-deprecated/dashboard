@@ -29,26 +29,29 @@ scripts:
       - '<name>'
 
 services:
-  wns:
-    log: '/var/log/wns.log'
+  wns-lite:
+    log: '/var/log/wns-lite.log'
     scripts:
       start:
         command: wire
         attributes:
           - 'wns'
           - 'start'
-        # - '--lite'
+          - '--lite'
           - '--daemon'
-        # - '--procName'
-        # - '<name>'
           - '--log-file'
           - '<logFile>'
-        match: 'Executed block'
-      status:
-        command: wire
-        attributes:
-          - 'wns'
-          - 'status'
+          - '--node'
+          - 'tcp://node1.dxos.network:26657'
+          - '--reset'
+          - '--'
+          - '--gql-port'
+          - '9473'
+          - '--gql-playground-api-base'
+          - '/dxos/wns'
+          - '--endpoint'
+          - 'http://127.0.0.1:9473/api'
+        match: 'Syncing from'
       logs:
         command: wire
         attributes:
