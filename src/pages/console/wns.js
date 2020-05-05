@@ -36,7 +36,7 @@ export { getServerSideProps } from '../../lib/server/config';
 
 const LOG_POLL_INTERVAL = 3 * 1000;
 
-const SERVICE_NAME = 'wns';
+const SERVICE_NAME = 'wns-lite';
 
 const useStyles = makeStyles(theme => ({
   buttons: {
