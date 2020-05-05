@@ -1,6 +1,6 @@
 {
   "name": "@dxos/xbox-dashboard",
-  "version": "1.0.0-beta.13",
+  "version": "1.0.0-beta.14",
   "description": "XBox dashboard/console.",
   "bin": {
     "dxos-dashboard": "./bin/bin.js"
