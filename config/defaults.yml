@@ -71,6 +71,11 @@ services:
           - '--daemon'
           - '--log-file'
           - '<logFile>'
+      stop:
+        command: wire
+        attributes:
+          - 'ipfs'
+          - 'stop'
   app-server:
     log: '/var/log/app-server.log'
     scripts:
