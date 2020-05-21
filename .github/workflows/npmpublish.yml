@@ -23,8 +23,11 @@ jobs:
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
       - run: yarn
+      - run: yarn build
       - run: yarn lint
-      - run: rm -rf ./next
+      - run: git clean -dfx
+      - run: git reset --hard
+      - run: yarn
       - run: npm version prerelease
       - run: CONFIG_FILE=./config/config-prod.yml yarn next build
       - run: npm publish -tag beta
