@@ -10,6 +10,7 @@ services:
   wns:
     server: 'http://127.0.0.1:9473/api'
     webui: 'http://127.0.0.1:9473/webui'
+    chainId: 'wireline'
 
   signal:
     server: 'http://127.0.0.1:4000'
