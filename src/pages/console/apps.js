@@ -2,6 +2,9 @@
 // Copyright 2020 DxOS
 //
 
+import debug from 'debug';
+import IpfsHttpClient from 'ipfs-http-client';
+
 import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,6 +33,7 @@ const SERVICE_NAME = 'app-server';
 
 export { getServerSideProps } from '../../lib/server/config';
 
+const log = debug('dxos:dashboard:apps');
 const APP_PATH_PREFIX = 'app';
 
 const useStyles = makeStyles(() => ({
@@ -53,6 +57,14 @@ const useStyles = makeStyles(() => ({
 
   action: {
     textAlign: 'right'
+  },
+
+  available: {
+    fontWeight: 'bold'
+  },
+
+  missing: {
+    fontStyle: 'italic'
   }
 }));
 
@@ -61,6 +73,7 @@ const Page = ({ config }) => {
   const { ifMounted } = useIsMounted();
   const [{ ts, result = {}, error }, setStatus] = useState({});
   const [records, setRecords] = useState([]);
+  const [available, setAvailable] = useState(null);
   const { registry } = useRegistry(config);
 
   // TODO(telackey): This doesn't make sense to do SSR, so bail.
@@ -72,10 +85,25 @@ const Page = ({ config }) => {
 
   const resetError = () => setStatus({ ts, error: undefined });
 
-  const handleRefresh = () => {
-    registry.queryRecords({ type: 'wrn:app' })
-      .then(records => ifMounted(() => setRecords(records)))
-      .catch(({ errors }) => ifMounted(() => setStatus({ error: errors })));
+  const handleRefresh = async () => {
+    try {
+      const ipfs = IpfsHttpClient(getServiceUrl(config, 'ipfs.server', { absolute: true }));
+      const records = await registry.queryRecords({ type: 'wrn:app' });
+      ifMounted(() => setRecords(records));
+
+      const refs = new Set();
+      for await (const ref of ipfs.refs.local()) {
+        if (ref.err) {
+          log(ref.err);
+        } else {
+          refs.add(ref.ref);
+        }
+      }
+      ifMounted(() => setAvailable(refs));
+    } catch (error) {
+      const message = String(error);
+      ifMounted(() => setStatus({ ts: Date.now(), error: message }));
+    }
   };
 
   const handleStart = async () => {
@@ -139,7 +167,8 @@ const Page = ({ config }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes: { displayName, publicUrl } }) => {
+              {records.sort(sorter).map(({ id, name, version, attributes:
+                { displayName, publicUrl, package: hash } }) => {
                 const link = getAppUrl({ id, name, version, publicUrl });
 
                 return (
@@ -149,7 +178,13 @@ const Page = ({ config }) => {
                     <TableCell>{displayName}</TableCell>
                     <TableCell monospace>
                       {link && (
-                        <Link href={link} target={name}>{link}</Link>
+                        <Link
+                          href={link}
+                          target={name}
+                          className={available && available.has(hash) ?
+                            classes.available : classes.missing}
+                        >{link}
+                        </Link>
                       )}
                     </TableCell>
                   </TableRow>

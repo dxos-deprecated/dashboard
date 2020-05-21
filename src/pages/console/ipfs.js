@@ -7,11 +7,6 @@ import React, { useEffect, useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { JsonTreeView } from '@dxos/react-ux';
@@ -23,13 +18,13 @@ import ControlButtons from '../../components/ControlButtons';
 import Content from '../../components/Content';
 import Error from '../../components/Error';
 import Layout from '../../components/Layout';
-import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 
 export { getServerSideProps } from '../../lib/server/config';
 
 const SERVICE_NAME = 'ipfs';
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(() => ({
   tableContainer: {
     flex: 1,
@@ -58,7 +53,6 @@ const useStyles = makeStyles(() => ({
  * @constructor
  */
 const Page = ({ config }) => {
-  const classes = useStyles();
   const { ifMounted } = useIsMounted();
   const [{ ts, result, error }, setStatus] = useState({});
 
@@ -70,23 +64,17 @@ const Page = ({ config }) => {
       const ipfs = IpfsHttpClient(getServiceUrl(config, 'ipfs.server', { absolute: true }));
       const version = await ipfs.version();
       const status = await ipfs.id();
+      const repoStats = await ipfs.stats.repo();
 
-      // All local files.
-      // TODO(burdon): Join with WNS query?
-      let files = 0;
-      const refs = [];
-      for await (const ref of ipfs.refs.local()) {
-        if (ref.err) {
-          console.error(ref.err);
-        } else {
-          files++;
-          // refs.push(ref.ref);
-        }
-      }
+      const stats = {
+        // These are BigNumbers, which are easier to handle for display as strings.
+        files: repoStats.numObjects.toString(),
+        size: repoStats.repoSize.toString()
+      };
 
       ifMounted(() => {
         status.addresses = status.addresses.map(address => String(address));
-        setStatus({ ts: Date.now(), result: { version, status, refs, files } });
+        setStatus({ ts: Date.now(), result: { version, status, stats } });
       });
     } catch (error) {
       let message = String(error);
@@ -125,7 +113,7 @@ const Page = ({ config }) => {
 
   useEffect(ignorePromise(handleRefresh), []);
 
-  const { refs = [], files, ...rest } = result || {};
+  const { version, status, stats } = result || {};
 
   return (
     <Layout config={config}>
@@ -140,26 +128,7 @@ const Page = ({ config }) => {
       </Toolbar>
 
       <Content updated={ts}>
-        {refs.length > 0 && (
-          <TableContainer className={classes.tableContainer}>
-            <Table stickyHeader size="small" className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Hash</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {refs.map((ref) => (
-                  <TableRow key={ref} size="small">
-                    <TableCell monospace>{ref}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-
-        <JsonTreeView data={{ ...rest, stats: { files } }} />
+        <JsonTreeView data={{ version, status, stats }} />
       </Content>
 
       <Error message={error} onClose={resetError} />
