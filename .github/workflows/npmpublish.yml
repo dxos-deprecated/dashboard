@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://registry.npmjs.org/
+          registry-url: https://registry.npmjs.org/:_authToken=${{secrets.npm_token}}
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
       - run: yarn
@@ -34,4 +34,3 @@ jobs:
       - run: git push
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-          NPM_TOKEN: ${{secrets.npm_token}}
