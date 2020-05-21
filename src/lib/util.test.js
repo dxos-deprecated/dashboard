@@ -2,7 +2,6 @@
 // Copyright 2020 Wireline, Inc.
 //
 
-import buildUrl from 'build-url';
 import { getServiceUrl } from './util';
 
 const config = {
