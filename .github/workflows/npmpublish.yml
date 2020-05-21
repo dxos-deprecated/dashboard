@@ -22,7 +22,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
-      - run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
+      - run: npm config set registry "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}"
       - run: yarn
       - run: npm version prerelease
       - run: CONFIG_FILE=./config/config-prod.yml yarn next build
