@@ -130,11 +130,6 @@ const Page = ({ config }) => {
   const [{ sort, ascend }, setSort] = useState({ sort: 'type', ascend: true });
   const { registry, webui } = useRegistry(config);
 
-  // TODO(telackey): This doesn't make sense to do SSR, so bail.
-  if (!registry) {
-    return null;
-  }
-
   const handleRefresh = async () => {
     // TODO(burdon): Format records.
     registry.getStatus()

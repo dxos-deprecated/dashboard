@@ -7,6 +7,7 @@ import { Registry } from '@wirelineio/registry-client';
 import { getServiceUrl } from '../lib/util';
 
 export const useRegistry = (config) => {
+  const { wns: { chainId } = {} } = config.services;
   let endpoint;
 
   try {
@@ -17,7 +18,7 @@ export const useRegistry = (config) => {
     return {};
   }
 
-  const registry = new Registry(endpoint);
+  const registry = new Registry(endpoint, chainId);
 
   return {
     registry,
