@@ -34,7 +34,7 @@ const SERVICE_TYPE = 'ipfs';
 const SERVICE_NAME = 'ipfs';
 
 // eslint-disable-next-line no-unused-vars
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   tableContainer: {
     flex: 1,
     overflowY: 'scroll'
@@ -60,6 +60,12 @@ const useStyles = makeStyles(() => ({
 
   colShort: {
     width: 160
+  },
+
+  caption: {
+    backgroundColor: theme.palette.grey[500],
+    paddingLeft: '1em',
+    margin: 0
   }
 }));
 
@@ -185,7 +191,7 @@ const Page = ({ config }) => {
       </Toolbar>
 
       <Content updated={ts}>
-        <h4>Peers from WNS</h4>
+        <h4 className={classes.caption}>Peers from WNS</h4>
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
@@ -207,7 +213,7 @@ const Page = ({ config }) => {
           </Table>
         </TableContainer>
 
-        <h4>Local Server Status</h4>
+        <h4 className={classes.caption}>Local Status</h4>
         <JsonTreeView data={{ version, status, stats }} />
       </Content>
 
