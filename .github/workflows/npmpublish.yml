@@ -19,7 +19,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://registry.npmjs.org/:_authToken=${{secrets.npm_token}}
+          registry-url: https://registry.npmjs.org/
+          scope: @dxos
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
       - run: yarn
