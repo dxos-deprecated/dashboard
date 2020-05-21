@@ -26,6 +26,7 @@ jobs:
       - run: yarn
       - run: npm version prerelease
       - run: CONFIG_FILE=./config/config-prod.yml yarn next build
+      - run: npm login --verbose
       - run: npm publish -tag beta
       - run: git push --follow-tags
         env:
