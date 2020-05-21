@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-          scope: @dxos
+          scope: '@dxos'
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
       - run: yarn
