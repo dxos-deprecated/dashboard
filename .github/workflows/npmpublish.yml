@@ -28,7 +28,7 @@ jobs:
           yarn version --prerelease
           yarn
           #CONFIG_FILE=./config/config-prod.yml yarn next build
-          yarn publish --access public
+          yarn publish --tag beta --access public
           git push --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
