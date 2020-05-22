@@ -140,7 +140,7 @@ const Page = ({ config }) => {
     }
 
     pathComponents.push(`${name}@${version}`);
-    return pathComponents.join('/');
+    return `${pathComponents.join('/')}/`;
   };
 
   return (
