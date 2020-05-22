@@ -26,13 +26,8 @@ jobs:
           git config --global user.email "npm@dxos.network"
           git config --global user.name "DxOS"
           yarn version --prerelease
-          #yarn
+          yarn
           #CONFIG_FILE=./config/config-prod.yml yarn next build
-          cat /home/runner/work/_temp/.npmrc
-          #yarn config set scope "@dxos"
-          #yarn config set @dxos:registry https://registry.npmjs.org/
-          #yarn config set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
-          yarn config list
           yarn publish --access public
           git push --follow-tags
         env:
