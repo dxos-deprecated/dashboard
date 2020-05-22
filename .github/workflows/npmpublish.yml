@@ -27,7 +27,7 @@ jobs:
       - run: npm version prerelease
       - run: CONFIG_FILE=./config/config-prod.yml yarn next build
       - run: npm config set alway-auth true
-      #- run: cp /home/runner/work/_temp/.npmrc
+      - run: cp /home/runner/work/_temp/.npmrc ./
       - run: npm publish -tag beta
       - run: git push --follow-tags
         env:
