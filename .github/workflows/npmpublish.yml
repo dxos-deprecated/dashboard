@@ -25,9 +25,15 @@ jobs:
       - run: | 
           git config --global user.email "npm@dxos.network"
           git config --global user.name "DxOS"
-          yarn version --prerelease
           yarn
-          #CONFIG_FILE=./config/config-prod.yml yarn next build
+          yarn build
+          yarn lint
+          # yarn test
+          git reset --hard
+          git clean -dfx
+          yarn
+          yarn version --prerelease
+          CONFIG_FILE=./config/config-prod.yml yarn next build
           yarn publish --tag beta --access public
           git push --follow-tags
         env:
