@@ -27,7 +27,7 @@ jobs:
       #- run: yarn
       #- run: CONFIG_FILE=./config/config-prod.yml yarn next build
       - run: cat /home/runner/work/_temp/.npmrc
-      - run: yarn config set registry //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+      - run: yarn config set //registry.npmjs.org/ _authToken=$NODE_AUTH_TOKEN
       - run: yarn config set scope "@dxos"
       - run: yarn config list 
       - run: yarn publish --access public
