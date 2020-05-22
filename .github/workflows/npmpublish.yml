@@ -26,7 +26,7 @@ jobs:
       #- run: yarn
       #- run: npm version prerelease
       #- run: CONFIG_FILE=./config/config-prod.yml yarn next build
-      #- run: cat /home/runner/work/_temp/.npmrc
+      - run: cat /home/runner/work/_temp/.npmrc
       #- run: npm whoami; cat /home/runner/.npm/_logs/*
       - run: npm publish -tag beta --access public
       - run: git push --follow-tags
