@@ -20,15 +20,16 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-          scope: "@dxos"
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
+      - run: yarn version --prerelease
       - run: yarn
-      #- run: npm version prerelease
       - run: CONFIG_FILE=./config/config-prod.yml yarn next build
       #- run: cat /home/runner/work/_temp/.npmrc
-      #- run: npm whoami; cat /home/runner/.npm/_logs/*
-      - run: yarn publish --@dxos:registry=https://registry.npmjs.org/
+      - run: yarn config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+      - run: yarn config set scope "@dxos"
+      - run: yarn config list 
+      - run: yarn publish --access public
       - run: git push --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{secrets.TEST_SECRET}}
