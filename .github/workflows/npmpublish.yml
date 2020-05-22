@@ -23,10 +23,10 @@ jobs:
           scope: "@dxos"
       - run: git config --global user.email "npm@dxos.network"
       - run: git config --global user.name "DxOS"
-      - run: yarn
+      #- run: yarn
       - run: npm version prerelease
-      - run: CONFIG_FILE=./config/config-prod.yml yarn next build
-      - run: echo $NODE_AUTH_TOKEN
+      #- run: CONFIG_FILE=./config/config-prod.yml yarn next build
+      - run: npm whoami
       - run: npm publish -tag beta
       - run: git push --follow-tags
         env:
