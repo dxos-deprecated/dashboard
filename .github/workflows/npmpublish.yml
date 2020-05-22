@@ -29,6 +29,6 @@ jobs:
           registry=https://registry.npmjs.org/
           always-auth=false
           EOF
-      - run: npm whoami
+          npm whoami
         env:
           NODE_AUTH_TOKEN: "${{secrets.NPM_TOKEN}}"
