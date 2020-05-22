@@ -28,7 +28,7 @@ jobs:
       #- run: CONFIG_FILE=./config/config-prod.yml yarn next build
       - run: cat /home/runner/work/_temp/.npmrc
       #- run: npm whoami; cat /home/runner/.npm/_logs/*
-      - run: npm publish -tag beta --access public
+      - run: npm publish --@dxos:registry=https://registry.npmjs.org/
       - run: git push --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{secrets.TEST_SECRET}}
