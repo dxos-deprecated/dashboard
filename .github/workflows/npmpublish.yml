@@ -21,14 +21,14 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
           scope: "@dxos"
-      - run: git config --global user.email "npm@dxos.network"
-      - run: git config --global user.name "DxOS"
+      #- run: git config --global user.email "npm@dxos.network"
+      #- run: git config --global user.name "DxOS"
       #- run: yarn
-      - run: npm version prerelease
+      #- run: npm version prerelease
       #- run: CONFIG_FILE=./config/config-prod.yml yarn next build
-      - run: cat /home/runner/work/_temp/.npmrc
-      - run: npm whoami; cat /home/runner/.npm/_logs/*
-      - run: npm publish -tag beta
+      #- run: cat /home/runner/work/_temp/.npmrc
+      #- run: npm whoami; cat /home/runner/.npm/_logs/*
+      - run: npm publish -tag beta --access public
       - run: git push --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{secrets.TEST_SECRET}}
