@@ -28,6 +28,7 @@ import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import ControlButtons from '../../components/ControlButtons';
+import { BooleanIcon } from '../../components/Widgets';
 
 const SERVICE_NAME = 'app-server';
 
@@ -163,12 +164,15 @@ const Page = ({ config }) => {
                 <TableCell>Name</TableCell>
                 <TableCell className={classes.colShort}>Version</TableCell>
                 <TableCell>Description</TableCell>
+                <TableCell>Downloaded</TableCell>
                 <TableCell>Link</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.sort(sorter).map(({ id, name, version, attributes:
-                { displayName, publicUrl, package: hash } }) => {
+              {records.sort(sorter).map(({
+                id, name, version, attributes:
+                  { displayName, publicUrl, package: hash }
+              }) => {
                 const link = getAppUrl({ id, name, version, publicUrl });
 
                 return (
@@ -176,13 +180,14 @@ const Page = ({ config }) => {
                     <TableCell monospace>{name}</TableCell>
                     <TableCell monospace>{version}</TableCell>
                     <TableCell>{displayName}</TableCell>
+                    <TableCell>
+                      <BooleanIcon yes={available && available.has(hash)} />
+                    </TableCell>
                     <TableCell monospace>
                       {link && (
                         <Link
                           href={link}
                           target={name}
-                          className={available && available.has(hash) ?
-                            classes.available : classes.missing}
                         >{link}
                         </Link>
                       )}

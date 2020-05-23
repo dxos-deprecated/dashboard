@@ -26,6 +26,7 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 import TableCell from '../../components/TableCell';
+import { BooleanIcon } from '../../components/Widgets';
 
 export { getServerSideProps } from '../../lib/server/config';
 
@@ -59,7 +60,14 @@ const useStyles = makeStyles((theme) => ({
   },
 
   colShort: {
-    width: 160
+    width: '30%'
+  },
+
+  colWide: {
+  },
+
+  colBoolean: {
+    width: '10%'
   },
 
   caption: {
@@ -152,7 +160,7 @@ const Page = ({ config }) => {
 
   const { version, status, stats } = result || {};
 
-  let displayServers = registeredServers.map((service) => {
+  const displayServers = registeredServers.map((service) => {
     const addresses = get(service, 'attributes.ipfs.addresses');
     const parts = addresses[0].split('/');
     const nodeId = parts[parts.length - 1];
@@ -170,9 +178,6 @@ const Page = ({ config }) => {
   displayServers.sort((a, b) => {
     return a.connected && !b.connected ? -1 : b.connected && !a.connected ? 1 : b.name < a.name ? 1 : -1;
   });
-
-  // Only display connected servers at the moment.
-  displayServers = displayServers.filter(server => server.connected);
 
   if (displayServers.length === 0) {
     displayServers.push({ name: 'None' });
@@ -197,14 +202,18 @@ const Page = ({ config }) => {
             <TableHead>
               <TableRow>
                 <TableCell className={classes.colShort}>Name</TableCell>
-                <TableCell className={classes.colShort}>Details</TableCell>
+                <TableCell className={classes.colBoolean}>Connected</TableCell>
+                <TableCell className={classes.colWide}>Details</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {displayServers.map(({ name, description, ipfs }) => (
+              {displayServers.map(({ name, description, ipfs, connected }) => (
                 <TableRow key={name}>
-                  <TableCell monospace>{name}</TableCell>
-                  <TableCell monospace>
+                  <TableCell>{name}</TableCell>
+                  <TableCell>
+                    <BooleanIcon yes={connected} />
+                  </TableCell>
+                  <TableCell>
                     <JsonTreeView data={{ description, ipfs }} size="small" />
                   </TableCell>
                 </TableRow>
