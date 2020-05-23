@@ -28,7 +28,7 @@ import TableCell from '../../components/TableCell';
 import Toolbar from '../../components/Toolbar';
 import Layout from '../../components/Layout';
 import ControlButtons from '../../components/ControlButtons';
-import { BooleanIcon } from '../../components/Widgets';
+import { BooleanIcon } from '../../components/BooleanIcon';
 
 const SERVICE_NAME = 'app-server';
 

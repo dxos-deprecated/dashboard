@@ -26,7 +26,7 @@ import Error from '../../components/Error';
 import Layout from '../../components/Layout';
 import Toolbar from '../../components/Toolbar';
 import TableCell from '../../components/TableCell';
-import { BooleanIcon } from '../../components/Widgets';
+import { BooleanIcon } from '../../components/BooleanIcon';
 
 export { getServerSideProps } from '../../lib/server/config';
 
