@@ -197,7 +197,7 @@ const Page = ({ config }) => {
       </Toolbar>
 
       <Content updated={ts}>
-        <h4 className={classes.caption}>Peers from WNS</h4>
+        <h4 className={classes.caption}>WNS-registered IPFS Servers</h4>
         <TableContainer>
           <Table stickyHeader size="small" className={classes.table}>
             <TableHead>
@@ -223,7 +223,7 @@ const Page = ({ config }) => {
           </Table>
         </TableContainer>
 
-        <h4 className={classes.caption}>Local Status</h4>
+        <h4 className={classes.caption}>Local IPFS Server</h4>
         <JsonTreeView data={{ version, status, stats }} />
       </Content>
 
