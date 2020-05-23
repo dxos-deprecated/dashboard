@@ -71,7 +71,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   caption: {
-    backgroundColor: theme.palette.grey[500],
+    backgroundColor: theme.palette.primary[500],
+    color: theme.palette.primary.contrastText,
     paddingLeft: '1em',
     margin: 0
   }
